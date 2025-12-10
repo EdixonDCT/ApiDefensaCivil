@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\stateUser;
 
 class User extends Authenticatable
 {
@@ -20,6 +21,8 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'state_user_id',
+        'password'
     ];
 
     /**
@@ -27,9 +30,9 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-    ];
+    // protected $hidden = [
+    //     'password',
+    // ];
 
     /**
      * Get the attributes that should be cast.
@@ -41,5 +44,10 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+    
+    public function stateUser()
+    {
+        return $this->belongsTo(stateUser::class);
     }
 }
