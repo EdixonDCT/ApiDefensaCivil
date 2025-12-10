@@ -14,7 +14,16 @@ Route::post('/prueba', function (Request $request) {
 });
 
 Route::get('/wasa', function (Request $request) {
-    $usuario = User::all();
+    $usuario = StateUser::find(1);
+    return $usuario->user;
+});
+
+Route::get('/estado', function (Request $request) {
+    $usuario = StateUser::all();
     return $usuario;
+});
+
+Route::post('/estado', function (Request $request) {
+    return StateUser::create($request->all());
 });
 

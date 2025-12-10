@@ -12,7 +12,7 @@ class StateUser extends Model
 
     protected $fillable = ['state'];
 
-    public function users()
+    public function user()
     {
         return $this->hasMany(User::class, 'state_user_id');
     }

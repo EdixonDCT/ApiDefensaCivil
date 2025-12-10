@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Profile;
 
-class DocumentTypes extends Model
+class Gender extends Model
 {
     use HasFactory;
 
@@ -14,6 +14,6 @@ class DocumentTypes extends Model
 
     public function profile()
     {
-        return $this->hasMany(Profile::class, 'document_type_id');
+        return $this->hasMany(Profile::class, 'gender_id');
     }
 }
