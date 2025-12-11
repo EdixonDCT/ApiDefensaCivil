@@ -5,7 +5,7 @@ namespace App\Services\StateUser;
 use App\Models\StateUser\StateUser;
 use Illuminate\support\Arr;
 
-class stateUserService
+class StateUserService
 {
     public static function getAll()
     {

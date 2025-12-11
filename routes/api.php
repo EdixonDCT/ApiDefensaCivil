@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
+use App\Http\Controllers\API\User\UserController;
 
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
@@ -41,4 +42,17 @@ route::prefix('stateUsers')->group(function () {
     route::delete('/{state_user_id}', [StateUserController::class, 'destroy']);
 });
 
+route::prefix('users')->group(function () {
+    route::get('/', [UserController::class, 'index']);
+    
+    route::get('/{user_id}', [UserController::class, 'show']);
+    
+    route::post('/', [UserController::class, 'store']);
+
+    route::put('/{user_id}', [UserController::class, 'update']);
+
+    route::patch('/{user_id}', [UserController::class, 'partialUpdate']);
+
+    route::delete('/{user_id}', [UserController::class, 'destroy']);
+});
 
