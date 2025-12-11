@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Sectional;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Profile;
+use App\Models\Profile\Profile;
 
 class Sectional extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['id','state'];
 
     public function profile()
     {

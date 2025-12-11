@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\StateUser;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\StateUser;
+use App\Models\StateUser\StateUser;
 
 class stateUserSeeder extends Seeder
 {
@@ -13,14 +13,17 @@ class stateUserSeeder extends Seeder
      */
     public function run(): void
     {
-        StateUser::factory()->create([
+        StateUser::create([
             'state' => 'Activo'
         ]);
-        StateUser::factory()->create([
+        StateUser::create([
             'state' => 'Inactivo'
         ]);
-        StateUser::factory()->create([
+        StateUser::create([
             'state' => 'Peticion'
+        ]);
+        StateUser::create([
+            'state' => 'Rechazado'
         ]);
     }
 }

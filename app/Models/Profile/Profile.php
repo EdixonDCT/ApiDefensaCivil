@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Profile;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
-use App\Models\DocumentType;
-use App\Models\Gender;
-use App\Models\Organization;
+use App\Models\User\User;
+use App\Models\DocumentType\DocumentType;
+use App\Models\Gender\Gender;
+use App\Models\Organization\Organization;
 
 class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','names','last_names','birth_date','document_type_id','document_number','gender_id','organization_id'];
+    protected $fillable = ['id','user_id','names','last_names','birth_date','document_type_id','document_number','gender_id','organization_id'];
     
     public function user()
     {

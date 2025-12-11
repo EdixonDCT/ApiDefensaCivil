@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\StateUser;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
+use App\Models\User\User;
 
 class StateUser extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['state'];
+    protected $fillable = ['id','state'];
 
     public function user()
     {
