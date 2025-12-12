@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Helpers\ResponseFormatter;
-use Illuminate\Http\Request;
-use App\Models\User\User;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Requests\User\PartialUpdateUserRequest;

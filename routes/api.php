@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
 use App\Http\Controllers\API\User\UserController;
 use App\Http\Controllers\API\Gender\GenderController;
+use App\Http\Controllers\API\DocumentType\DocumentTypeController;
 
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
@@ -66,5 +67,23 @@ route::prefix('genders')->group(function () {
 
     route::patch('/{gender_id}', [GenderController::class, 'partialUpdate']);
 
+    route::patch('/state/{gender_id}', [GenderController::class, 'changeState']);
+
     route::delete('/{gender_id}', [GenderController::class, 'destroy']);
+});
+
+route::prefix('DocumentType')->group(function () {
+    route::get('/', [DocumentTypeController::class, 'index']);
+    
+    route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
+    
+    route::post('/', [DocumentTypeController::class, 'store']);
+
+    route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
+
+    route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
+
+    route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
+
+    route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
 });

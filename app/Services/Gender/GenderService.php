@@ -104,6 +104,28 @@ class GenderService
         ];
     }
 
+    public function changeState(array $data,$id)
+    {
+        $gender = Gender::find($id);
+
+        if (!$gender){
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Genero no encontrado",
+            ];
+        }
+
+        $gender->update($data);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Cambio de estado de genero actualizado correctamente",
+            "data" => $gender,
+        ];
+    }
+
     public function delete($id)
     {
         $gender = Gender::find($id);

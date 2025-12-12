@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\API\Gender;
 
 use App\Helpers\ResponseFormatter;
-use Illuminate\Http\Request;
-use App\Models\Gender\Gender;
 use App\Http\Requests\Gender\StoreGenderRequest;
 use App\Http\Requests\Gender\UpdateGenderRequest;
 use App\Http\Requests\Gender\PartialUpdateGenderRequest;
+use App\Http\Requests\Gender\ChangeStateGenderRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Gender\GenderService;
 
@@ -80,9 +79,24 @@ class GenderController extends Controller
     {
         return ResponseFormatter::error($response['message'], $response['code']);
     }
-    
+
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
-}
+    }
+
+    public function ChangeState(ChangeStateGenderRequest $request, string $id)
+    {
+    $data = $request->validated();
+
+    $response = $this->service->changeState($data, $id);
+
+    if ($response['error'])
+    {
+        return ResponseFormatter::error($response['message'], $response['code']);
+    }
+
+    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
     public function destroy(string $id)
     {
         $response = $this->service->delete($id);
