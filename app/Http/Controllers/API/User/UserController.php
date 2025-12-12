@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\User;
 use App\Helpers\ResponseFormatter;
 use Illuminate\Http\Request;
 use App\Models\User\User;
-use App\Http\Requests\User\UserRequest;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\User\PartialUpdateUserRequest;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserService;
 
@@ -40,7 +42,7 @@ class UserController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function store(UserRequest $request)
+    public function store(StoreUserRequest $request)
     {
     $data = $request->validated();
 
@@ -54,7 +56,7 @@ class UserController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function update(UserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -68,7 +70,7 @@ class UserController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function partialUpdate(UserRequest $request, string $id)
+    public function partialUpdate(PartialUpdateUserRequest $request, string $id)
     {
     $data = $request->validated();
 

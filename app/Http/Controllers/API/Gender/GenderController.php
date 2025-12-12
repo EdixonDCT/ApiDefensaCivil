@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\API\StateUser;
+namespace App\Http\Controllers\API\Gender;
 
 use App\Helpers\ResponseFormatter;
 use Illuminate\Http\Request;
-use App\Models\StateUser\StateUser;
-use App\Http\Requests\StateUser\StoreStateUserRequest;
-use App\Http\Requests\StateUser\UpdateStateUserRequest;
+use App\Models\Gender\Gender;
+use App\Http\Requests\Gender\StoreGenderRequest;
+use App\Http\Requests\Gender\UpdateGenderRequest;
+use App\Http\Requests\Gender\PartialUpdateGenderRequest;
 use App\Http\Controllers\Controller;
-use App\Services\StateUser\StateUserService;
+use App\Services\Gender\GenderService;
 
-class stateUserController extends Controller
+class GenderController extends Controller
 {
     protected $service;
 
-    public function __construct(StateUserService $service)
+    public function __construct(GenderService $service)
     {
         $this->service = $service;
     }
@@ -41,7 +42,7 @@ class stateUserController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function store(StoreStateUserRequest $request)
+    public function store(StoreGenderRequest $request)
     {
     $data = $request->validated();
 
@@ -55,7 +56,7 @@ class stateUserController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function update(UpdateStateUserRequest $request, string $id)
+    public function update(UpdateGenderRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -69,6 +70,19 @@ class stateUserController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    public function partialUpdate(PartialUpdateGenderRequest $request, string $id)
+    {
+    $data = $request->validated();
+
+    $response = $this->service->partialUpdate($data, $id);
+
+    if ($response['error'])
+    {
+        return ResponseFormatter::error($response['message'], $response['code']);
+    }
+    
+    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+}
     public function destroy(string $id)
     {
         $response = $this->service->delete($id);

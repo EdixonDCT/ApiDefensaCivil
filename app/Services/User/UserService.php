@@ -9,14 +9,14 @@ class UserService
 {
 public static function getAll()
     {
-        $User = User::all();
+        $user = User::all();
 
-        if ($User->isEmpty()){
+        if ($user->isEmpty()){
             return [
                 "error" => false,
                 "code" => 200,
                 "message" => "No hay usuarios registrados",
-                "data" => $User,
+                "data" => $user,
             ];
         }
 
@@ -24,15 +24,15 @@ public static function getAll()
             "error" => false,
             "code" => 200,
             "message" => "Usuarios obtenidos exitosamente",
-            "data" => $User,
+            "data" => $user,
         ];
     }
 
     public function getById($id)
     {
-        $User = User::find($id);
+        $user = User::find($id);
 
-        if (!$User){
+        if (!$user){
             return [
                 "error" => true,
                 "code" => 404,
@@ -44,27 +44,27 @@ public static function getAll()
             "error" => false,
             "code" => 200,
             "message" => "Usuario obtenido exitosamente",
-            "data" => $User,
+            "data" => $user,
         ];
     }
 
     public function create(array $data)
     {
-        $User = User::create($data);
+        $user = User::create($data);
 
         return [
             "error" => false,
             "code" => 201,
             "message" => "Usuario creado exitosamente",
-            "data" => $User,
+            "data" => $user,
         ];
     }
 
     public function update(array $data, $id)
     {
-        $User = User::find($id);
+        $user = User::find($id);
 
-        if (!$User){
+        if (!$user){
             return [
                 "error" => true,
                 "code" => 404,
@@ -72,21 +72,21 @@ public static function getAll()
             ];
         }
 
-        $User->update($data);
+        $user->update($data);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Usuario actualizado exitosamente",
-            "data" => $User,
+            "data" => $user,
         ];
     }
 
     public function partialUpdate(array $data,$id)
     {
-        $User = User::find($id);
+        $user = User::find($id);
 
-        if (!$User){
+        if (!$user){
             return [
                 "error" => true,
                 "code" => 404,
@@ -94,21 +94,21 @@ public static function getAll()
             ];
         }
 
-        $User->update($data);
+        $user->update($data);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Usuario actualizado parcialmente exitosamente",
-            "data" => $User,
+            "data" => $user,
         ];
     }
 
     public function delete($id)
     {
-        $User = User::find($id);
+        $user = User::find($id);
 
-        if (!$User){
+        if (!$user){
             return [
                 "error" => true,
                 "code" => 404,
@@ -116,7 +116,7 @@ public static function getAll()
             ];
         }
 
-        $User->delete();
+        $user->delete();
 
         return [
             "error" => false,

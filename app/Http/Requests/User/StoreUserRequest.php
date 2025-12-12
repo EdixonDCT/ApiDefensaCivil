@@ -4,7 +4,7 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,8 +13,8 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|max:255',
-            'password' => 'required|min:8',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/',
             'state_user_id' => 'required|exists:state_users,id',
         ];
     }
@@ -25,10 +25,12 @@ class UserRequest extends FormRequest
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico debe ser una dirección de correo válida.',
             'email.max' => 'El correo electrónico no debe exceder los 255 caracteres.',
+            'email.unique' => 'El correo electrónico ya esta registrado.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'state.required' => 'El Estado de Usuario es obligatorio.',
-            'state.exists' => 'El Estado de Usuario no existe en la base de datos.',
+            'password.regex' => 'La contraseña debe tener una mayuscula,una minuscula,un numero y un caracter especial.',
+            'state_user_id.required' => 'El Estado de Usuario es obligatorio.',
+            'state_user_id.exists' => 'El Estado de Usuario no existe en la base de datos.',
         ];
     }
     public function attributes()

@@ -4,7 +4,7 @@ namespace App\Http\Requests\StateUser;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StateUserRequest extends FormRequest
+class UpdateStateUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -12,8 +12,9 @@ class StateUserRequest extends FormRequest
     }
     public function rules(): array
     {
+        $stateUser = $this->route('state_user_id');
         return [
-            'state' => 'required|string|max:10|unique:state_users,state',
+            'state' => 'required|string|max:50|unique:state_users,state,'.$stateUser,
         ];
     }
 

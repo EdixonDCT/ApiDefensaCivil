@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
 use App\Http\Controllers\API\User\UserController;
+use App\Http\Controllers\API\Gender\GenderController;
 
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
@@ -37,8 +38,6 @@ route::prefix('stateUsers')->group(function () {
 
     route::put('/{state_user_id}', [StateUserController::class, 'update']);
 
-    route::patch('/{state_user_id}', [StateUserController::class, 'partialUpdate']);
-
     route::delete('/{state_user_id}', [StateUserController::class, 'destroy']);
 });
 
@@ -56,3 +55,16 @@ route::prefix('users')->group(function () {
     route::delete('/{user_id}', [UserController::class, 'destroy']);
 });
 
+route::prefix('genders')->group(function () {
+    route::get('/', [GenderController::class, 'index']);
+    
+    route::get('/{gender_id}', [GenderController::class, 'show']);
+    
+    route::post('/', [GenderController::class, 'store']);
+
+    route::put('/{gender_id}', [GenderController::class, 'update']);
+
+    route::patch('/{gender_id}', [GenderController::class, 'partialUpdate']);
+
+    route::delete('/{gender_id}', [GenderController::class, 'destroy']);
+});

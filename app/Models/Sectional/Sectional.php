@@ -10,7 +10,7 @@ class Sectional extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','state'];
+    protected $fillable = ['id','name'];
 
     public function profile()
     {

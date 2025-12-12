@@ -82,7 +82,7 @@ class StateUserService
         ];
     }
 
-    public function partialUpdate(array $data,$id)
+    public function delete($id)
     {
         $stateUser = StateUser::find($id);
 
@@ -93,26 +93,12 @@ class StateUserService
                 "message" => "Estado de usuario no encontrado",
             ];
         }
-
-        $stateUser->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Estado de usuario actualizado parcialmente exitosamente",
-            "data" => $stateUser,
-        ];
-    }
-
-    public function delete($id)
-    {
-        $stateUser = StateUser::find($id);
-
-        if (!$stateUser){
+        
+        if ($stateUser->user->count()) {
             return [
                 "error" => true,
-                "code" => 404,
-                "message" => "Estado de usuario no encontrado",
+                "code" => 409,
+                "message" => "No se puede eliminar el estado de usuario porque tiene registros relacionados",
             ];
         }
 

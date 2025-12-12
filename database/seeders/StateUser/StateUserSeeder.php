@@ -8,9 +8,6 @@ use App\Models\StateUser\StateUser;
 
 class stateUserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         StateUser::create([
