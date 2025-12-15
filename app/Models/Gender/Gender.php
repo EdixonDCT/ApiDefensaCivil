@@ -10,7 +10,7 @@ class Gender extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','name','state'];
+    protected $fillable = ['id','name','is_active'];
 
     public function profile()
     {

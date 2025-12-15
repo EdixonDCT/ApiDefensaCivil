@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('state_users', function (Blueprint $table) {
             $table->id();
-            $table->string('state')->unique();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

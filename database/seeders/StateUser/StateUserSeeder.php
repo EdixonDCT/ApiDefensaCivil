@@ -11,16 +11,16 @@ class stateUserSeeder extends Seeder
     public function run(): void
     {
         StateUser::create([
-            'state' => 'Activo'
+            'name' => 'Activo'
         ]);
         StateUser::create([
-            'state' => 'Inactivo'
+            'name' => 'Inactivo'
         ]);
         StateUser::create([
-            'state' => 'Peticion'
+            'name' => 'Peticion'
         ]);
         StateUser::create([
-            'state' => 'Rechazado'
+            'name' => 'Rechazado'
         ]);
     }
 }

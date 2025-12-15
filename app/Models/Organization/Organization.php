@@ -10,10 +10,14 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','name'];
+    protected $fillable = ['id','name','is_active','sectional_id'];
 
     public function profile()
     {
         return $this->hasMany(Profile::class, 'organization_id');
+    }
+    public function sectional()
+    {
+        return $this->belongsTo(Sectional::class, 'sectional_id');
     }
 }

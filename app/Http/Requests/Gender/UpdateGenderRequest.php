@@ -15,7 +15,7 @@ class UpdateGenderRequest extends FormRequest
         $gender = $this->route('gender_id');
         return [
             'name' => 'required|alpha|string|max:50|unique:genders,name,'.$gender,
-            'state' => 'required|boolean'
+            'is_active' => 'required|boolean'
         ];
     }
 
@@ -27,15 +27,15 @@ class UpdateGenderRequest extends FormRequest
             'name.string' => 'El nombre del genero debe tener solo caracteres de tipo texto.',
             'name.unique' => 'El nombre del genero ya existe.',
             'name.max' => 'El nombre del genero tiene maximo 50 caracteres.',
-            'state.required' => 'El estado del genero es obligatorio.',
-            'state.boolean' => 'El estado del genero debe tener activo o inactivo.'
+            'is_active.required' => 'El estado activo del genero es obligatorio.',
+            'is_active.boolean' => 'El estado activo del genero debe tener activo o inactivo.'
         ];
     }
     public function attributes()
     {
         return [
             'name' => 'nombre del genero',
-            'state' => 'estado del genero'
+            'is_active' => 'estado activo del genero'
     ];
     }
 }

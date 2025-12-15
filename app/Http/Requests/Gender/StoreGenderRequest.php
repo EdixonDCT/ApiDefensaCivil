@@ -23,7 +23,7 @@ class StoreGenderRequest extends FormRequest
             'name.required' => 'El nombre del genero es obligatorio.',
             'name.alpha' => 'El nombre del genero debe tener solo letras.',
             'name.string' => 'El nombre del genero debe tener solo caracteres de tipo texto.',
-            'name.unique' => 'El nombre del genero ya existe.',
+            'name.unique' => 'El genero ya existe.',
             'name.max' => 'El nombre del genero tiene maximo 50 caracteres.'
         ];
     }

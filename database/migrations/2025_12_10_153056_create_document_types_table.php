@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name',50)->unique();
             $table->string('acronym',10)->unique();
-            $table->boolean('state')->default(1);;
+            $table->boolean('is_active')->default(1);;
             $table->timestamps();
         });
     }

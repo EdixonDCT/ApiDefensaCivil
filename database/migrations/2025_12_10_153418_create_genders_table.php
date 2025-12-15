@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('genders', function (Blueprint $table) {
             $table->id();
             $table->string('name',50)->unique();
-            $table->boolean('state')->default(1);;
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
     }

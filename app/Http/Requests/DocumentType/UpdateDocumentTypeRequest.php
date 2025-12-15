@@ -16,7 +16,7 @@ class UpdateDocumentTypeRequest extends FormRequest
         return [
             'name' => 'required|alpha_spaces|string|max:50|unique:document_types,name,'.$documentType,
             'acronym' => 'required|alpha|uppercase|string|max:10|unique:document_types,acronym',
-            'state' => 'required|boolean|'
+            'is_active' => 'required|boolean|'
         ];
     }
 
@@ -34,16 +34,16 @@ class UpdateDocumentTypeRequest extends FormRequest
             'acronym.string' => 'El acronimo del tipo de documento debe tener solo caracteres de tipo texto.',
             'acronym.unique' => 'El acronimo del tipo de documento ya existe.',
             'acronym.max' => 'El acronimo del tipo de documento tiene maximo 10 caracteres.',
-            'state.required' => 'El estado del tipo de documento es obligatorio.',
-            'state.boolean' => 'El estado del tipo de documento debe tener activo o inactivo.'
+            'is_active.required' => 'El estado activo del tipo de documento es obligatorio.',
+            'is_active.boolean' => 'El estado activo del tipo de documento debe tener activo o inactivo.'
         ];
     }
     public function attributes()
     {
         return [
             'name' => 'nombre del tipo de documento',
-            'state' => 'estado del tipo de documento',
-            'acronym' => 'acronimo del tipo de documento'
+            'acronym' => 'acronimo del tipo de documento',
+            'is_active' => 'El estado activo del tipo de documento'
     ];
     }
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\API\StateUser\StateUserController;
 use App\Http\Controllers\API\User\UserController;
 use App\Http\Controllers\API\Gender\GenderController;
 use App\Http\Controllers\API\DocumentType\DocumentTypeController;
-
+use App\Http\Controllers\API\Sectional\SectionalController;
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
 // });
@@ -86,4 +86,20 @@ route::prefix('documentTypes')->group(function () {
     route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
 
     route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
+});
+
+route::prefix('sectionals')->group(function () {
+    route::get('/', [SectionalController::class, 'index']);
+    
+    route::get('/{sectional_id}', [SectionalController::class, 'show']);
+    
+    route::post('/', [SectionalController::class, 'store']);
+
+    route::put('/{sectional_id}', [SectionalController::class, 'update']);
+
+    route::patch('/{sectional_id}', [SectionalController::class, 'partialUpdate']);
+
+    route::patch('/state/{sectional_id}', [SectionalController::class, 'changeState']);
+
+    route::delete('/{sectional_id}', [SectionalController::class, 'destroy']);
 });

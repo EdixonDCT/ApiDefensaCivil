@@ -8,6 +8,7 @@ use Database\Seeders\StateUser\stateUserSeeder;
 use Database\Seeders\User\UserSeeder;
 use Database\Seeders\Gender\GenderSeeder;
 use Database\Seeders\DocumentType\DocumentTypeSeeder;
+use Database\Seeders\Sectional\SectionalSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
             stateUserSeeder::class,
             UserSeeder::class,
             GenderSeeder::class,
-            DocumentTypeSeeder::class
+            DocumentTypeSeeder::class,
+            SectionalSeeder::class
         ]);
     }
 }

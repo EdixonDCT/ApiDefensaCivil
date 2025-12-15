@@ -10,7 +10,7 @@ class DocumentType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','name','acronym','state'];
+    protected $fillable = ['id','name','acronym','is_active'];
 
     public function profile()
     {

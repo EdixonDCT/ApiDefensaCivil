@@ -13,32 +13,26 @@ class DocumentTypeSeeder extends Seeder
         DocumentType::create([
             'name' => 'Registro Civil',
             'acronym' => 'RC',
-            'state' => 1
         ]);
         DocumentType::create([
             'name' => 'Tarjeta de Identidad',
             'acronym' => 'TI',
-            'state' => 1
         ]);
         DocumentType::create([
             'name' => 'Cédula de Ciudadanía',
             'acronym' => 'CC',
-            'state' => 1
         ]);
         DocumentType::create([
             'name' => 'Cédula de Extranjería',
             'acronym' => 'CE',
-            'state' => 1
         ]);
         DocumentType::create([
             'name' => 'Pasaporte',
             'acronym' => 'PP',
-            'state' => 1
         ]);
         DocumentType::create([
             'name' => 'Permiso Especial de Permanencia  ',
             'acronym' => 'PEP',
-            'state' => 1
         ]);
     }
 }

@@ -13,24 +13,24 @@ class StoreStateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'state' => 'required|alpha|string|max:50|unique:state_users,state',
+            'name' => 'required|alpha|string|max:50|unique:state_users,name',
         ];
     }
 
     public function messages()
     {
         return [
-            'state.required' => 'El Estado de Usuario es obligatorio.',
-            'state.alpha' => 'El Estado de Usuario debe tener solo letras.',
-            'state.string' => 'El Estado de Usuario debe tener solo caracteres de tipo texto.',
-            'state.unique' => 'El Estado de Usuario ya existe.',
-            'state.max' => 'El Estado de Usuario tiene maximo 50 caracteres.'
+            'name.required' => 'El nombre del estado de usuario es obligatorio.',
+            'name.alpha' => 'El nombre del estado de usuario debe tener solo letras.',
+            'name.string' => 'El nombre del estado de usuario debe tener solo caracteres de tipo texto.',
+            'name.unique' => 'El nombre del estado de usuario ya existe.',
+            'name.max' => 'El nombre del estado de usuario tiene maximo 50 caracteres.'
         ];
     }
     public function attributes()
     {
         return [
-            'state' => 'estado',
+            'name' => 'nombre del estado de usuario',
     ];
     }
 }

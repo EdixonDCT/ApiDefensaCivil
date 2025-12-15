@@ -4,16 +4,16 @@ namespace App\Models\Sectional;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Profile\Profile;
+use App\Models\Organization\Organization;
 
 class Sectional extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','name'];
+    protected $fillable = ['id','name','is_active'];
 
-    public function profile()
+    public function organization()
     {
-        return $this->hasMany(Profile::class, 'sectional_id');
+        return $this->hasMany(Organization::class, 'sectional_id');
     }
 }

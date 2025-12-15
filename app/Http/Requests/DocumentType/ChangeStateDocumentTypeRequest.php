@@ -11,24 +11,23 @@ class ChangeStateDocumentTypeRequest extends FormRequest
         return true;
     }
     public function rules(): array
-    {
-        $documentType = $this->route('documentType_id');
+    {   
         return [
-            'state' => 'required|boolean|'
+            'is_active' => 'required|boolean|'
         ];
     }
 
     public function messages()
     {
         return [
-            'state.required' => 'El estado del tipo de documento es obligatorio.',
-            'state.boolean' => 'El estado del tipo de documento debe tener activo o inactivo.'
+            'is_active.required' => 'El estado activo del tipo de documento es obligatorio.',
+            'is_active.boolean' => 'El estado activo del tipo de documento debe tener activo o inactivo.'
         ];
     }
     public function attributes()
     {
         return [
-            'state' => 'estado del tipo de documento'
+            'is_active' => 'El estado activo del tipo de documento'
     ];
     }
 }
