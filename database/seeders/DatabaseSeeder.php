@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\StateUser\stateUserSeeder;
 use Database\Seeders\User\UserSeeder;
 use Database\Seeders\Gender\GenderSeeder;
+use Database\Seeders\DocumentType\DocumentTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,7 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             stateUserSeeder::class,
             UserSeeder::class,
-            GenderSeeder::class
+            GenderSeeder::class,
+            DocumentTypeSeeder::class
         ]);
     }
 }

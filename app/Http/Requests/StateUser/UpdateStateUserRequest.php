@@ -14,7 +14,7 @@ class UpdateStateUserRequest extends FormRequest
     {
         $stateUser = $this->route('state_user_id');
         return [
-            'state' => 'required|string|max:50|unique:state_users,state,'.$stateUser,
+            'state' => 'required|alpha|string|max:50|unique:state_users,state,'.$stateUser,
         ];
     }
 
@@ -22,6 +22,7 @@ class UpdateStateUserRequest extends FormRequest
     {
         return [
             'state.required' => 'El Estado de Usuario es obligatorio.',
+            'state.alpha' => 'El Estado de Usuario debe tener solo letras.',
             'state.string' => 'El Estado de Usuario debe tener solo caracteres de tipo texto.',
             'state.unique' => 'El Estado de Usuario ya existe.',
             'state.max' => 'El Estado de Usuario tiene maximo 10 caracteres.'

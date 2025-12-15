@@ -72,7 +72,7 @@ route::prefix('genders')->group(function () {
     route::delete('/{gender_id}', [GenderController::class, 'destroy']);
 });
 
-route::prefix('DocumentType')->group(function () {
+route::prefix('documentTypes')->group(function () {
     route::get('/', [DocumentTypeController::class, 'index']);
     
     route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);

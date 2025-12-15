@@ -15,7 +15,7 @@ class PartialUpdateUserRequest extends FormRequest
         $User = $this->route('user_id');
         return [
             'email' => 'sometimes|email|max:255|unique:users,email,'.$User,
-            'password' => 'sometimes|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/',
+            'password' => 'sometimes|min:8|password_security',
             'state_user_id' => 'sometimes|exists:state_users,id',
         ];
     }
@@ -29,7 +29,7 @@ class PartialUpdateUserRequest extends FormRequest
             'email.unique' => 'El correo electrónico ya esta registrado.',
             'password.sometimes' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.regex' => 'La contraseña debe tener una mayuscula,una minuscula,un numero y un caracter especial.',
+            'password.password_security' => 'La contraseña debe tener una mayuscula,una minuscula,un numero y un caracter especial.',
             'state_user_id.sometimes' => 'El Estado de Usuario es obligatorio.',
             'state_user_id.exists' => 'El Estado de Usuario no existe en la base de datos.',
         ];
