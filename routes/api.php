@@ -7,6 +7,8 @@ use App\Http\Controllers\API\User\UserController;
 use App\Http\Controllers\API\Gender\GenderController;
 use App\Http\Controllers\API\DocumentType\DocumentTypeController;
 use App\Http\Controllers\API\Sectional\SectionalController;
+use App\Http\Controllers\API\Organization\OrganizationController;
+
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
 // });
@@ -102,4 +104,20 @@ route::prefix('sectionals')->group(function () {
     route::patch('/state/{sectional_id}', [SectionalController::class, 'changeState']);
 
     route::delete('/{sectional_id}', [SectionalController::class, 'destroy']);
+});
+
+route::prefix('organizations')->group(function () {
+    route::get('/', [OrganizationController::class, 'index']);
+    
+    route::get('/{organization_id}', [OrganizationController::class, 'show']);
+    
+    route::post('/', [OrganizationController::class, 'store']);
+
+    route::put('/{organization_id}', [OrganizationController::class, 'update']);
+
+    route::patch('/{organization_id}', [OrganizationController::class, 'partialUpdate']);
+
+    route::patch('/state/{organization_id}', [OrganizationController::class, 'changeState']);
+
+    route::delete('/{organization_id}', [OrganizationController::class, 'destroy']);
 });
