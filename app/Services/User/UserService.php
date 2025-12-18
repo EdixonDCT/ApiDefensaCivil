@@ -116,6 +116,14 @@ public static function getAll()
             ];
         }
 
+        if ($user->profile->count()) {
+        return [
+            "error" => true,
+            "code" => 409,
+            "message" => "No se puede eliminar el usuario porque tiene un perfil relacionado",
+            ];
+        }
+
         $user->delete();
 
         return [

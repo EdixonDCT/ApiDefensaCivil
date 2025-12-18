@@ -8,6 +8,7 @@ use App\Http\Controllers\API\Gender\GenderController;
 use App\Http\Controllers\API\DocumentType\DocumentTypeController;
 use App\Http\Controllers\API\Sectional\SectionalController;
 use App\Http\Controllers\API\Organization\OrganizationController;
+use App\Http\Controllers\API\Profile\ProfileController;
 
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
@@ -120,4 +121,18 @@ route::prefix('organizations')->group(function () {
     route::patch('/state/{organization_id}', [OrganizationController::class, 'changeState']);
 
     route::delete('/{organization_id}', [OrganizationController::class, 'destroy']);
+});
+
+route::prefix('profiles')->group(function () {
+    route::get('/', [ProfileController::class, 'index']);
+    
+    route::get('/{profile_id}', [ProfileController::class, 'show']);
+    
+    route::post('/', [ProfileController::class, 'store']);
+
+    route::put('/{profile_id}', [ProfileController::class, 'update']);
+
+    route::patch('/{profile_id}', [ProfileController::class, 'partialUpdate']);
+
+    route::delete('/{profile_id}', [ProfileController::class, 'destroy']);
 });
