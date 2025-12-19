@@ -10,6 +10,7 @@ use Database\Seeders\Gender\GenderSeeder;
 use Database\Seeders\DocumentType\DocumentTypeSeeder;
 use Database\Seeders\Sectional\SectionalSeeder;
 use Database\Seeders\Organization\OrganizationSeeder;
+use Database\Seeders\Profile\ProfileSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder
             DocumentTypeSeeder::class,
             SectionalSeeder::class,
             OrganizationSeeder::class,
+            ProfileSeeder::class,
         ]);
     }
 }

@@ -14,7 +14,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/',
+            'password' => 'required|min:8|password_security',
             'state_user_id' => 'required|exists:state_users,id',
         ];
     }
@@ -28,7 +28,7 @@ class StoreUserRequest extends FormRequest
             'email.unique' => 'El correo electrónico ya esta registrado.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.regex' => 'La contraseña debe tener una mayuscula,una minuscula,un numero y un caracter especial.',
+            'password.password_security' => 'La contraseña debe tener una mayuscula,una minuscula,un numero y un caracter especial.',
             'state_user_id.required' => 'El Estado de Usuario es obligatorio.',
             'state_user_id.exists' => 'El Estado de Usuario no existe en la base de datos.',
         ];

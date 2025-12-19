@@ -20,7 +20,7 @@ public function authorize(): bool
             'document_type_id' => 'required|exists:document_types,id',
             'document_number' => 'required|numeric|max_digits:20',
             'gender_id' => 'required|exists:genders,id',
-            'organization_id' => 'required|exists:organizations,id' 
+            'organization_id' => 'required|exists:organizations,id'
         ];
     }
 

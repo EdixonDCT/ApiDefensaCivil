@@ -9,6 +9,10 @@ use App\Http\Controllers\API\DocumentType\DocumentTypeController;
 use App\Http\Controllers\API\Sectional\SectionalController;
 use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Profile\ProfileController;
+use App\Http\Controllers\API\Auth\AuthenticationController;
+
+Route::post('/register', [AuthenticationController::class, 'register']);
+Route::post('/login', [AuthenticationController::class, 'login']);
 
 // Route::post('/prueba', function (Request $request) {
 //     return StateUser::create($request->all());
