@@ -17,18 +17,18 @@ class Profile extends Model
     
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
     public function documentType()
     {
-        return $this->belongsTo(DocumentType::class);
+        return $this->belongsTo(DocumentType::class,'document_type_id');
     }
     public function gender()
     {
-        return $this->belongsTo(Gender::class);
+        return $this->belongsTo(Gender::class,'gender_id');
     }
     public function organization()
     {
-        return $this->belongsTo(Organization::class);
+        return $this->belongsTo(Organization::class,'organization_id');
     }
 }
