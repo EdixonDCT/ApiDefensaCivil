@@ -96,7 +96,11 @@ class AuthService
         }
         
         if (!Auth::attempt($credentials)) {
-            return null;
+            return [
+                "error" => true,
+                "code" => 403,
+                'message' => 'Credenciales incorrectas'
+            ];
         }
 
         $profile = $user->profile;
@@ -134,13 +138,17 @@ class AuthService
         );
 
         return [
+        "error" => false,
+        "code" => 200,
+        "message" => "Logueo exitoso",
+        "data" => [
             'id' => $user->id,
             'full_name' => "$profile->names $profile->last_names",
             // 'role_id' => $roleUser->id,
             // 'permissions' => $permissions->pluck('name'),
             'cookieToken' => $cookieToken,
             'cookieRefreshToken' => $cookieRefreshToken,
-            'token' => $accessToken,
+            'token' => $accessToken,]
         ];
     }
 

@@ -39,24 +39,19 @@ class AuthenticationController extends Controller
 
         $result = $this->authService->login($credentials);
 
-        if(!$result)
-            return response()->json([
-                'success' => false,
-                'message' => 'Credenciales incorrectas'
-            ], 401);
+        if ($result['error'])
         
-        return response()->json([
-            'success' => true,
-            'message' => 'Inicio de sesión exitoso',
-            'data' => [
-                'id' => $result['id'],
-                'full_name' => $result['full_name'],
-                // 'role_id'=> $result['role_id'],
-                // 'permissions' => $result['permissions'],
-                'token' => $result['token'],
-            ]
-        ])->cookie($result['cookieToken'])
-          ->cookie($result['cookieRefreshToken']);
+        return ResponseFormatter::error($result['message'], $result['code']);
+
+        $cookieToken = $result['data']['cookieToken'];
+        $cookieRefresh = $result['data']['cookieRefreshToken'];
+
+        return ResponseFormatter::success(
+        $result['message'], 
+        $result['code'],
+        array_diff_key($result['data'], array_flip(['cookieToken', 'cookieRefreshToken',]))
+        )->cookie($cookieToken)
+        ->cookie($cookieRefresh);
     }
 
     public function refreshToken (Request $request) 
@@ -72,7 +67,7 @@ class AuthenticationController extends Controller
             'message' => 'Token refrescado exitosamente',
             'data' => []
         ])->withCookie($result['cookieToken'])
-->withCookie($result['cookieRefreshToken']);
+    ->withCookie($result['cookieRefreshToken']);
     }
 
     public function logOut(Request $request)
