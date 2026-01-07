@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('last_names',50);
             $table->date('birth_date');
             $table->foreignId('document_type_id')->constrained();
-            $table->string('document_number',20)->unique();
+            $table->string('document_number',20);
+            $table->string('phone',10)->unique();
             $table->foreignId('gender_id')->constrained();
             $table->foreignId('organization_id')->constrained();
             $table->timestamps();

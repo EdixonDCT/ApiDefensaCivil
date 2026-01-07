@@ -3,6 +3,7 @@
 namespace App\Services\Organization;
 
 use App\Models\Organization\Organization;
+use App\Models\Sectional\Sectional;
 use Illuminate\support\Arr;
 
 class OrganizationService
@@ -152,6 +153,37 @@ public static function getAll()
             "error" => false,
             "code" => 200,
             "message" => "Organizacion eliminado exitosamente",
+        ];
+    }
+    public static function getAllForSectional($id)
+    {
+        $sectional = Sectional::find($id);
+
+        if (!$sectional){
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No existe esta seccional",
+                "data" => $sectional,
+            ];
+        }
+        
+        $organization = $sectional->organization;
+
+        if (!$organization){
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "No existen organizacion relacionadas a la seccional",
+            "data" => $organization,
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "organizaciones obtenidos exitosamente",
+            "data" => $organization,
         ];
     }
 }

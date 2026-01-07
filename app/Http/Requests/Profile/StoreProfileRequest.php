@@ -18,7 +18,8 @@ public function authorize(): bool
             'last_names' => 'required|alpha_spaces|string|max:50',
             'birth_date' => 'required|date_format:Y-m-d|before:18 years ago',
             'document_type_id' => 'required|exists:document_types,id',
-            'document_number' => 'required|numeric|max_digits:20',
+            'document_number' => 'required|numeric|max_digits:20|unique_document_by_type',
+            'phone' => 'required|numeric|max_digits:15|unique:profiles,phone',
             'gender_id' => 'required|exists:genders,id',
             'organization_id' => 'required|exists:organizations,id'
         ];
@@ -46,6 +47,11 @@ public function authorize(): bool
             'document_number.required' => 'El numero del documento es obligatorio.',
             'document_number.numeric' => 'El numero del documento debe tener caracteres numericos.',
             'document_number.max_digits ' => 'El numero de documento tiene un maximo de 20 caracteres.',
+            'document_number.unique_document_by_type' => 'Este número de documento ya existe para ese tipo de documento.',
+            'phone.required'   => 'El número de teléfono es obligatorio.',
+            'phone.numeric'    => 'El número de teléfono solo debe contener números.',
+            'phone.max_digits' => 'El número de teléfono tiene un máximo de 15 dígitos.',
+            'phone.unique'     => 'Este número de teléfono ya está registrado.',
             'gender_id.required' => 'El genero es obligatorio.',
             'gender_id.exists' => 'El genero debe existir.',
             'organization_id.required' => 'La organizacion es obligatorio.',
@@ -61,6 +67,7 @@ public function authorize(): bool
             'birth_date' => 'fecha de nacimiento',
             'document_type_id' => 'tipo de documento',
             'document_number' => 'número de documento',
+            'phone' => 'número de telefono',
             'gender_id' => 'género',
             'organization_id' => 'organización',
     ];

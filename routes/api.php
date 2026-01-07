@@ -113,9 +113,11 @@ route::prefix('sectionals')->group(function () {
 
 route::prefix('organizations')->group(function () {
     route::get('/', [OrganizationController::class, 'index']);
-    
+        
     route::get('/{organization_id}', [OrganizationController::class, 'show']);
     
+    route::get('/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
+
     route::post('/', [OrganizationController::class, 'store']);
 
     route::put('/{organization_id}', [OrganizationController::class, 'update']);
