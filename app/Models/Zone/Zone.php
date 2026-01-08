@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\FamilyPlan\FamilyPlan;
 
-class Profile extends Model
+class Zone extends Model
 {
     use HasFactory;
 

@@ -11,6 +11,8 @@ use Database\Seeders\DocumentType\DocumentTypeSeeder;
 use Database\Seeders\Sectional\SectionalSeeder;
 use Database\Seeders\Organization\OrganizationSeeder;
 use Database\Seeders\Profile\ProfileSeeder;
+use Database\Seeders\Zone\ZoneSeeder;
+use Database\Seeders\HousingQuality\HousingQualitySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,6 +28,8 @@ class DatabaseSeeder extends Seeder
             SectionalSeeder::class,
             OrganizationSeeder::class,
             ProfileSeeder::class,
+            ZoneSeeder::class,
+            HousingQualitySeeder::class
         ]);
     }
 }

@@ -10,6 +10,8 @@ use App\Http\Controllers\API\Sectional\SectionalController;
 use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Profile\ProfileController;
 use App\Http\Controllers\API\Auth\AuthenticationController;
+use App\Http\Controllers\API\Zone\ZoneController;
+use App\Http\Controllers\API\HousingQuality\HousingQualityController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -141,4 +143,32 @@ route::prefix('profiles')->group(function () {
     route::patch('/{profile_id}', [ProfileController::class, 'partialUpdate']);
 
     route::delete('/{profile_id}', [ProfileController::class, 'destroy']);
+});
+
+route::prefix('zones')->group(function () {
+    route::get('/', [ZoneController::class, 'index']);
+    
+    route::get('/{zone_id}', [ZoneController::class, 'show']);
+    
+    route::post('/', [ZoneController::class, 'store']);
+
+    route::put('/{zone_id}', [ZoneController::class, 'update']);
+
+    route::delete('/{zone_id}', [ZoneController::class, 'destroy']);
+});
+
+route::prefix('housingQualities')->group(function () {
+    route::get('/', [HousingQualityController::class, 'index']);
+    
+    route::get('/{housingQuality_id}', [HousingQualityController::class, 'show']);
+    
+    route::post('/', [HousingQualityController::class, 'store']);
+
+    route::put('/{housingQuality_id}', [HousingQualityController::class, 'update']);
+
+    route::delete('/{housingQuality_id}', [HousingQualityController::class, 'destroy']);
+    
+    route::patch('/{housingQuality_id}', [HousingQualityController::class, 'partialUpdate']);
+
+    route::patch('/state/{housingQuality_id}', [HousingQualityController::class, 'changeState']);
 });
