@@ -13,6 +13,7 @@ use Database\Seeders\Organization\OrganizationSeeder;
 use Database\Seeders\Profile\ProfileSeeder;
 use Database\Seeders\Zone\ZoneSeeder;
 use Database\Seeders\HousingQuality\HousingQualitySeeder;
+use Database\Seeders\Sector\SectorSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,7 +30,8 @@ class DatabaseSeeder extends Seeder
             OrganizationSeeder::class,
             ProfileSeeder::class,
             ZoneSeeder::class,
-            HousingQualitySeeder::class
+            HousingQualitySeeder::class,
+            SectorSeeder::class
         ]);
     }
 }

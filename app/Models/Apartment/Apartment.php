@@ -12,7 +12,7 @@ class Apartment extends Model
 
     protected $fillable = ['id','name'];
 
-    public function familyPlan()
+    public function city()
     {
         return $this->hasMany(City::class, 'apartment_id');
     }

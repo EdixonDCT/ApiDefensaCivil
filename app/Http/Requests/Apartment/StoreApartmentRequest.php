@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Requests\Apartment;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreApartmentRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|alpha|string|max:50|unique:apartments,name',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre del apartamento es obligatorio.',
+            'name.alpha' => 'El nombre del apartamento debe tener solo letras.',
+            'name.string' => 'El nombre del apartamento debe tener solo caracteres de tipo texto.',
+            'name.unique' => 'El apartamento ya existe.',
+            'name.max' => 'El nombre del apartamento tiene maximo 50 caracteres.'
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'name' => 'nombre del apartamento',
+    ];
+    }
+}
