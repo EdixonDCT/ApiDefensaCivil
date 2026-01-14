@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\API\StatusPlan;
+namespace App\Http\Controllers\API\City;
 
 use App\Helpers\ResponseFormatter;
-use App\Http\Requests\StatusPlan\StoreStatusPlanRequest;
-use App\Http\Requests\StatusPlan\UpdateStatusPlanRequest;
-use App\Http\Requests\StatusPlan\PartialUpdateStatusPlanRequest;
-use App\Http\Requests\StatusPlan\ChangeStateStatusPlanRequest;
+use App\Http\Requests\City\StoreCityRequest;
+use App\Http\Requests\City\UpdateCityRequest;
+use App\Http\Requests\City\PartialUpdateCityRequest;
+use App\Http\Requests\City\ChangeStateCityRequest;
 use App\Http\Controllers\Controller;
-use App\Services\StatusPlan\StatusPlanService;
+use App\Services\City\CityService;
 
-class StatusPlanController extends Controller
+class CityController extends Controller
 {
     protected $service;
 
-    public function __construct(StatusPlanService $service)
+    public function __construct(CityService $service)
     {
         $this->service = $service;
     }
@@ -41,7 +41,7 @@ class StatusPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function store(StoreStatusPlanRequest $request)
+    public function store(StoreCityRequest $request)
     {
     $data = $request->validated();
 
@@ -55,7 +55,7 @@ class StatusPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function update(UpdateStatusPlanRequest $request, string $id)
+    public function update(UpdateCityRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -69,7 +69,7 @@ class StatusPlanController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function partialUpdate(PartialUpdateDtatusPlanRequest $request, string $id)
+    public function partialUpdate(PartialUpdateCityRequest $request, string $id)
     {
     $data = $request->validated();
 
@@ -83,7 +83,7 @@ class StatusPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    public function ChangeState(ChangeStateStateStatusRequest $request, string $id)
+    public function ChangeState(ChangeStateCityRequest $request, string $id)
     {
     $data = $request->validated();
 
@@ -107,5 +107,15 @@ class StatusPlanController extends Controller
         }
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+    
+    public function getApartment(string $id)
+    {
+    $response = $this->service->getAllForApartments($id);
+
+    if ($response['error'])
+        return ResponseFormatter::error($response['message'], $response['code']);
+
+    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 }

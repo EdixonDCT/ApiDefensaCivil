@@ -17,6 +17,8 @@ class FamilyPlan extends Model
 
     protected $fillable = ['id','name','last_names','zone_id','address','landline_phone','georeference','city_id'.'housing_quality_id','sector_id','sector_name','status_plan_id','sectionals_id','authorization'];
 
+     protected $attributes = ['status_plan_id' => 4,];
+
     public function zone()
     {
         return $this->belongsTo(Zone::class,'zone_id');

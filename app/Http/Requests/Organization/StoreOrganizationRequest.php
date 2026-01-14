@@ -26,7 +26,7 @@ class StoreOrganizationRequest extends FormRequest
             'name.max' => 'El nombre de la seccional tiene maximo 50 caracteres.',
             'name.unique' => 'La seccional ya existe.',
             'sectional_id.required' => 'ID de la seleccional es obligatorio.',
-            'sectional_id.exists' => 'ID de la seleccional no existe en la base de datos.',
+            'sectional_id.exists' => 'ID de la seleccional no existe.',
         ];
     }
     public function attributes()

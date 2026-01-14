@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
             return preg_match('/^[\pL\s]+$/u', $value);
         });
 
+        Validator::extend('alpha_num_spaces', function ($attribute, $value) {
+            return preg_match('/^[\pL\d\s]+$/u', $value);
+        });
         Validator::extend('password_security', function ($attribute, $value) {
             return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/', $value);
         });

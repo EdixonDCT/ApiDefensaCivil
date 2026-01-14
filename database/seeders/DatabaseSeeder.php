@@ -14,6 +14,9 @@ use Database\Seeders\Profile\ProfileSeeder;
 use Database\Seeders\Zone\ZoneSeeder;
 use Database\Seeders\HousingQuality\HousingQualitySeeder;
 use Database\Seeders\Sector\SectorSeeder;
+use Database\Seeders\StatusPlan\StatusPlanSeeder;
+use Database\Seeders\Apartment\ApartmentSeeder;
+use Database\Seeders\City\CitySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,7 +34,10 @@ class DatabaseSeeder extends Seeder
             ProfileSeeder::class,
             ZoneSeeder::class,
             HousingQualitySeeder::class,
-            SectorSeeder::class
+            SectorSeeder::class,
+            StatusPlanSeeder::class,
+            ApartmentSeeder::class,
+            CitySeeder::class
         ]);
     }
 }

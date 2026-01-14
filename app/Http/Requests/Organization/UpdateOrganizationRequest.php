@@ -28,7 +28,7 @@ class UpdateOrganizationRequest extends FormRequest
             'name.max' => 'El nombre de la organizacion tiene maximo 50 caracteres.',
             'name.unique' => 'La organizacion ya existe.',
             'sectional_id.required' => 'ID de la seccional es obligatorio.',
-            'sectional_id.exists' => 'ID de la seccional no existe en la base de datos.',
+            'sectional_id.exists' => 'ID de la seccional no existe.',
             'is_active.required' => 'El estado activo de la organizacion es obligatorio.',
             'is_active.boolean' => 'El estado activo de la organizacion debe tener activo o inactivo.'
         ];

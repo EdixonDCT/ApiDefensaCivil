@@ -13,7 +13,7 @@ class StoreApartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|alpha|string|max:50|unique:apartments,name',
+            'name' => 'required|alpha_spaces|string|max:50|unique:apartments,name',
         ];
     }
 
@@ -21,7 +21,7 @@ class StoreApartmentRequest extends FormRequest
     {
         return [
             'name.required' => 'El nombre del apartamento es obligatorio.',
-            'name.alpha' => 'El nombre del apartamento debe tener solo letras.',
+            'name.alpha_spaces' => 'El nombre del apartamento debe tener solo letras y espacios.',
             'name.string' => 'El nombre del apartamento debe tener solo caracteres de tipo texto.',
             'name.unique' => 'El apartamento ya existe.',
             'name.max' => 'El nombre del apartamento tiene maximo 50 caracteres.'

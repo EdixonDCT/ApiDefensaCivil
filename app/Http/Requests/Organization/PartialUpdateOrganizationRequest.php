@@ -26,7 +26,7 @@ class PartialUpdateOrganizationRequest extends FormRequest
             'name.string' => 'El nombre de la organizacion debe tener solo caracteres de tipo texto.',
             'name.max' => 'El nombre de la organizacion tiene maximo 50 caracteres.',
             'name.unique' => 'La organizacion ya existe.',
-            'sectional_id.exists' => 'ID de la seccional no existe en la base de datos.',
+            'sectional_id.exists' => 'ID de la seccional no existe.',
             'is_active.boolean' => 'El estado activo de la organizacion debe tener activo o inactivo.'
         ];
     }

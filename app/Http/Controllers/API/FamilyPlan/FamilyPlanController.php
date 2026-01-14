@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\API\StatusPlan;
+namespace App\Http\Controllers\API\FamilyPlan;
 
 use App\Helpers\ResponseFormatter;
-use App\Http\Requests\StatusPlan\StoreStatusPlanRequest;
-use App\Http\Requests\StatusPlan\UpdateStatusPlanRequest;
-use App\Http\Requests\StatusPlan\PartialUpdateStatusPlanRequest;
-use App\Http\Requests\StatusPlan\ChangeStateStatusPlanRequest;
+use App\Http\Requests\FamilyPlan\StoreFamilyPlanRequest;
+use App\Http\Requests\FamilyPlan\UpdateFamilyPlanRequest;
+use App\Http\Requests\FamilyPlan\PartialUpdateFamilyPlanRequest;
+use App\Http\Requests\FamilyPlan\ChangeStateFamilyPlanRequest;
+use App\Http\Requests\FamilyPlan\GeoreFamilyPlanRequest;
 use App\Http\Controllers\Controller;
-use App\Services\StatusPlan\StatusPlanService;
+use App\Services\FamilyPlan\FamilyPlanService;
 
-class StatusPlanController extends Controller
+class FamilyPlanController extends Controller
 {
     protected $service;
 
-    public function __construct(StatusPlanService $service)
+    public function __construct(FamilyPlanService $service)
     {
         $this->service = $service;
     }
@@ -41,7 +42,7 @@ class StatusPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function store(StoreStatusPlanRequest $request)
+    public function store(StoreFamilyPlanRequest $request)
     {
     $data = $request->validated();
 
@@ -55,7 +56,7 @@ class StatusPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function update(UpdateStatusPlanRequest $request, string $id)
+    public function update(UpdateFamilyPlanRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -69,7 +70,7 @@ class StatusPlanController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function partialUpdate(PartialUpdateDtatusPlanRequest $request, string $id)
+    public function partialUpdate(PartialUpdateFamilyPlanRequest $request, string $id)
     {
     $data = $request->validated();
 
@@ -83,11 +84,25 @@ class StatusPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    public function ChangeState(ChangeStateStateStatusRequest $request, string $id)
+    public function ChangeState(ChangeStateFamilyPlanRequest $request, string $id)
     {
     $data = $request->validated();
 
     $response = $this->service->changeState($data, $id);
+
+    if ($response['error'])
+    {
+        return ResponseFormatter::error($response['message'], $response['code']);
+    }
+
+    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
+    public function Georeferencing(GeoreFamilyPlanRequest $request, string $id)
+    {
+    $data = $request->validated();
+
+    $response = $this->service->georeferencing($data, $id);
 
     if ($response['error'])
     {

@@ -5,6 +5,7 @@ namespace App\Models\City;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Apartment\Apartment;
+use App\Models\FamilyPlan\FamilyPlan;
 
 class City extends Model
 {

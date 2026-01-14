@@ -13,7 +13,10 @@ use App\Http\Controllers\API\Auth\AuthenticationController;
 use App\Http\Controllers\API\Zone\ZoneController;
 use App\Http\Controllers\API\HousingQuality\HousingQualityController;
 use App\Http\Controllers\API\Sector\SectorController;
+use App\Http\Controllers\API\StatusPlan\StatusPlanController;
 use App\Http\Controllers\API\Apartment\ApartmentController;
+use App\Http\Controllers\API\City\CityController;
+use App\Http\Controllers\API\FamilyPlan\FamilyPlanController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -191,6 +194,18 @@ route::prefix('sectors')->group(function () {
     route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
 });
 
+route::prefix('statusPlans')->group(function () {
+    route::get('/', [StatusPlanController::class, 'index']);
+    
+    route::get('/{statusPlan_id}', [StatusPlanController::class, 'show']);
+    
+    route::post('/', [StatusPlanController::class, 'store']);
+
+    route::put('/{statusPlan_id}', [StatusPlanController::class, 'update']);
+
+    route::delete('/{statusPlan_id}', [StatusPlanController::class, 'destroy']);
+});
+
 route::prefix('apartments')->group(function () {
     route::get('/', [ApartmentController::class, 'index']);
     
@@ -205,4 +220,40 @@ route::prefix('apartments')->group(function () {
     route::patch('/{apartment_id}', [ApartmentController::class, 'partialUpdate']);
 
     route::patch('/state/{apartment_id}', [ApartmentController::class, 'changeState']);
+});
+
+route::prefix('cities')->group(function () {
+    route::get('/', [CityController::class, 'index']);
+        
+    route::get('/{city_id}', [CityController::class, 'show']);
+    
+    route::get('/apartment/{city_id}', [CityController::class, 'getApartment']);
+
+    route::post('/', [CityController::class, 'store']);
+
+    route::put('/{city_id}', [CityController::class, 'update']);
+
+    route::patch('/{city_id}', [CityController::class, 'partialUpdate']);
+
+    route::patch('/state/{city_id}', [CityController::class, 'changeState']);
+
+    route::delete('/{city_id}', [CityController::class, 'destroy']);
+});
+
+route::prefix('familyPlans')->group(function () {
+    route::get('/', [FamilyPlanController::class, 'index']);
+        
+    route::get('/{familyPlan_id}', [FamilyPlanController::class, 'show']);
+
+    route::post('/', [FamilyPlanController::class, 'store']);
+
+    route::put('/{familyPlan_id}', [FamilyPlanController::class, 'update']);
+
+    route::patch('/{familyPlan_id}', [FamilyPlanController::class, 'partialUpdate']);
+
+    route::patch('/state/{familyPlan_id}', [FamilyPlanController::class, 'changeState']);
+
+    route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'Georeferencing']);
+
+    route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
 });

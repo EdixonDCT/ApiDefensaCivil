@@ -56,7 +56,7 @@ class StatusPlanService
             "error" => false,
             "code" => 201,
             "message" => "Estado de plan creado exitosamente",
-            "data" => $gender,
+            "data" => $statusPlan,
         ];
     }
 
@@ -82,50 +82,6 @@ class StatusPlanService
         ];
     }
 
-    public function partialUpdate(array $data,$id)
-    {
-        $statusPlan = StatusPlan::find($id);
-
-        if (!$statusPlan){
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Estado de plan no encontrado",
-            ];
-        }
-
-        $statusPlan->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Estado de plan actualizado parcialmente exitosamente",
-            "data" => $statusPlan,
-        ];
-    }
-
-    public function changeState(array $data,$id)
-    {
-        $statusPlan = StatusPlan::find($id);
-
-        if (!$statusPlan){
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Estado de plan no encontrado",
-            ];
-        }
-
-        $statusPlan->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Cambio de estado activo de estado de plan actualizado correctamente",
-            "data" => $gender,
-        ];
-    }
-
     public function delete($id)
     {
         $statusPlan = StatusPlan::find($id);
@@ -146,7 +102,7 @@ class StatusPlanService
             ];
         }
 
-        $gender->delete();
+        $statusPlan->delete();
 
         return [
             "error" => false,
