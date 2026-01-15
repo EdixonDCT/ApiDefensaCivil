@@ -8,6 +8,7 @@ use App\Http\Requests\FamilyPlan\UpdateFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\PartialUpdateFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\ChangeStateFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\GeoreFamilyPlanRequest;
+use App\Http\Requests\FamilyPlan\IdentifyFamilyPlanRequest;
 use App\Http\Controllers\Controller;
 use App\Services\FamilyPlan\FamilyPlanService;
 
@@ -84,7 +85,7 @@ class FamilyPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    public function ChangeState(ChangeStateFamilyPlanRequest $request, string $id)
+    public function changeState(ChangeStateFamilyPlanRequest $request, string $id)
     {
     $data = $request->validated();
 
@@ -98,11 +99,25 @@ class FamilyPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    public function Georeferencing(GeoreFamilyPlanRequest $request, string $id)
+    public function georeferencing(GeoreFamilyPlanRequest $request, string $id)
     {
     $data = $request->validated();
 
     $response = $this->service->georeferencing($data, $id);
+
+    if ($response['error'])
+    {
+        return ResponseFormatter::error($response['message'], $response['code']);
+    }
+
+    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
+    public function identify(IdentifyFamilyPlanRequest $request, string $id)
+    {
+    $data = $request->validated();
+
+    $response = $this->service->identify($data, $id);
 
     if ($response['error'])
     {

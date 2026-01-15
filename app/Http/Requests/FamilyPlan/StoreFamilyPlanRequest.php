@@ -4,7 +4,7 @@ namespace App\Http\Requests\FamilyPlan;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreGenderRequest extends FormRequest
+class StoreFamilyPlanRequest extends FormRequest
 {
     public function authorize(): bool
     {

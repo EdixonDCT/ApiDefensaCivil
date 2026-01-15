@@ -251,9 +251,11 @@ route::prefix('familyPlans')->group(function () {
 
     route::patch('/{familyPlan_id}', [FamilyPlanController::class, 'partialUpdate']);
 
+    route::patch('/identify/{familyPlan_id}', [FamilyPlanController::class, 'identify']);
+
     route::patch('/state/{familyPlan_id}', [FamilyPlanController::class, 'changeState']);
 
-    route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'Georeferencing']);
+    route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
 
     route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
 });

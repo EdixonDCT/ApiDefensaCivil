@@ -148,6 +148,28 @@ public static function getAll()
         ];
     }
 
+    public function identify(array $data,$id)
+    {
+        $familyPlan = FamilyPlan::find($id);
+
+        if (!$familyPlan){
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Plan familiar no encontrado",
+            ];
+        }
+
+        $familyPlan->update($data);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Identificacion del plan familiar actualizado correctamente",
+            "data" => $familyPlan,
+        ];
+    }
+
     public function delete($id)
     {
         $familyPlan = FamilyPlan::find($id);
