@@ -122,7 +122,7 @@ public static function getAll()
             "error" => false,
             "code" => 200,
             "message" => "Cambio de estado del plan familiar actualizado correctamente",
-            "data" => $city,
+            "data" => $familyPlan,
         ];
     }
 

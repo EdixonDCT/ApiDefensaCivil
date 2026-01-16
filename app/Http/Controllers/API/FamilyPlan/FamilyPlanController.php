@@ -6,7 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\FamilyPlan\StoreFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\UpdateFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\PartialUpdateFamilyPlanRequest;
-use App\Http\Requests\FamilyPlan\ChangeStateFamilyPlanRequest;
+use App\Http\Requests\FamilyPlan\ChangeStatusFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\GeoreFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\IdentifyFamilyPlanRequest;
 use App\Http\Controllers\Controller;
@@ -85,7 +85,7 @@ class FamilyPlanController extends Controller
     return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    public function changeState(ChangeStateFamilyPlanRequest $request, string $id)
+    public function changeState(ChangeStatusFamilyPlanRequest $request, string $id)
     {
     $data = $request->validated();
 

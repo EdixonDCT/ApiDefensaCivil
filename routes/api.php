@@ -17,6 +17,7 @@ use App\Http\Controllers\API\StatusPlan\StatusPlanController;
 use App\Http\Controllers\API\Apartment\ApartmentController;
 use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\FamilyPlan\FamilyPlanController;
+use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -258,4 +259,14 @@ route::prefix('familyPlans')->group(function () {
     route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
 
     route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
+});
+
+route::prefix('housingInfo')->group(function () {
+    route::get('/', [HousingInfoController::class, 'index']);
+        
+    route::get('/{housingInfo_id}', [HousingInfoController::class, 'show']);
+
+    route::post('/', [HousingInfoController::class, 'store']);
+
+    route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy']);
 });

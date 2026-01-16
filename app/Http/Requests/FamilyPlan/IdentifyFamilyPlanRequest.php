@@ -17,8 +17,8 @@ class IdentifyFamilyPlanRequest extends FormRequest
             'last_names' => 'required|alpha_spaces|string|max:255',
             'address' => 'required|string|max:255',
             'sector_id' => 'required|exists:sectors,id',
-            'sector_name' => 'required|string|max:50',
-            'landline_phone' => 'sometimes|number|min_digits:7|max_digits:10',
+            'sector_name' => 'required|alpha_spaces|max:50',
+            'landline_phone' => 'sometimes|numeric|min_digits:7|max_digits:10',
             'housing_quality_id' => 'required|exists:housing_qualities,id',
         ];
     }
@@ -35,7 +35,7 @@ class IdentifyFamilyPlanRequest extends FormRequest
         'sector_id.required' => 'Debe seleccionar un :attribute.',
         'sector_id.exists' => 'El :attribute seleccionado no es válido.',
         'sector_name.required' => 'El campo :attribute es obligatorio.',
-        'sector_name.string' => 'El campo :attribute debe ser un texto.',
+        'sector_name.alpha_spaces' => 'El campo :attribute debe ser un texto y espacios.',
         'sector_name.max' => 'El campo :attribute no puede tener más de 50 caracteres.',
         'landline_phone.numeric' => 'El campo :attribute solo debe contener números.',
         'landline_phone.min_digits' => 'El campo :attribute debe tener al menos 7 dígitos.',
