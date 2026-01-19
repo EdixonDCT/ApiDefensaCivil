@@ -23,7 +23,7 @@ class AuthService
             $user = User::create([
                 'email'    => $data['email'],
                 'password' => Hash::make($data['password']),
-                'state_user_id' => 2
+                'state_user_id' => 1
             ]);
 
             if (!$user) {
@@ -35,7 +35,7 @@ class AuthService
                 ];
             }
 
-            // $user->assignRole('Usuario');
+            $user->assignRole('Voluntario');
 
             $profile = Profile::create([
                 'user_id'  => $user->id,
@@ -105,9 +105,9 @@ class AuthService
 
         $profile = $user->profile;
 
-        // $roleUser = $user->roles->first();
+        $roleUser = $user->roles->first();
 
-        // $permissions = $roleUser->permissions;
+        $permissions = $roleUser->permissions;
 
         $accessToken = $this->generateAccessToken($user);
 
@@ -144,8 +144,8 @@ class AuthService
         "data" => [
             'id' => $user->id,
             'full_name' => "$profile->names $profile->last_names",
-            // 'role_id' => $roleUser->id,
-            // 'permissions' => $permissions->pluck('name'),
+            'role_id' => $roleUser->id,
+            'permissions' => $permissions->pluck('name'),
             'cookieToken' => $cookieToken,
             'cookieRefreshToken' => $cookieRefreshToken,
             'token' => $accessToken,]
