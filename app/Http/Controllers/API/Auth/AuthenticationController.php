@@ -73,7 +73,7 @@ class AuthenticationController extends Controller
     public function logOut(Request $request)
     {
         $user = Auth::user();
-
+        
         $this->authService->logOut($user);
         
         $expiredCookies = $this->authService->createExpiredCookies();

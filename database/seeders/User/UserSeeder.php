@@ -2,7 +2,6 @@
 
 namespace Database\Seeders\User;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User\User;
 
@@ -10,28 +9,44 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'email' => 'edixon@gmail.com',
-            'password' => '12345678',
-            'state_user_id' => 1
-        ]);
+        // Usuario 1 - Admin
+        $edixon = User::firstOrCreate(
+            ['email' => 'edixon@gmail.com'],
+            [
+                'password' => '12345678', // el modelo la hashea
+                'state_user_id' => 1
+            ]
+        );
+        $edixon->assignRole('Administrador');
 
-        User::create([
-            'email' => 'bruno@gmail.com',
-            'password' => '12345678',
-            'state_user_id' => 1
-        ]);
+        // Usuario 2 - Voluntario
+        $bruno = User::firstOrCreate(
+            ['email' => 'bruno@gmail.com'],
+            [
+                'password' => '12345678',
+                'state_user_id' => 1
+            ]
+        );
+        $bruno->assignRole('Voluntario');
 
-        User::create([
-            'email' => 'dann@gmail.com',
-            'password' => '12345678',
-            'state_user_id' => 2
-        ]);
+        // Usuario 3 - Voluntario (inactivo)
+        $dann = User::firstOrCreate(
+            ['email' => 'dann@gmail.com'],
+            [
+                'password' => '12345678',
+                'state_user_id' => 2
+            ]
+        );
+        $dann->assignRole('Supervisor');
 
-        User::create([
-            'email' => 'prueba@gmail.com',
-            'password' => '12345678',
-            'state_user_id' => 3
-        ]);
+        // Usuario 4 - Invitado
+        $prueba = User::firstOrCreate(
+            ['email' => 'prueba@gmail.com'],
+            [
+                'password' => '12345678',
+                'state_user_id' => 3
+            ]
+        );
+        $prueba->assignRole('Super Administrador');
     }
 }

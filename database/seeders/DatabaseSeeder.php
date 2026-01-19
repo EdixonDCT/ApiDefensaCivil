@@ -17,6 +17,9 @@ use Database\Seeders\Sector\SectorSeeder;
 use Database\Seeders\StatusPlan\StatusPlanSeeder;
 use Database\Seeders\Apartment\ApartmentSeeder;
 use Database\Seeders\City\CitySeeder;
+use Database\Seeders\Role\RoleSeeder;
+use Database\Seeders\Permission\PermissionSeeder;
+use Database\Seeders\RolePermission\RolePermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +28,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
             stateUserSeeder::class,
             UserSeeder::class,
             GenderSeeder::class,

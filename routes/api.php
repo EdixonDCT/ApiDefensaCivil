@@ -19,32 +19,10 @@ use App\Http\Controllers\API\Apartment\ApartmentController;
 use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\FamilyPlan\FamilyPlanController;
 use App\Http\Controllers\API\HousingInfo\HousingInfoController;
+use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
-
-// Route::post('/prueba', function (Request $request) {
-//     return StateUser::create($request->all());
-// });
-
-// Route::post('/prueba', function (Request $request) {
-//     $stateUser = ["state" => "pruebo"];
-//     return StateUser::create($stateUser);
-// });
-
-// Route::get('/wasa', function (Request $request) {
-//     $usuario = StateUser::find(1);
-//     return $usuario->user;
-// });
-
-// Route::get('/estado', function (Request $request) {
-//     $usuario = StateUser::all();
-//     return $usuario;
-// });
-
-// Route::post('/estado', function (Request $request) {
-//     return StateUser::create($request->all());
-// });
 
 route::prefix('stateUsers')->group(function () {
     route::get('/', [StateUserController::class, 'index']);
@@ -86,22 +64,6 @@ route::prefix('genders')->group(function () {
     route::patch('/state/{gender_id}', [GenderController::class, 'changeState']);
 
     route::delete('/{gender_id}', [GenderController::class, 'destroy']);
-});
-
-route::prefix('documentTypes')->group(function () {
-    route::get('/', [DocumentTypeController::class, 'index']);
-    
-    route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
-    
-    route::post('/', [DocumentTypeController::class, 'store']);
-
-    route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
-
-    route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
-
-    route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
-
-    route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
 });
 
 route::prefix('sectionals')->group(function () {
@@ -271,13 +233,22 @@ route::prefix('housingInfo')->group(function () {
 
     route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy']);
 });
-
-Route::middleware('auth:sanctum')->group(function () {
-
-    Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
+Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
         ->middleware('ability:'.TokenAbility::ISSUE_ACCESS_TOKEN->value);
 
-    Route::post('/logout', [AuthenticationController::class, 'logOut']);
+    route::prefix('documentTypes')->group(function ()
+{
+    route::get('/', [DocumentTypeController::class, 'index'])->middleware('permission:documentType.index');
+    route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
+    route::post('/', [DocumentTypeController::class, 'store']);
+    route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
+    route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
+    route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
+    route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
+});
 
+Route::middleware('auth:sanctum')->group(function () {
+    
+    Route::post('/logout', [AuthenticationController::class, 'logOut']);
     
 });

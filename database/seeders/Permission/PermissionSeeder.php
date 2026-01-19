@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Permission;
 
-use App\Models\Permission;
+use App\Models\Permission\Permission;
 use Illuminate\Database\Seeder;
 
-class PermissionsSeeder extends Seeder
+class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
