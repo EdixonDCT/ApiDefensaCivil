@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TokenAbility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
@@ -269,4 +270,14 @@ route::prefix('housingInfo')->group(function () {
     route::post('/', [HousingInfoController::class, 'store']);
 
     route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
+        ->middleware('ability:'.TokenAbility::ISSUE_ACCESS_TOKEN->value);
+
+    Route::post('/logout', [AuthenticationController::class, 'logOut']);
+
+    
 });
