@@ -10,22 +10,19 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-
             // STATE USERS
+            ['home-frontend.voluntario','Vista home del voluntario'],
             ['state-users.index', 'Listar estados de usuario'],
             ['state-users.show', 'Ver estado de usuario'],
             ['state-users.store', 'Crear estado de usuario'],
             ['state-users.update', 'Actualizar estado de usuario'],
             ['state-users.destroy', 'Eliminar estado de usuario'],
-
-            // USERS
             ['users.index', 'Listar usuarios'],
             ['users.show', 'Ver usuario'],
             ['users.store', 'Crear usuario'],
             ['users.update', 'Actualizar usuario'],
             ['users.partial-update', 'Actualizar parcialmente usuario'],
             ['users.destroy', 'Eliminar usuario'],
-
             // GENDERS
             ['genders.index', 'Listar géneros'],
             ['genders.show', 'Ver género'],

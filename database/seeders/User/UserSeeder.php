@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         $edixon = User::firstOrCreate(
             ['email' => 'edixon@gmail.com'],
             [
-                'password' => '12345678', // el modelo la hashea
+                'password' => 'Edixon10?', // el modelo la hashea
                 'state_user_id' => 1
             ]
         );
@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         $bruno = User::firstOrCreate(
             ['email' => 'bruno@gmail.com'],
             [
-                'password' => '12345678',
+                'password' => 'Edixon10?',
                 'state_user_id' => 1
             ]
         );
@@ -33,8 +33,8 @@ class UserSeeder extends Seeder
         $dann = User::firstOrCreate(
             ['email' => 'dann@gmail.com'],
             [
-                'password' => '12345678',
-                'state_user_id' => 2
+                'password' => 'Edixon10?',
+                'state_user_id' => 1
             ]
         );
         $dann->assignRole('Supervisor');
@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
         $prueba = User::firstOrCreate(
             ['email' => 'prueba@gmail.com'],
             [
-                'password' => '12345678',
+                'password' => 'Edixon10?',
                 'state_user_id' => 3
             ]
         );

@@ -19,12 +19,35 @@ use App\Http\Controllers\API\Apartment\ApartmentController;
 use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\FamilyPlan\FamilyPlanController;
 use App\Http\Controllers\API\HousingInfo\HousingInfoController;
+use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
 
-route::prefix('stateUsers')->group(function () {
+Route::get('/documentTypesPublic', [DocumentTypeController::class, 'index']);
+Route::get('/gendersPublic', [GenderController::class, 'index']);
+Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
+Route::get('/organizationsPublic/{sectional_id}', [OrganizationController::class, 'getSectional']);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
+        ->middleware('ability:'.TokenAbility::ISSUE_ACCESS_TOKEN->value);
+    
+    Route::post('/logout', [AuthenticationController::class, 'logOut']);
+
+    Route::prefix('statusPlans')->group(function () {
+    Route::get('/', [StatusPlanController::class, 'index']);
+    
+    Route::get('/{statusPlan_id}', [StatusPlanController::class, 'show']);
+    
+    Route::post('/', [StatusPlanController::class, 'store']);
+
+    Route::put('/{statusPlan_id}', [StatusPlanController::class, 'update']);
+
+    Route::delete('/{statusPlan_id}', [StatusPlanController::class, 'destroy']);}); 
+    route::prefix('stateUsers')->group(function () {
     route::get('/', [StateUserController::class, 'index']);
     
     route::get('/{state_user_id}', [StateUserController::class, 'show']);
@@ -115,7 +138,7 @@ route::prefix('profiles')->group(function () {
 });
 
 route::prefix('zones')->group(function () {
-    route::get('/', [ZoneController::class, 'index']);
+    route::get('/', [ZoneController::class, 'index'])->middleware('permission:zones.index');
     
     route::get('/{zone_id}', [ZoneController::class, 'show']);
     
@@ -127,7 +150,7 @@ route::prefix('zones')->group(function () {
 });
 
 route::prefix('housingQualities')->group(function () {
-    route::get('/', [HousingQualityController::class, 'index']);
+    route::get('/', [HousingQualityController::class, 'index'])->middleware('permission:housing-qualities.index');
     
     route::get('/{housingQuality_id}', [HousingQualityController::class, 'show']);
     
@@ -143,7 +166,7 @@ route::prefix('housingQualities')->group(function () {
 });
 
 route::prefix('sectors')->group(function () {
-    route::get('/', [SectorController::class, 'index']);
+    route::get('/', [SectorController::class, 'index'])->middleware('permission:sectors.index');
     
     route::get('/{sector_id}', [SectorController::class, 'show']);
     
@@ -158,20 +181,10 @@ route::prefix('sectors')->group(function () {
     route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
 });
 
-route::prefix('statusPlans')->group(function () {
-    route::get('/', [StatusPlanController::class, 'index']);
-    
-    route::get('/{statusPlan_id}', [StatusPlanController::class, 'show']);
-    
-    route::post('/', [StatusPlanController::class, 'store']);
 
-    route::put('/{statusPlan_id}', [StatusPlanController::class, 'update']);
-
-    route::delete('/{statusPlan_id}', [StatusPlanController::class, 'destroy']);
-});
 
 route::prefix('apartments')->group(function () {
-    route::get('/', [ApartmentController::class, 'index']);
+    route::get('/', [ApartmentController::class, 'index'])->middleware('permission:apartments.index');
     
     route::get('/{apartment_id}', [ApartmentController::class, 'show']);
     
@@ -191,7 +204,7 @@ route::prefix('cities')->group(function () {
         
     route::get('/{city_id}', [CityController::class, 'show']);
     
-    route::get('/apartment/{city_id}', [CityController::class, 'getApartment']);
+    route::get('/apartment/{city_id}', [CityController::class, 'getApartment'])->middleware('permission:cities.apartments');
 
     route::post('/', [CityController::class, 'store']);
 
@@ -207,15 +220,15 @@ route::prefix('cities')->group(function () {
 route::prefix('familyPlans')->group(function () {
     route::get('/', [FamilyPlanController::class, 'index']);
         
-    route::get('/{familyPlan_id}', [FamilyPlanController::class, 'show']);
+    route::get('/{familyPlan_id}', [FamilyPlanController::class, 'show'])->middleware('permission:family-plans.show');
 
-    route::post('/', [FamilyPlanController::class, 'store']);
+    route::post('/', [FamilyPlanController::class, 'store'])->middleware('permission:family-plans.store');
 
     route::put('/{familyPlan_id}', [FamilyPlanController::class, 'update']);
 
     route::patch('/{familyPlan_id}', [FamilyPlanController::class, 'partialUpdate']);
 
-    route::patch('/identify/{familyPlan_id}', [FamilyPlanController::class, 'identify']);
+    route::patch('/identify/{familyPlan_id}', [FamilyPlanController::class, 'identify'])->middleware('permission:family-plans.identify');
 
     route::patch('/state/{familyPlan_id}', [FamilyPlanController::class, 'changeState']);
 
@@ -227,18 +240,16 @@ route::prefix('familyPlans')->group(function () {
 route::prefix('housingInfo')->group(function () {
     route::get('/', [HousingInfoController::class, 'index']);
         
-    route::get('/{housingInfo_id}', [HousingInfoController::class, 'show']);
+    route::get('/{housingInfo_id}', [HousingInfoController::class, 'show'])->middleware('permission:housing-info.show');
 
-    route::post('/', [HousingInfoController::class, 'store']);
+    route::post('/', [HousingInfoController::class, 'store'])->middleware('permission:housing-info.store');
 
-    route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy']);
+    route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy'])->middleware('permission:housing-info.destroy');
 });
-Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
-        ->middleware('ability:'.TokenAbility::ISSUE_ACCESS_TOKEN->value);
 
     route::prefix('documentTypes')->group(function ()
 {
-    route::get('/', [DocumentTypeController::class, 'index'])->middleware('permission:documentType.index');
+    route::get('/', [DocumentTypeController::class, 'index']);
     route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
     route::post('/', [DocumentTypeController::class, 'store']);
     route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
@@ -247,8 +258,19 @@ Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
     route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+route::prefix('vulnerableQuestions')->group(function () {
+    route::get('/', [VulnerableQuestionController::class, 'index']);
     
-    Route::post('/logout', [AuthenticationController::class, 'logOut']);
+    route::get('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'show']);
     
+    route::post('/', [VulnerableQuestionController::class, 'store']);
+
+    route::put('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'update']);
+
+    route::patch('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'partialUpdate']);
+
+    route::patch('/state/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'changeState']);
+
+    route::delete('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'destroy']);
+});
 });

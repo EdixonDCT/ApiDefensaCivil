@@ -46,6 +46,7 @@ class AuthService
                 'document_number' => $data['document_number'],
                 'gender_id'=> $data['gender_id'],
                 'organization_id'=> $data['organization_id'],
+                'phone'=> $data['phone']
             ]);
 
             if (!$profile) {

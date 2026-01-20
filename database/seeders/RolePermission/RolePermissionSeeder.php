@@ -82,8 +82,8 @@ class RolePermissionSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
         $voluntario->syncPermissions([
-
             // Catálogos (solo lectura)
+            'home-frontend.voluntario',
             'genders.index',
             'document-types.index',
             'cities.index',
