@@ -28,7 +28,7 @@ Route::post('/login', [AuthenticationController::class, 'login']);
 Route::get('/documentTypesPublic', [DocumentTypeController::class, 'index']);
 Route::get('/gendersPublic', [GenderController::class, 'index']);
 Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
-Route::get('/organizationsPublic/{sectional_id}', [OrganizationController::class, 'getSectional']);
+Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -261,6 +261,8 @@ route::prefix('housingInfo')->group(function () {
 route::prefix('vulnerableQuestions')->group(function () {
     route::get('/', [VulnerableQuestionController::class, 'index']);
     
+    route::get('/paginate', [VulnerableQuestionController::class, 'paginate']);
+
     route::get('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'show']);
     
     route::post('/', [VulnerableQuestionController::class, 'store']);

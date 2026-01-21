@@ -4,7 +4,7 @@ namespace App\Http\Requests\VulnerableQuestion;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateVulnerableQuestionRequest extends FormRequest
+class PartialUpdateVulnerableQuestionRequest extends FormRequest
 {
     public function authorize(): bool
     {

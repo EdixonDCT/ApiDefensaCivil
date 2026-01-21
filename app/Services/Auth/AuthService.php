@@ -149,7 +149,8 @@ class AuthService
             'permissions' => $permissions->pluck('name'),
             'cookieToken' => $cookieToken,
             'cookieRefreshToken' => $cookieRefreshToken,
-            'token' => $accessToken,]
+            'token' => $accessToken,
+            'sectional_id' => $profile->organization?->sectional_id],
         ];
     }
 

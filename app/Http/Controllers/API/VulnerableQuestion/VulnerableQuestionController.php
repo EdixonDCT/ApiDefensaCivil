@@ -132,4 +132,19 @@ class VulnerableQuestionController extends Controller
             $response['data'] ?? []
         );
     }
+
+    public function paginate()
+    {
+        $response = $this->service->paginate();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
+    }
 }

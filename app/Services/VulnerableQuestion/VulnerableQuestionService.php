@@ -147,4 +147,25 @@ class VulnerableQuestionService
             "message" => "Pregunta vulnerable eliminada exitosamente",
         ];
     }
+
+    public function paginate()
+    {
+        $questions = VulnerableQuestion::where('is_active', true)->paginate(3);
+
+        if ($questions->isEmpty()) {
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No hay preguntas vulnerables registradas",
+                "data" => $questions,
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Preguntas vulnerables obtenidas exitosamente",
+            "data" => $questions,
+        ];
+    }
 }

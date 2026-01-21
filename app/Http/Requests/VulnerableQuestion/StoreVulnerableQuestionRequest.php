@@ -14,9 +14,8 @@ class StoreVulnerableQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description'       => 'required|string|max:255',
-            'question_caution'  => 'required|boolean',
-            'is_active'         => 'required|boolean',
+            'description' => 'required|string|max:255|unique:vulnerable_questions,description',
+            'question_caution' => 'required|boolean',
         ];
     }
 
@@ -26,12 +25,9 @@ class StoreVulnerableQuestionRequest extends FormRequest
             'description.required'      => 'La descripción es obligatoria.',
             'description.string'        => 'La descripción debe ser un texto válido.',
             'description.max'           => 'La descripción no puede tener más de 255 caracteres.',
-
+            'description.unique' => 'La descripcion no se debe repetir.',
             'question_caution.required' => 'La pregunta de precaución es obligatoria.',
-            'question_caution.boolean'  => 'La pregunta de precaución debe ser verdadero o falso.',
-
-            'is_active.required'        => 'El estado activo es obligatorio.',
-            'is_active.boolean'         => 'El estado activo debe ser verdadero o falso.',
+            'question_caution.boolean'  => 'La pregunta de precaución debe ser verdadero o falso.'
         ];
     }
 
@@ -39,8 +35,7 @@ class StoreVulnerableQuestionRequest extends FormRequest
     {
         return [
             'description'      => 'descripción',
-            'question_caution' => 'pregunta de precaución',
-            'is_active'        => 'estado activo',
+            'question_caution' => 'pregunta de precaución'
         ];
     }
 }

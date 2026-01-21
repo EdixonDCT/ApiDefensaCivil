@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             ['email' => 'bruno@gmail.com'],
             [
                 'password' => 'Edixon10?',
-                'state_user_id' => 1
+                'state_user_id' => 3
             ]
         );
         $bruno->assignRole('Voluntario');

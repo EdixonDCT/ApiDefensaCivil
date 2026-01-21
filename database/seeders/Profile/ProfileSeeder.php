@@ -18,7 +18,7 @@ class ProfileSeeder extends Seeder
             'document_number' => '12345678',
             'phone' => '1234567892',
             'gender_id' => 1,
-            'organization_id' => 1,
+            'organization_id' => 4,
         ]);
 
         Profile::create([
@@ -54,7 +54,7 @@ class ProfileSeeder extends Seeder
             'document_number' => '00000000',
             'phone' => '1234567890',
             'gender_id' => 1,
-            'organization_id' => 1,
+            'organization_id' => 4,
         ]);
     }
 }
