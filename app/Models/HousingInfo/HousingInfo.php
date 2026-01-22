@@ -16,4 +16,5 @@ class HousingInfo extends Model
     {
         return $this->belongsTo(FamilyPlan::class, 'family_plan_id');
     }
+    
 }

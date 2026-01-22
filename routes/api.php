@@ -20,6 +20,8 @@ use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\FamilyPlan\FamilyPlanController;
 use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
+use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
+use App\Http\Controllers\API\Action\ActionController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -274,5 +276,27 @@ route::prefix('vulnerableQuestions')->group(function () {
     route::patch('/state/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'changeState']);
 
     route::delete('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'destroy']);
+});
+
+route::prefix('vulnerableTest')->group(function () {
+    route::get('/', [VulnerableTestController::class, 'index']);
+    
+    route::get('/{familyPlan_id}', [VulnerableTestController::class, 'show']);
+    
+    route::post('/', [VulnerableTestController::class, 'store']);
+
+    route::delete('/{familyPlan_id}', [VulnerableTestController::class, 'destroy']);
+});
+
+route::prefix('actions')->group(function () {
+    route::get('/', [ActionController::class, 'index']);
+    
+    route::get('/{action_id}', [ActionController::class, 'show']);
+    
+    route::post('/', [ActionController::class, 'store']);
+
+    route::put('/{action_id}', [ActionController::class, 'update']);
+
+    route::delete('/{action_id}', [ActionController::class, 'destroy']);
 });
 });

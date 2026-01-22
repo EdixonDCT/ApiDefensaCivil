@@ -10,6 +10,7 @@ use App\Models\HousingQuality\HousingQuality;
 use App\Models\Sector\Sector;
 use App\Models\StatusPlan\StatusPlan;
 use App\Models\Sectional\Sectional;
+use App\Models\vulnerableTest\vulnerableTest;
 
 class FamilyPlan extends Model
 {
@@ -42,5 +43,9 @@ class FamilyPlan extends Model
     public function Sectional()
     {
         return $this->belongsTo(Sectional::class,'sectionals_id');
+    }
+    public function vulnerableTest()
+    {
+        return $this->hasMany(vulnerableTest::class, 'family_plan_id');
     }
 }

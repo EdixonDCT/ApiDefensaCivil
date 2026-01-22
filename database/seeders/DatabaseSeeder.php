@@ -21,6 +21,7 @@ use Database\Seeders\Role\RoleSeeder;
 use Database\Seeders\Permission\PermissionSeeder;
 use Database\Seeders\RolePermission\RolePermissionSeeder;
 use Database\Seeders\VulnerableQuestion\VulnerableQuestionSeeder;
+use Database\Seeders\Action\ActionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -45,7 +46,8 @@ class DatabaseSeeder extends Seeder
             StatusPlanSeeder::class,
             ApartmentSeeder::class,
             CitySeeder::class,
-            VulnerableQuestionSeeder::class
+            VulnerableQuestionSeeder::class,
+            ActionSeeder::class
         ]);
     }
 }
