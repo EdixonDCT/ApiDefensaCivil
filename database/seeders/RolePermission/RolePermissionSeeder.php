@@ -10,7 +10,7 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        $superAdmin = Role::findByName('Super Administrador');
+        // $superAdmin = Role::findByName('Super Administrador');
         $admin      = Role::findByName('Administrador');
         $supervisor = Role::findByName('Supervisor');
         $voluntario = Role::findByName('Voluntario');
@@ -20,7 +20,7 @@ class RolePermissionSeeder extends Seeder
         | SUPER ADMINISTRADOR → TODO
         |--------------------------------------------------------------------------
         */
-        $superAdmin->syncPermissions(Permission::all());
+        // $superAdmin->syncPermissions(Permission::all());
 
         /*
         |--------------------------------------------------------------------------
@@ -103,6 +103,8 @@ class RolePermissionSeeder extends Seeder
             // Perfil propio
             'profiles.show',
             'profiles.update',
+            'cities.apartments',
+            'apartments.index'
         ]);
     }
 }

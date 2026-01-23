@@ -44,17 +44,5 @@ class ProfileSeeder extends Seeder
             'gender_id' => 2,
             'organization_id' => 1,
         ]);
-
-        Profile::create([
-            'user_id' => 4,
-            'names' => 'Usuario',
-            'last_names' => 'Prueba',
-            'birth_date' => '2000-01-01',
-            'document_type_id' => 1,
-            'document_number' => '00000000',
-            'phone' => '1234567890',
-            'gender_id' => 1,
-            'organization_id' => 4,
-        ]);
     }
 }

@@ -17,7 +17,7 @@ class StoreFamilyPlanRequest extends FormRequest
             'last_names' => 'required|alpha_spaces|string|max:255',
             'zone_id' => 'required|exists:zones,id',
             'city_id' => 'required|exists:cities,id',
-            'sectionals_id' => 'required|exists:sectionals,id',
+            'sectional_id' => 'required|exists:sectionals,id',
         ];
     }
 
@@ -32,8 +32,8 @@ class StoreFamilyPlanRequest extends FormRequest
             'zone_id.exists' => 'La :attribute seleccionada no es válida.',
             'city_id.required' => 'Debe seleccionar una :attribute.',
             'city_id.exists' => 'La :attribute seleccionada no es válida.',
-            'sectionals_id.required' => 'Debe seleccionar una :attribute.',
-            'sectionals_id.exists' => 'La :attribute seleccionada no es válida.',
+            'sectional_id.required' => 'Debe seleccionar una :attribute.',
+            'sectional_id.exists' => 'La :attribute seleccionada no es válida.',
         ];
     }
 
@@ -43,7 +43,7 @@ class StoreFamilyPlanRequest extends FormRequest
             'last_names' => 'apellidos',
             'zone_id' => 'zona',
             'city_id' => 'ciudad',
-            'sectionals_id' => 'seccional',
+            'sectional_id' => 'seccional',
         ];
     }
 }

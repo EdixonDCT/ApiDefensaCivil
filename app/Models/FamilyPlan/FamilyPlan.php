@@ -10,16 +10,26 @@ use App\Models\HousingQuality\HousingQuality;
 use App\Models\Sector\Sector;
 use App\Models\StatusPlan\StatusPlan;
 use App\Models\Sectional\Sectional;
-use App\Models\vulnerableTest\vulnerableTest;
+use App\Models\VulnerableTest\VulnerableTest;
+use App\Models\History\History;
 
 class FamilyPlan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','name','last_names','zone_id','address','landline_phone','georeference','city_id','housing_quality_id','sector_id','sector_name','status_plan_id','sectionals_id','authorization'];
+    protected $fillable = ['id','name','last_names','zone_id','address','landline_phone','georeference','city_id','housing_quality_id','sector_id','sector_name','status_plan_id','sectional_id','authorization'];
 
-     protected $attributes = ['status_plan_id' => 4,];
+    protected $attributes = ['status_plan_id' => 4,];
 
+    protected static function booted()
+    {
+        static::creating(function ($plan) {
+            if (auth()->check() && isset(auth()->user()->profile->organization)) {
+                $plan->sectional_id = auth()->user()->profile->organization->sectional_id;
+            }
+        });
+    }
+    
     public function zone()
     {
         return $this->belongsTo(Zone::class,'zone_id');
@@ -42,10 +52,14 @@ class FamilyPlan extends Model
     }
     public function Sectional()
     {
-        return $this->belongsTo(Sectional::class,'sectionals_id');
+        return $this->belongsTo(Sectional::class,'sectional_id');
     }
     public function vulnerableTest()
     {
-        return $this->hasMany(vulnerableTest::class, 'family_plan_id');
+        return $this->hasMany(VulnerableTest::class, 'family_plan_id');
+    }
+    public function history()
+    {
+        return $this->hasMany(History::class, 'family_plan_id');
     }
 }

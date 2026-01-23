@@ -9,7 +9,6 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Usuario 1 - Admin
         $edixon = User::firstOrCreate(
             ['email' => 'edixon@gmail.com'],
             [
@@ -19,17 +18,15 @@ class UserSeeder extends Seeder
         );
         $edixon->assignRole('Administrador');
 
-        // Usuario 2 - Voluntario
         $bruno = User::firstOrCreate(
             ['email' => 'bruno@gmail.com'],
             [
                 'password' => 'Edixon10?',
-                'state_user_id' => 3
+                'state_user_id' => 1
             ]
         );
         $bruno->assignRole('Voluntario');
 
-        // Usuario 3 - Voluntario (inactivo)
         $dann = User::firstOrCreate(
             ['email' => 'dann@gmail.com'],
             [
@@ -38,15 +35,5 @@ class UserSeeder extends Seeder
             ]
         );
         $dann->assignRole('Supervisor');
-
-        // Usuario 4 - Invitado
-        $prueba = User::firstOrCreate(
-            ['email' => 'prueba@gmail.com'],
-            [
-                'password' => 'Edixon10?',
-                'state_user_id' => 3
-            ]
-        );
-        $prueba->assignRole('Super Administrador');
     }
 }

@@ -18,7 +18,7 @@ class IdentifyFamilyPlanRequest extends FormRequest
             'address' => 'required|string|max:255',
             'sector_id' => 'required|exists:sectors,id',
             'sector_name' => 'required|alpha_spaces|max:50',
-            'landline_phone' => 'sometimes|numeric|min_digits:7|max_digits:10',
+            'landline_phone' => 'sometimes|nullable|numeric|min_digits:7|max_digits:10',
             'housing_quality_id' => 'required|exists:housing_qualities,id',
         ];
     }

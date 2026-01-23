@@ -3,6 +3,7 @@
 namespace App\Services\FamilyPlan;
 
 use App\Models\FamilyPlan\FamilyPlan;
+use App\Models\History\History;
 use Illuminate\support\Arr;
 
 class FamilyPlanService
@@ -51,6 +52,13 @@ public static function getAll()
     public function create(array $data)
     {
         $familyPlan = FamilyPlan::create($data);
+
+        History::create([
+        'user_id' => auth()->id(), // ID del usuario autenticado
+        'family_plan_id' => $familyPlan->id,
+        'action_id' => 1, // estado "creado"
+        // 'date' y 'time' se llenan automáticamente desde el modelo
+        ]);
 
         return [
             "error" => false,

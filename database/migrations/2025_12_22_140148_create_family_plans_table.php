@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('zone_id')->constrained();
             $table->foreignId('city_id')->constrained();
             $table->boolean('authorization')->default(1);
-            $table->foreignId('sectionals_id')->constrained();
+            $table->foreignId('sectional_id')->constrained();
             $table->foreignId('status_plan_id')->constrained();
 
             $table->string('address',255)->nullable();

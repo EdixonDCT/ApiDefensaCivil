@@ -22,6 +22,7 @@ use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
+use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -298,5 +299,35 @@ route::prefix('actions')->group(function () {
     route::put('/{action_id}', [ActionController::class, 'update']);
 
     route::delete('/{action_id}', [ActionController::class, 'destroy']);
+});
+
+Route::prefix('histories')->group(function () {
+    // Histories de voluntario
+    Route::get('/voluntario', [HistoryController::class, 'actionsByVoluntario']);
+
+    // Histories de supervisor
+    Route::get('/supervisor', [HistoryController::class, 'actionsBySupervisor']);
+
+    // Validar acceso a un plan
+    Route::get('/access/{planId}', [HistoryController::class, 'checkAccess']);
+
+    // Traer todos los histories
+    Route::get('/', [HistoryController::class, 'index']);
+
+    // Traer un history por id
+    Route::get('/{id}', [HistoryController::class, 'show']);
+
+    // Crear history
+    Route::post('/', [HistoryController::class, 'store']);
+
+    // Actualizar history completo
+    Route::put('/{id}', [HistoryController::class, 'update']);
+
+    // Actualización parcial
+    Route::patch('/{id}', [HistoryController::class, 'partialUpdate']);
+
+    // Eliminar history
+    Route::delete('/{id}', [HistoryController::class, 'destroy']);
+
 });
 });

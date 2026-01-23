@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\StateUser\StateUser;
 use App\Models\Profile\Profile;
+use App\Models\History\History;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -57,6 +58,11 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(Profile::class, 'user_id');
+    }
+
+    public function history()
+    {
+        return $this->hasMany(History::class, 'user_id');
     }
 }
 
