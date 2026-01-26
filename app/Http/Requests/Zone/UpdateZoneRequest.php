@@ -4,34 +4,65 @@ namespace App\Http\Requests\Zone;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateZoneRequest
+ * * Valida la edición de un tipo de zona existente.
+ * Permite actualizar el nombre asegurando que no choque con otros registros,
+ * pero ignorando el nombre de la zona actual.
+ */
 class UpdateZoneRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización.
+     * * @return array
+     */
     public function rules(): array
     {
-        $zone = $this->route('zone_id');
+        /**
+         * Capturamos el ID desde el parámetro de la ruta ('zone_id').
+         */
+        $zoneId = $this->route('zone_id');
+
         return [
-            'name' => 'required|alpha|string|max:50|unique:zones,name,'.$zone,
+            /**
+             * unique: Verifica la tabla 'zones' e ignora el registro con el ID actual.
+             */
+            'name' => "required|alpha|string|max:50|unique:zones,name,{$zoneId}",
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del tipo de zona es obligatorio.',
-            'name.alpha' => 'El nombre del tipo de zona debe tener solo letras.',
-            'name.string' => 'El nombre del tipo de zona debe tener solo caracteres de tipo texto.',
-            'name.unique' => 'El tipo de zona ya existe.',
-            'name.max' => 'El nombre del tipo de zona tiene maximo 50 caracteres.'
+            'name.required' => 'El :attribute es obligatorio',
+            'name.alpha'    => 'El :attribute debe contener solo letras',
+            'name.string'   => 'El :attribute debe ser una cadena de texto válida',
+            'name.unique'   => 'El :attribute ingresado ya se encuentra registrado',
+            'name.max'      => 'El :attribute no debe superar los :max caracteres'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define el nombre amigable del atributo.
+     * * @return array
+     */
+    public function attributes(): array
     {
         return [
             'name' => 'tipo de zona',
-    ];
+        ];
     }
 }

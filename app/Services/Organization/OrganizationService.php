@@ -6,9 +6,16 @@ use App\Models\Organization\Organization;
 use App\Models\Sectional\Sectional;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para la gestión de Organizaciones (Unidades locales/Grupos).
+ * Vincula la estructura administrativa con los usuarios finales.
+ */
 class OrganizationService
 {
-public static function getAll()
+    /**
+     * Obtiene el listado global de todas las organizaciones.
+     */
+    public static function getAll()
     {
         $organization = Organization::all();
 
@@ -29,6 +36,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Obtiene una organización específica por su ID.
+     */
     public function getById($id)
     {
         $organization = Organization::find($id);
@@ -49,6 +59,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Crea una nueva organización vinculada a una seccional.
+     */
     public function create(array $data)
     {
         $organization = Organization::create($data);
@@ -61,6 +74,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualización total de los datos de la organización.
+     */
     public function update(array $data, $id)
     {
         $organization = Organization::find($id);
@@ -83,6 +99,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualización parcial (solo campos enviados).
+     */
     public function partialUpdate(array $data,$id)
     {
         $organization = Organization::find($id);
@@ -105,6 +124,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Cambia el estado (Activo/Inactivo) de la organización.
+     */
     public function changeState(array $data,$id)
     {
         $organization = Organization::find($id);
@@ -127,6 +149,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Elimina la organización validando que no tenga usuarios (perfiles) asociados.
+     */
     public function delete($id)
     {
         $organization = Organization::find($id);
@@ -139,6 +164,7 @@ public static function getAll()
             ];
         }
         
+        // Bloqueo de eliminación si hay perfiles vinculados
         if ($organization->profile->count()) {
             return [
                 "error" => true,
@@ -155,6 +181,12 @@ public static function getAll()
             "message" => "Organizacion eliminado exitosamente",
         ];
     }
+
+    /**
+     * Filtra y obtiene las organizaciones pertenecientes a una seccional específica.
+     * Útil para desplegables dependientes en el registro.
+     * @param int $id ID de la Seccional.
+     */
     public static function getAllForSectional($id)
     {
         $sectional = Sectional::find($id);
@@ -164,18 +196,19 @@ public static function getAll()
                 "error" => false,
                 "code" => 200,
                 "message" => "No existe esta seccional",
-                "data" => $sectional,
+                "data" => null,
             ];
         }
         
+        // Asumiendo relación hasMany en el modelo Sectional
         $organization = $sectional->organization;
 
-        if (!$organization){
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "No existen organizacion relacionadas a la seccional",
-            "data" => $organization,
+        if (!$organization || $organization->isEmpty()){
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No existen organizaciones relacionadas a la seccional",
+                "data" => [],
             ];
         }
 

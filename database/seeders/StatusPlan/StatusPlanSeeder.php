@@ -14,13 +14,16 @@ class StatusPlanSeeder extends Seeder
             'name' => 'Aprobado'
         ]);
         StatusPlan::create([
-            'name' => 'Rechazado Total'
+            'name' => 'Proceso'
         ]);
         StatusPlan::create([
             'name' => 'Rechazado Cambios'
         ]);
         StatusPlan::create([
-            'name' => 'Proceso'
+            'name' => 'Rechazado Total'
+        ]);
+        StatusPlan::create([
+            'name' => 'Incompleto'
         ]);
     }
 }

@@ -7,8 +7,15 @@ use App\Models\Sectional\Sectional;
 use App\Models\User\User;
 use App\Models\FamilyPlan\FamilyPlan;
 use App\Models\Organization\Organization;
+
+/**
+ * Servicio para gestionar el historial de acciones y el control de acceso a los planes.
+ */
 class HistoryService
 {
+    /**
+     * Obtiene todos los registros de historial.
+     */
     public static function getAll()
     {
         $histories = History::all();
@@ -30,6 +37,9 @@ class HistoryService
         ];
     }
 
+    /**
+     * Obtiene un registro de historial específico.
+     */
     public function getById($id)
     {
         $history = History::find($id);
@@ -50,6 +60,9 @@ class HistoryService
         ];
     }
 
+    /**
+     * Crea una nueva entrada en el historial de forma manual.
+     */
     public function create(array $data)
     {
         $history = History::create($data);
@@ -62,6 +75,9 @@ class HistoryService
         ];
     }
 
+    /**
+     * Actualiza un registro del historial.
+     */
     public function update(array $data, $id)
     {
         $history = History::find($id);
@@ -84,6 +100,9 @@ class HistoryService
         ];
     }
 
+    /**
+     * Actualización parcial de un registro de historial.
+     */
     public function partialUpdate(array $data, $id)
     {
         $history = History::find($id);
@@ -106,6 +125,9 @@ class HistoryService
         ];
     }
 
+    /**
+     * Elimina un registro del historial.
+     */
     public function delete($id)
     {
         $history = History::find($id);
@@ -127,12 +149,22 @@ class HistoryService
         ];
     }
 
+    /**
+     * Obtiene los planes creados por el Voluntario autenticado.
+     * Filtra por action_id = 1 (Creado) y pagina los resultados de 2 en 2.
+     */
     public function getActionsByVoluntario()
     {
-        $histories = History::where('user_id',auth()->id())
+        $histories = History::with([
+                'action:id,name',
+                'familyPlan:id,last_names,city_id',
+                'familyPlan.city:id,name,apartment_id',
+                'familyPlan.city.apartment:id,name'
+            ])
+            ->where('user_id', auth()->id())
             ->where('action_id', 1)
             ->orderBy('date', 'desc')
-            ->paginate(2);
+            ->paginate(3);
 
         return [
             "error" => false,
@@ -142,9 +174,13 @@ class HistoryService
         ];
     }
 
+    /**
+     * Obtiene los planes de la seccional a la que pertenece el Supervisor.
+     */
     public function getActionsBySupervisor()
     {
-        $user = User::with('profile')->find(auth()->id());
+        // Cargamos el usuario con su perfil para obtener la organización
+        $user = User::with('profile.organization')->find(auth()->id());
 
         if (!$user || !$user->profile) {
             return [
@@ -154,9 +190,10 @@ class HistoryService
             ];
         }
 
-        $sectionalId = Organization::find($user->profile->organization->sectional_id);
+        // Identificamos la seccional del supervisor
+        $sectionalId = $user->profile->organization->sectional_id;
 
-        // Ejecutamos la consulta y la paginamos
+        // Filtramos los planes familiares que pertenecen a esa misma seccional
         $plans = FamilyPlan::where('sectional_id', $sectionalId)
             ->orderBy('created_at', 'desc')
             ->paginate(2);
@@ -169,6 +206,11 @@ class HistoryService
         ];
     }
 
+    /**
+     * Valida si el usuario actual tiene permiso para acceder a un plan específico.
+     * @param int $planId ID del plan a consultar.
+     * @return bool
+     */
     public function canAccessPlan($planId)
     {
         $user = User::with('profile.organization')->find(auth()->id());
@@ -178,13 +220,20 @@ class HistoryService
 
         $role = $user->roles->first()?->name ?? null;
 
+        // Si es Voluntario: Solo puede acceder si él mismo creó el plan (existe en history)
         if ($role === 'Voluntario') {
-            return History::where('user_id', auth()->id())->where('family_plan_id', $planId)->exists();
+            return History::where('user_id', auth()->id())
+                          ->where('family_plan_id', $planId)
+                          ->exists();
         }
 
+        // Si es Supervisor: Puede acceder si el plan pertenece a su Seccional
         if ($role === 'Supervisor') {
-            return $user->profile && $user->profile->organization && $user->profile->organization->sectional_id === $plan->sectional_id;
+            return $user->profile && 
+                   $user->profile->organization && 
+                   $user->profile->organization->sectional_id === $plan->sectional_id;
         }
+
         return false;
     }
 }

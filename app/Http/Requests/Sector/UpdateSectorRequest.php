@@ -4,38 +4,67 @@ namespace App\Http\Requests\Sector;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateSectorRequest
+ * * Valida la actualización completa de un sector existente.
+ * Permite modificar el nombre y el estado, asegurando la integridad de los datos
+ * y permitiendo mantener el nombre actual sin errores de duplicidad.
+ */
 class UpdateSectorRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización.
+     * @return array
+     */
     public function rules(): array
     {
-        $sector = $this->route('sector_id');
+        /**
+         * Obtenemos el ID del sector desde la ruta para la excepción de unicidad.
+         */
+        $sectorId = $this->route('sector_id');
+
         return [
-            'name' => 'required|alpha|string|max:50|unique:sectors,name,'.$sector,
+            'name'      => "required|alpha|string|max:50|unique:sectors,name,{$sectorId}",
             'is_active' => 'required|boolean'
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del sector es obligatorio.',
-            'name.alpha' => 'El nombre del sector debe tener solo letras.',
-            'name.string' => 'El nombre del sector debe tener solo caracteres de tipo texto.',
-            'name.unique' => 'El nombre del sector ya existe.',
-            'name.max' => 'El nombre del sector tiene maximo 50 caracteres.',
-            'is_active.required' => 'El estado activo del sector es obligatorio.',
-            'is_active.boolean' => 'El estado activo del sector debe tener activo o inactivo.'
+            'name.required'      => 'El :attribute es obligatorio',
+            'name.alpha'         => 'El :attribute debe contener solo letras',
+            'name.string'        => 'El :attribute debe ser una cadena de texto válida',
+            'name.unique'        => 'El :attribute ya se encuentra registrado',
+            'name.max'           => 'El :attribute no debe superar los :max caracteres',
+            
+            'is_active.required' => 'El :attribute es obligatorio',
+            'is_active.boolean'  => 'El :attribute debe ser activo o inactivo'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define los nombres amigables de los atributos.
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
-            'name' => 'nombre del sector',
-            'is_active' => 'estado activo del sector'
-    ];
+            'name'      => 'nombre del sector',
+            'is_active' => 'estado del sector'
+        ];
     }
 }

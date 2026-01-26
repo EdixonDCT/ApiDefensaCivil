@@ -4,13 +4,26 @@ namespace App\Http\Requests\Role;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase StoreRoleRequest
+ * * Valida la creación de un nuevo rol en el sistema.
+ * Asegura que el nombre sea obligatorio, único y que cumpla con los estándares de longitud.
+ */
 class StoreRoleRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Define las reglas de validación para el registro de un rol.
+     * @return array
+     */
     public function rules(): array
     {
         return [
@@ -18,21 +31,29 @@ class StoreRoleRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * @return array
+     */
     public function messages(): array
     {
         return [
-            'name.required' => 'El :attribute es obligatorio.',
-            'name.string' => 'El :attribute debe ser en formato de texto.',
-            'name.min' => 'El :attribute debe tener al menos :min caracteres.',
-            'name.max' => 'El :attribute no debe tener más de :max caracteres.',
-            'name.unique' => 'El :attribute ya existe.',
+            'name.required' => 'El :attribute es obligatorio',
+            'name.string'   => 'El :attribute debe ser una cadena de texto válida',
+            'name.min'      => 'El :attribute debe tener al menos :min caracteres',
+            'name.max'      => 'El :attribute no debe superar los :max caracteres',
+            'name.unique'   => 'El :attribute ingresado ya existe',
         ];
     }
 
+    /**
+     * Define los nombres amigables de los atributos.
+     * @return array
+     */
     public function attributes(): array
     {
         return [
-            'name' => 'nombre',
+            'name' => 'nombre del rol',
         ];
     }
 }

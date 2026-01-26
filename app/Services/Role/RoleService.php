@@ -5,8 +5,16 @@ namespace App\Services\Role;
 use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
 
+/**
+ * Servicio para la gestión de Roles de usuario.
+ * Actúa como contenedor de permisos para facilitar la administración de accesos.
+ */
 class RoleService
 {
+    /**
+     * Obtiene todos los roles definidos en el sistema.
+     * @return array
+     */
     public static function getAll()
     {
         $roles = Role::all();
@@ -28,6 +36,11 @@ class RoleService
         ];
     }
 
+    /**
+     * Busca un rol específico por su identificador.
+     * @param int|string $id
+     * @return array
+     */
     public function getRole($id)
     {
         $role = Role::find($id);
@@ -48,10 +61,16 @@ class RoleService
         ];
     }
 
+    /**
+     * Crea un nuevo rol en la base de datos.
+     * @param array $data Debe contener al menos el 'name'.
+     * @return array
+     */
     public function createRole(array $data)
     {
         Role::create([
             'name' => $data['name'],
+            'guard_name' => $data['guard_name'] ?? 'web', // Spatie requiere un guard_name
         ]);
 
         return [
@@ -61,6 +80,9 @@ class RoleService
         ];
     }
 
+    /**
+     * Actualización completa del nombre del rol.
+     */
     public function updateRole(array $data, $id)
     {
         $role = Role::find($id);
@@ -82,6 +104,9 @@ class RoleService
         ];
     }
 
+    /**
+     * Actualización parcial del rol.
+     */
     public function partialUpdateRole(array $data, $id)
     {
         $role = Role::find($id);
@@ -103,6 +128,10 @@ class RoleService
         ];
     }
 
+    /**
+     * Elimina un rol.
+     * Importante: Esto desvincula a todos los usuarios que posean este rol.
+     */
     public function deleteRole($id)
     {
         $role = Role::find($id);

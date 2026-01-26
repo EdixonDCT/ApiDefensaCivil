@@ -5,8 +5,15 @@ namespace App\Services\StatusPlan;
 use App\Models\StatusPlan\StatusPlan;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para la gestión de los estados de los Planes Familiares.
+ * Controla las etiquetas que definen el ciclo de vida de un plan operativo.
+ */
 class StatusPlanService
 {
+    /**
+     * Obtiene el listado completo de estados de planes disponibles.
+     */
     public static function getAll()
     {
         $statusPlan = StatusPlan::all();
@@ -28,6 +35,9 @@ class StatusPlanService
         ];
     }
 
+    /**
+     * Obtiene un estado de plan específico por su ID.
+     */
     public function getById($id)
     {
         $statusPlan = StatusPlan::find($id);
@@ -48,6 +58,9 @@ class StatusPlanService
         ];
     }
 
+    /**
+     * Registra un nuevo tipo de estado para los planes.
+     */
     public function create(array $data)
     {
         $statusPlan = StatusPlan::create($data);
@@ -60,6 +73,9 @@ class StatusPlanService
         ];
     }
 
+    /**
+     * Actualiza el nombre o descripción de un estado de plan existente.
+     */
     public function update(array $data, $id)
     {
         $statusPlan = StatusPlan::find($id);
@@ -82,6 +98,10 @@ class StatusPlanService
         ];
     }
 
+    /**
+     * Elimina un estado de plan.
+     * Incluye validación de integridad para no afectar planes familiares en curso.
+     */
     public function delete($id)
     {
         $statusPlan = StatusPlan::find($id);
@@ -94,6 +114,7 @@ class StatusPlanService
             ];
         }
         
+        // Verifica si hay Planes Familiares que dependan de este estado
         if ($statusPlan->familyPlan->count()) {
             return [
                 "error" => true,

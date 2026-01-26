@@ -6,9 +6,17 @@ use App\Models\FamilyPlan\FamilyPlan;
 use App\Models\History\History;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para la gestión de Planes Familiares.
+ * Incluye lógica de auditoría para el seguimiento de registros.
+ */
 class FamilyPlanService
 {
-public static function getAll()
+    /**
+     * Obtiene todos los planes familiares registrados.
+     * @return array
+     */
+    public static function getAll()
     {
         $familyPlan = FamilyPlan::all();
 
@@ -29,6 +37,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Obtiene un plan familiar específico por su ID.
+     */
     public function getById($id)
     {
         $familyPlan = FamilyPlan::find($id);
@@ -49,15 +60,21 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Crea un plan familiar y registra la acción en el historial.
+     * @param array $data Datos del plan.
+     * @return array
+     */
     public function create(array $data)
     {
+        // 1. Crear el registro del Plan Familiar
         $familyPlan = FamilyPlan::create($data);
 
+        // 2. Registrar la auditoría en la tabla History
         History::create([
-        'user_id' => auth()->id(), // ID del usuario autenticado
-        'family_plan_id' => $familyPlan->id,
-        'action_id' => 1, // estado "creado"
-        // 'date' y 'time' se llenan automáticamente desde el modelo
+            'user_id' => auth()->id(), // Usuario que realiza la acción
+            'family_plan_id' => $familyPlan->id,
+            'action_id' => 1, // ID representativo del estado "Creado"
         ]);
 
         return [
@@ -68,6 +85,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualización completa de un plan familiar.
+     */
     public function update(array $data, $id)
     {
         $familyPlan = FamilyPlan::find($id);
@@ -90,6 +110,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualización parcial de campos del plan.
+     */
     public function partialUpdate(array $data,$id)
     {
         $familyPlan = FamilyPlan::find($id);
@@ -112,6 +135,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualiza el estado actual del plan familiar.
+     */
     public function changeState(array $data,$id)
     {
         $familyPlan = FamilyPlan::find($id);
@@ -134,6 +160,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualiza la información de coordenadas y georreferenciación.
+     */
     public function georeferencing(array $data,$id)
     {
         $familyPlan = FamilyPlan::find($id);
@@ -156,6 +185,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualiza los datos de identificación específicos del plan.
+     */
     public function identify(array $data,$id)
     {
         $familyPlan = FamilyPlan::find($id);
@@ -178,6 +210,9 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Elimina un plan familiar del sistema.
+     */
     public function delete($id)
     {
         $familyPlan = FamilyPlan::find($id);

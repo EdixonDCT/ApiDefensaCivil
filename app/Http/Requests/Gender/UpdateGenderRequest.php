@@ -4,38 +4,69 @@ namespace App\Http\Requests\Gender;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateGenderRequest
+ * * Valida la actualización de un género existente.
+ * Incluye la lógica de ignorar el ID actual para permitir guardar cambios
+ * sin que el nombre genere un conflicto de duplicidad.
+ */
 class UpdateGenderRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización del género.
+     * @return array
+     */
     public function rules(): array
     {
-        $gender = $this->route('gender_id');
+        /**
+         * Obtenemos el ID del género desde los parámetros de la ruta.
+         */
+        $genderId = $this->route('gender_id');
+
         return [
-            'name' => 'required|alpha|string|max:50|unique:genders,name,'.$gender,
+            /**
+             * El nombre es obligatorio y debe ser único, ignorando el registro actual.
+             */
+            'name'      => "required|alpha|string|max:50|unique:genders,name,{$genderId}",
             'is_active' => 'required|boolean'
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados usando :attribute y sin punto final.
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del genero es obligatorio.',
-            'name.alpha' => 'El nombre del genero debe tener solo letras.',
-            'name.string' => 'El nombre del genero debe tener solo caracteres de tipo texto.',
-            'name.unique' => 'El nombre del genero ya existe.',
-            'name.max' => 'El nombre del genero tiene maximo 50 caracteres.',
-            'is_active.required' => 'El estado activo del genero es obligatorio.',
-            'is_active.boolean' => 'El estado activo del genero debe tener activo o inactivo.'
+            'name.required'      => 'El :attribute es obligatorio',
+            'name.alpha'         => 'El :attribute debe contener solo letras',
+            'name.string'        => 'El :attribute debe ser una cadena de texto válida',
+            'name.unique'        => 'El :attribute ya se encuentra registrado',
+            'name.max'           => 'El :attribute no puede superar los 50 caracteres',
+            'is_active.required' => 'El :attribute es obligatorio',
+            'is_active.boolean'  => 'El :attribute debe ser activo o inactivo'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define los nombres amigables de los campos para los mensajes.
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
-            'name' => 'nombre del genero',
-            'is_active' => 'estado activo del genero'
-    ];
+            'name'      => 'nombre del género',
+            'is_active' => 'estado del género'
+        ];
     }
 }

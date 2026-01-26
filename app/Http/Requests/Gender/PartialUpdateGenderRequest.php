@@ -4,36 +4,67 @@ namespace App\Http\Requests\Gender;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase PartialUpdateGenderRequest
+ * * Permite la actualización parcial de los registros de género.
+ * La regla 'sometimes' es ideal para métodos PATCH, validando solo los campos presentes.
+ */
 class PartialUpdateGenderRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización parcial.
+     * @return array
+     */
     public function rules(): array
     {
-        $gender = $this->route('gender_id');
+        /**
+         * Obtenemos el ID del género desde la ruta para la excepción de unicidad.
+         */
+        $genderId = $this->route('gender_id');
+
         return [
-            'name' => 'sometimes|alpha|string|max:50|unique:genders,name,'.$gender,
+            /**
+             * El nombre es opcional, pero si se envía debe ser único (ignorando el actual) 
+             * y contener solo letras.
+             */
+            'name'      => "sometimes|alpha|string|max:50|unique:genders,name,{$genderId}",
             'is_active' => 'sometimes|boolean'
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.alpha' => 'El nombre del genero debe tener solo letras.',
-            'name.string' => 'El nombre del genero debe tener solo caracteres de tipo texto.',
-            'name.unique' => 'El nombre del genero ya existe.',
-            'name.max' => 'El nombre del genero tiene maximo 50 caracteres.',
-            'is_active.boolean' => 'El estado activo del genero debe tener activo o inactivo.'
+            'name.alpha'        => 'El :attribute debe contener solo letras',
+            'name.string'       => 'El :attribute debe ser una cadena de texto válida',
+            'name.unique'       => 'El :attribute ya se encuentra registrado',
+            'name.max'          => 'El :attribute no puede superar los 50 caracteres',
+            'is_active.boolean' => 'El :attribute debe ser activo o inactivo'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define los nombres amigables de los atributos.
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
-            'name' => 'nombre del genero',
-            'is_active' => 'estado activo del genero'
-    ];
+            'name'      => 'nombre del género',
+            'is_active' => 'estado del género'
+        ];
     }
 }

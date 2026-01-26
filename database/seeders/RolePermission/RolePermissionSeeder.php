@@ -27,18 +27,21 @@ class RolePermissionSeeder extends Seeder
         | ADMINISTRADOR → TODO MENOS CONTROL TOTAL
         |--------------------------------------------------------------------------
         */
-        $admin->syncPermissions(
-            Permission::whereNotIn('name', [
-                'roles.index',
-                'roles.store',
-                'roles.update',
-                'roles.destroy',
-                'permissions.index',
-                'permissions.store',
-                'permissions.update',
-                'permissions.destroy',
-            ])->get()
-        );
+
+        // $admin->syncPermissions(
+        //     Permission::whereNotIn('name', [
+        //         'roles.index',
+        //         'roles.store',
+        //         'roles.update',
+        //         'roles.destroy',
+        //         'permissions.index',
+        //         'permissions.store',
+        //         'permissions.update',
+        //         'permissions.destroy',
+        //     ])->get()
+        // );
+
+        $admin->syncPermissions(Permission::all());
 
         /*
         |--------------------------------------------------------------------------

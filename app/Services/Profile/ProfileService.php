@@ -5,8 +5,15 @@ namespace App\Services\Profile;
 use App\Models\Profile\Profile;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para gestionar la información de perfil de los usuarios.
+ * Maneja datos extendidos como organización, género y detalles personales.
+ */
 class ProfileService
 {
+    /**
+     * Obtiene todos los perfiles registrados en el sistema.
+     */
     public static function getAll()
     {
         $profile = Profile::all();
@@ -28,6 +35,9 @@ class ProfileService
         ];
     }
 
+    /**
+     * Obtiene un perfil específico por su ID.
+     */
     public function getById($id)
     {
         $profile = Profile::find($id);
@@ -48,6 +58,10 @@ class ProfileService
         ];
     }
 
+    /**
+     * Crea un perfil para un usuario.
+     * Generalmente se llama durante el proceso de registro.
+     */
     public function create(array $data)
     {
         $profile = Profile::create($data);
@@ -60,6 +74,9 @@ class ProfileService
         ];
     }
 
+    /**
+     * Actualización total de los datos del perfil.
+     */
     public function update(array $data, $id)
     {
         $profile = Profile::find($id);
@@ -82,6 +99,10 @@ class ProfileService
         ];
     }
 
+    /**
+     * Actualización parcial del perfil.
+     * Útil para actualizar solo un campo (como el teléfono o la dirección).
+     */
     public function partialUpdate(array $data,$id)
     {
         $profile = Profile::find($id);
@@ -90,7 +111,7 @@ class ProfileService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Organizacion no encontrado",
+                "message" => "Perfil no encontrado", // Corregido: decía 'Organización'
             ];
         }
 
@@ -104,6 +125,9 @@ class ProfileService
         ];
     }
 
+    /**
+     * Elimina un perfil del sistema.
+     */
     public function delete($id)
     {
         $profile = Profile::find($id);
@@ -116,7 +140,6 @@ class ProfileService
             ];
         }
         
-
         $profile->delete();
 
         return [

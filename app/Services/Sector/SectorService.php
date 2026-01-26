@@ -5,8 +5,15 @@ namespace App\Services\Sector;
 use App\Models\Sector\Sector;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para la gestión de Sectores.
+ * Los sectores permiten categorizar la ubicación o el área de influencia de los planes familiares.
+ */
 class SectorService
 {
+    /**
+     * Obtiene todos los sectores registrados.
+     */
     public static function getAll()
     {
         $sector = Sector::all();
@@ -28,6 +35,9 @@ class SectorService
         ];
     }
 
+    /**
+     * Obtiene un sector específico por su ID.
+     */
     public function getById($id)
     {
         $sector = Sector::find($id);
@@ -48,6 +58,9 @@ class SectorService
         ];
     }
 
+    /**
+     * Crea un nuevo sector.
+     */
     public function create(array $data)
     {
         $sector = Sector::create($data);
@@ -60,6 +73,9 @@ class SectorService
         ];
     }
 
+    /**
+     * Actualización completa de un sector.
+     */
     public function update(array $data, $id)
     {
         $sector = Sector::find($id);
@@ -82,6 +98,9 @@ class SectorService
         ];
     }
 
+    /**
+     * Actualización parcial de los datos del sector.
+     */
     public function partialUpdate(array $data,$id)
     {
         $sector = Sector::find($id);
@@ -104,6 +123,9 @@ class SectorService
         ];
     }
 
+    /**
+     * Modifica el estado de activación del sector.
+     */
     public function changeState(array $data,$id)
     {
         $sector = Sector::find($id);
@@ -126,6 +148,9 @@ class SectorService
         ];
     }
 
+    /**
+     * Elimina un sector si no tiene Planes Familiares vinculados.
+     */
     public function delete($id)
     {
         $sector = Sector::find($id);
@@ -138,6 +163,7 @@ class SectorService
             ];
         }
         
+        // Validación de integridad para evitar errores en cascada
         if ($sector->familyPlan->count()) {
             return [
                 "error" => true,

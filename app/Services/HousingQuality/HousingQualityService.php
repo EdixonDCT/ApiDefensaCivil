@@ -5,8 +5,14 @@ namespace App\Services\HousingQuality;
 use App\Models\HousingQuality\HousingQuality;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para gestionar los parámetros de calidad de la vivienda.
+ */
 class HousingQualityService
 {
+    /**
+     * Obtiene todos los registros de calidad de vivienda.
+     */
     public static function getAll()
     {
         $housingQuality = HousingQuality::all();
@@ -28,6 +34,9 @@ class HousingQualityService
         ];
     }
 
+    /**
+     * Obtiene un registro específico por ID.
+     */
     public function getById($id)
     {
         $housingQuality = HousingQuality::find($id);
@@ -48,6 +57,9 @@ class HousingQualityService
         ];
     }
 
+    /**
+     * Crea un nuevo parámetro de calidad de vivienda.
+     */
     public function create(array $data)
     {
         $housingQuality = HousingQuality::create($data);
@@ -60,6 +72,9 @@ class HousingQualityService
         ];
     }
 
+    /**
+     * Actualización total del registro.
+     */
     public function update(array $data, $id)
     {
         $housingQuality = HousingQuality::find($id);
@@ -82,7 +97,10 @@ class HousingQualityService
         ];
     }
 
-    public function partialUpdate(array $data,$id)
+    /**
+     * Actualización parcial del registro.
+     */
+    public function partialUpdate(array $data, $id)
     {
         $housingQuality = HousingQuality::find($id);
 
@@ -90,7 +108,7 @@ class HousingQualityService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Caldiad de vivienda no encontrada",
+                "message" => "Calidad de vivienda no encontrada",
             ];
         }
 
@@ -104,7 +122,10 @@ class HousingQualityService
         ];
     }
 
-    public function changeState(array $data,$id)
+    /**
+     * Activa o desactiva el parámetro de calidad.
+     */
+    public function changeState(array $data, $id)
     {
         $housingQuality = HousingQuality::find($id);
 
@@ -126,11 +147,15 @@ class HousingQualityService
         ];
     }
 
+    /**
+     * Elimina el registro si no está vinculado a planes familiares.
+     */
     public function delete($id)
     {
-        $housingQuality = housingQuality::find($id);
+        // Corrección: Usamos la variable correcta $housingQuality
+        $housingQuality = HousingQuality::find($id);
 
-        if (!$gender){
+        if (!$housingQuality){
             return [
                 "error" => true,
                 "code" => 404,
@@ -138,6 +163,7 @@ class HousingQualityService
             ];
         }
         
+        // Validación de integridad referencial
         if ($housingQuality->familyPlan->count()) {
             return [
                 "error" => true,
@@ -146,7 +172,7 @@ class HousingQualityService
             ];
         }
 
-        $gender->delete();
+        $housingQuality->delete();
 
         return [
             "error" => false,

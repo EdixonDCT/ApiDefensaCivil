@@ -4,37 +4,66 @@ namespace App\Http\Requests\City;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateCityRequest
+ * * Valida la actualización de una ciudad existente.
+ * Incluye la lógica de exclusión para el nombre de la ciudad, permitiendo
+ * actualizar otros campos sin que el nombre actual genere un conflicto de unicidad.
+ */
 class UpdateCityRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización.
+     * @return array
+     */
     public function rules(): array
     {
-        $city = $this->route('city_id');
+        /**
+         * Capturamos el ID de la ciudad desde la ruta para que la regla 'unique' 
+         * lo ignore durante la validación de este registro.
+         */
+        $cityId = $this->route('city_id');
+
         return [
-            'name' => 'required|string|max:50|unique:cities,name,'.$city,
+            'name'         => "required|string|max:50|unique:cities,name,{$cityId}",
             'apartment_id' => 'required|exists:apartments,id'
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin punto final.
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'El nombre de la ciudad es obligatorio.',
-            'name.string' => 'El nombre de la ciudad debe tener solo caracteres de tipo texto.',
-            'name.max' => 'El nombre de la ciudad tiene maximo 50 caracteres.',
-            'name.unique' => 'La ciudad ya existe.',
-            'apartment_id.required' => 'ID del apartamento es obligatorio.',
-            'apartment_id.exists' => 'ID del apartamento no existe.'
+            'name.required'         => 'El :attribute es obligatorio',
+            'name.string'           => 'El :attribute debe contener solo caracteres de texto',
+            'name.max'              => 'El :attribute tiene un máximo de 50 caracteres',
+            'name.unique'           => 'El :attribute ya se encuentra registrado',
+            'apartment_id.required' => 'El :attribute es obligatorio',
+            'apartment_id.exists'   => 'El :attribute seleccionado no existe'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define los nombres amigables de los campos.
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
-            'name' => 'nombre de la organizacion',
-            'apartment_id' => 'ID del apartamento'    
+            'name'         => 'nombre de la ciudad',
+            'apartment_id' => 'identificador del apartamento' 
         ];
     }
 }

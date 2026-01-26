@@ -5,8 +5,15 @@ namespace App\Services\Zone;
 use App\Models\Zone\Zone;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para la gestión de Tipos de Zonas.
+ * Clasifica la ubicación de los planes familiares (ej. Urbano, Rural, Periurbano).
+ */
 class ZoneService
 {
+    /**
+     * Obtiene todos los tipos de zonas registrados en el sistema.
+     */
     public static function getAll()
     {
         $zone = Zone::all();
@@ -28,6 +35,9 @@ class ZoneService
         ];
     }
 
+    /**
+     * Busca un tipo de zona específico por su ID.
+     */
     public function getById($id)
     {
         $zone = Zone::find($id);
@@ -48,6 +58,9 @@ class ZoneService
         ];
     }
 
+    /**
+     * Registra una nueva categoría de zona.
+     */
     public function create(array $data)
     {
         $zone = Zone::create($data);
@@ -60,6 +73,9 @@ class ZoneService
         ];
     }
 
+    /**
+     * Actualiza la información de una zona existente.
+     */
     public function update(array $data, $id)
     {
         $zone = Zone::find($id);
@@ -82,6 +98,10 @@ class ZoneService
         ];
     }
 
+    /**
+     * Elimina un tipo de zona siempre que no tenga planes familiares asociados.
+     * Mantiene la integridad referencial de la base de datos.
+     */
     public function delete($id)
     {
         $zone = Zone::find($id);
@@ -94,6 +114,7 @@ class ZoneService
             ];
         }
         
+        // Verificación de relaciones con planes familiares
         if ($zone->familyPlan->count()){
             return [
                 "error" => true,

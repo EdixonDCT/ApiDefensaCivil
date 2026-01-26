@@ -4,42 +4,73 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateUserRequest
+ * * Valida la actualización completa de las credenciales de usuario.
+ * Garantiza que el email sea único (exceptuando al usuario actual) 
+ * y que la contraseña cumpla con los requisitos de seguridad.
+ */
 class UpdateUserRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la edición de usuario.
+     * * @return array
+     */
     public function rules(): array
     {
-        $User = $this->route('user_id');
+        /**
+         * Capturamos el ID del usuario desde la ruta para permitir
+         * guardar cambios sin conflicto de unicidad en el email.
+         */
+        $userId = $this->route('user_id');
+
         return [
-            'email' => 'required|email|max:255|unique:users,email,'.$User,
-            'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/',
+            'email'         => "required|email|max:255|unique:users,email,{$userId}",
+            'password'      => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/',
             'state_user_id' => 'required|exists:state_users,id',
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * * @return array
+     */
+    public function messages(): array
     {
         return [
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'El correo electrónico debe ser una dirección de correo válida.',
-            'email.max' => 'El correo electrónico no debe exceder los 255 caracteres.',
-            'email.unique' => 'El correo electrónico ya esta registrado.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.regex' => 'La contraseña debe tener una mayuscula,una minuscula,un numero y un caracter especial.',
-            'state_user_id.required' => 'El Estado de Usuario es obligatorio.',
-            'state_user_id.exists' => 'El Estado de Usuario no existe en la base de datos.',
+            'email.required'   => 'El :attribute es obligatorio',
+            'email.email'      => 'El :attribute debe ser una dirección válida',
+            'email.max'        => 'El :attribute no debe superar los :max caracteres',
+            'email.unique'     => 'El :attribute ya se encuentra registrado',
+
+            'password.required' => 'La :attribute es obligatoria',
+            'password.min'      => 'La :attribute debe tener al menos :min caracteres',
+            'password.regex'    => 'La :attribute debe incluir mayúscula, minúscula, número y carácter especial',
+
+            'state_user_id.required' => 'El :attribute es obligatorio',
+            'state_user_id.exists'   => 'El :attribute seleccionado no es válido',
         ];
     }
-    public function attributes()
+
+    /**
+     * Define los nombres amigables de los atributos.
+     * * @return array
+     */
+    public function attributes(): array
     {
         return [
-            'email' => 'correo electrónico',
-            'password' => 'contraseña',
-            'state_user_id' => 'ID del estado de usuario ',
-    ];
+            'email'         => 'correo electrónico',
+            'password'      => 'contraseña',
+            'state_user_id' => 'estado de usuario',
+        ];
     }
 }

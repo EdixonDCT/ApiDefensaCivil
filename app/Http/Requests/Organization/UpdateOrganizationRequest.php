@@ -4,41 +4,69 @@ namespace App\Http\Requests\Organization;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateOrganizationRequest
+ * * Valida la actualización completa de una organización existente.
+ * Mantiene la integridad referencial con las seccionales y permite 
+ * conservar el nombre original mediante la excepción de ID.
+ */
 class UpdateOrganizationRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización.
+     * @return array
+     */
     public function rules(): array
     {
-        $organization = $this->route('organization_id');
+        /**
+         * Obtenemos el ID de la organización desde la ruta.
+         */
+        $organizationId = $this->route('organization_id');
+
         return [
-            'name' => 'required|string|max:50|unique:organizations,name,'.$organization,
+            'name'         => "required|string|max:50|unique:organizations,name,{$organizationId}",
             'sectional_id' => 'required|exists:sectionals,id',
-            'is_active' => 'required|boolean'
+            'is_active'    => 'required|boolean'
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'El nombre de la organizacion es obligatorio.',
-            'name.string' => 'El nombre de la organizacion debe tener solo caracteres de tipo texto.',
-            'name.max' => 'El nombre de la organizacion tiene maximo 50 caracteres.',
-            'name.unique' => 'La organizacion ya existe.',
-            'sectional_id.required' => 'ID de la seccional es obligatorio.',
-            'sectional_id.exists' => 'ID de la seccional no existe.',
-            'is_active.required' => 'El estado activo de la organizacion es obligatorio.',
-            'is_active.boolean' => 'El estado activo de la organizacion debe tener activo o inactivo.'
+            'name.required'         => 'El :attribute es obligatorio',
+            'name.string'           => 'El :attribute debe ser una cadena de texto válida',
+            'name.max'              => 'El :attribute no debe superar los 50 caracteres',
+            'name.unique'           => 'La :attribute ya se encuentra registrada',
+            'sectional_id.required' => 'La :attribute es obligatoria',
+            'sectional_id.exists'   => 'La :attribute seleccionada no existe',
+            'is_active.required'    => 'El :attribute es obligatorio',
+            'is_active.boolean'     => 'El :attribute debe ser activo o inactivo'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define los nombres amigables de los atributos.
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
-            'name' => 'nombre de la organizacion',
-            'sectional_id' => 'ID de la seccional',
-            'is_active' => 'El estado activo de la organizacion'
-    ];
+            'name'         => 'nombre de la organización',
+            'sectional_id' => 'seccional vinculada',
+            'is_active'    => 'estado de la organización'
+        ];
     }
 }

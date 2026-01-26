@@ -8,15 +8,26 @@ use App\Http\Requests\Action\StoreActionRequest;
 use App\Http\Requests\Action\UpdateActionRequest;
 use App\Services\Action\ActionService;
 
+/**
+ * Controlador para la gestión de Acciones.
+ * Maneja las peticiones HTTP y delega la lógica de negocio al ActionService.
+ */
 class ActionController extends Controller
 {
     protected $service;
 
+    /**
+     * Inyección de dependencia del servicio de acciones.
+     */
     public function __construct(ActionService $service)
     {
         $this->service = $service;
     }
 
+    /**
+     * Lista todas las acciones registradas.
+     * Retorna una respuesta exitosa incluso si la lista está vacía (siguiendo la lógica del servicio).
+     */
     public function index()
     {
         $response = $this->service->getAll();
@@ -32,6 +43,9 @@ class ActionController extends Controller
         );
     }
 
+    /**
+     * Obtiene los detalles de una acción específica por su UUID o ID.
+     */
     public function show(string $id)
     {
         $response = $this->service->getById($id);
@@ -47,8 +61,13 @@ class ActionController extends Controller
         );
     }
 
+    /**
+     * Registra una nueva acción en el sistema.
+     * Utiliza StoreActionRequest para validar los datos antes de entrar al método.
+     */
     public function store(StoreActionRequest $request)
     {
+        // Solo datos validados por el FormRequest
         $data = $request->validated();
 
         $response = $this->service->create($data);
@@ -64,6 +83,10 @@ class ActionController extends Controller
         );
     }
 
+    /**
+     * Actualiza una acción existente.
+     * Valida los datos con UpdateActionRequest para permitir actualizaciones parciales o totales.
+     */
     public function update(UpdateActionRequest $request, string $id)
     {
         $data = $request->validated();
@@ -81,6 +104,10 @@ class ActionController extends Controller
         );
     }
 
+    /**
+     * Elimina una acción del sistema.
+     * El servicio se encarga de verificar si existen restricciones de integridad antes de borrar.
+     */
     public function destroy(string $id)
     {
         $response = $this->service->delete($id);
@@ -90,6 +117,10 @@ class ActionController extends Controller
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+        return ResponseFormatter::success(
+            $response['message'], 
+            $response['code'], 
+            $response['data'] ?? []
+        );
     }
 }

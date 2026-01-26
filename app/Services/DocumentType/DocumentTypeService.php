@@ -5,8 +5,15 @@ namespace App\Services\DocumentType;
 use App\Models\DocumentType\DocumentType;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para gestionar los tipos de documentos de identidad.
+ */
 class DocumentTypeService
 {
+    /**
+     * Obtiene todos los tipos de documento registrados.
+     * @return array
+     */
     public static function getAll()
     {
         $documentType = DocumentType::all();
@@ -28,6 +35,11 @@ class DocumentTypeService
         ];
     }
 
+    /**
+     * Obtiene un tipo de documento por su ID.
+     * @param int|string $id
+     * @return array
+     */
     public function getById($id)
     {
         $documentType = DocumentType::find($id);
@@ -48,6 +60,11 @@ class DocumentTypeService
         ];
     }
 
+    /**
+     * Crea un nuevo registro de tipo de documento.
+     * @param array $data
+     * @return array
+     */
     public function create(array $data)
     {
         $documentType = DocumentType::create($data);
@@ -60,6 +77,9 @@ class DocumentTypeService
         ];
     }
 
+    /**
+     * Actualización total de un tipo de documento.
+     */
     public function update(array $data, $id)
     {
         $documentType = DocumentType::find($id);
@@ -82,6 +102,9 @@ class DocumentTypeService
         ];
     }
 
+    /**
+     * Actualización parcial de campos específicos.
+     */
     public function partialUpdate(array $data,$id)
     {
         $documentType = DocumentType::find($id);
@@ -104,6 +127,9 @@ class DocumentTypeService
         ];
     }
 
+    /**
+     * Cambia el estado (activo/inactivo) del tipo de documento.
+     */
     public function changeState(array $data,$id)
     {
         $documentType = DocumentType::find($id);
@@ -126,6 +152,9 @@ class DocumentTypeService
         ];
     }
 
+    /**
+     * Elimina el registro, validando que no esté asignado a ningún perfil de usuario.
+     */
     public function delete($id)
     {
         $documentType = DocumentType::find($id);
@@ -138,10 +167,11 @@ class DocumentTypeService
             ];
         }
         
+        // Validación de integridad: No borrar si hay perfiles que usan este tipo de documento
         if ($documentType->profile->count()) {
             return [
                 "error" => true,
-                "code" => 409,
+                "code" => 409, // Conflicto por registros relacionados
                 "message" => "No se puede eliminar el Tipo de documento porque tiene registros relacionados",
             ];
         }

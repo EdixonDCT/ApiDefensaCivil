@@ -5,8 +5,15 @@ namespace App\Services\StateUser;
 use App\Models\StateUser\StateUser;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para la gestión de los estados de usuario.
+ * Define la disponibilidad operativa de las cuentas en el sistema.
+ */
 class StateUserService
 {
+    /**
+     * Obtiene todos los estados de usuario disponibles.
+     */
     public static function getAll()
     {
         $stateUsers = StateUser::all();
@@ -28,6 +35,9 @@ class StateUserService
         ];
     }
 
+    /**
+     * Obtiene un estado de usuario específico por ID.
+     */
     public function getById($id)
     {
         $stateUser = StateUser::find($id);
@@ -48,6 +58,9 @@ class StateUserService
         ];
     }
 
+    /**
+     * Crea una nueva categoría de estado de usuario.
+     */
     public function create(array $data)
     {
         $stateUser = StateUser::create($data);
@@ -60,6 +73,9 @@ class StateUserService
         ];
     }
 
+    /**
+     * Actualiza el nombre o descripción de un estado.
+     */
     public function update(array $data, $id)
     {
         $stateUser = StateUser::find($id);
@@ -82,6 +98,10 @@ class StateUserService
         ];
     }
 
+    /**
+     * Elimina un estado de usuario siempre que no haya usuarios usándolo.
+     * Crucial para mantener la integridad de las cuentas existentes.
+     */
     public function delete($id)
     {
         $stateUser = StateUser::find($id);
@@ -94,6 +114,7 @@ class StateUserService
             ];
         }
         
+        // Validación de relación hasMany con el modelo User
         if ($stateUser->user->count()) {
             return [
                 "error" => true,

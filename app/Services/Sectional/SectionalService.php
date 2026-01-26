@@ -5,8 +5,15 @@ namespace App\Services\Sectional;
 use App\Models\Sectional\Sectional;
 use Illuminate\support\Arr;
 
+/**
+ * Servicio para gestionar las Seccionales.
+ * Representa la unidad regional principal de la organización.
+ */
 class SectionalService
 {
+    /**
+     * Obtiene el listado de todas las seccionales registradas.
+     */
     public static function getAll()
     {
         $sectional = Sectional::all();
@@ -27,6 +34,9 @@ class SectionalService
         ];
     }
 
+    /**
+     * Obtiene una seccional por su ID.
+     */
     public function getById($id)
     {
         $sectional = Sectional::find($id);
@@ -47,6 +57,9 @@ class SectionalService
         ];
     }
 
+    /**
+     * Registra una nueva seccional.
+     */
     public function create(array $data)
     {
         $sectional = Sectional::create($data);
@@ -59,6 +72,9 @@ class SectionalService
         ];
     }
 
+    /**
+     * Actualiza todos los campos de una seccional.
+     */
     public function update(array $data, $id)
     {
         $sectional = Sectional::find($id);
@@ -80,6 +96,9 @@ class SectionalService
         ];
     }
 
+    /**
+     * Actualización parcial de datos de la seccional.
+     */
     public function partialUpdate(array $data,$id)
     {
         $sectional = Sectional::find($id);
@@ -101,6 +120,9 @@ class SectionalService
         ];
     }
 
+    /**
+     * Cambia el estado (habilitado/deshabilitado) de la seccional.
+     */
     public function changeState(array $data,$id)
     {
         $sectional = Sectional::find($id);
@@ -122,6 +144,10 @@ class SectionalService
         ];
     }
 
+    /**
+     * Elimina una seccional validando que no tenga organizaciones dependientes.
+     * Esta validación previene errores de clave foránea y pérdida de integridad.
+     */
     public function delete($id)
     {
         $sectional = Sectional::find($id);
@@ -134,11 +160,12 @@ class SectionalService
             ];
         }
 
+        // Verifica si hay organizaciones vinculadas (relación hasMany)
         if ($sectional->organization->count()) {
             return [
                 "error" => true,
                 "code" => 409,
-                "message" => "No se puede eliminar el seccional porque tiene registros relacionados",
+                "message" => "No se puede eliminar la seccional porque tiene registros relacionados",
             ];
         }
 

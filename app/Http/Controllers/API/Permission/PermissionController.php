@@ -10,17 +10,24 @@ use App\Http\Requests\Permission\UpdatePermissionRequest;
 use App\Services\Permission\PermissionService;
 use Illuminate\Http\Request;
 
+/**
+ * Controlador de Permisos.
+ * Gestiona el catálogo de capacidades atómicas del sistema para el control de acceso (RBAC).
+ */
 class PermissionController extends Controller
 {
     protected $permissionService;
 
+    /**
+     * Inyección del servicio de permisos.
+     */
     public function __construct(PermissionService $permissionService) 
     {
         $this->permissionService = $permissionService;
     }
 
     /**
-     * Display a listing of the resource.
+     * Lista todos los permisos registrados en el sistema.
      */
     public function index()
     {
@@ -33,7 +40,7 @@ class PermissionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Obtiene los detalles de un permiso específico.
      */
     public function show(string $id)
     {
@@ -46,12 +53,11 @@ class PermissionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Registra una nueva capacidad o permiso.
      */
     public function store(StorePermissionRequest $request)
     {
         $data = $request->validated();
-
         $response = $this->permissionService->createPermission($data);
 
         if($response['error'])
@@ -61,12 +67,11 @@ class PermissionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualización total de un permiso (PUT).
      */
     public function update(UpdatePermissionRequest $request, string $id)
     {
         $data = $request->validated();
-
         $response = $this->permissionService->updatePermission($data, $id);
 
         if($response['error'])
@@ -76,12 +81,11 @@ class PermissionController extends Controller
     }
 
     /**
-     * Partially update the specified resource in storage.
+     * Actualización parcial de un permiso (PATCH), útil para editar solo el nombre o la descripción.
      */
     public function partialUpdate(PartialUpdatePermissionRequest $request, string $id)
     {
         $data = $request->validated();
-
         $response = $this->permissionService->partialUpdatePermission($data, $id);
 
         if($response['error'])
@@ -91,7 +95,8 @@ class PermissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un permiso del sistema. 
+     * Nota: Esto suele tener un impacto directo en los roles que lo poseen.
      */
     public function destroy(string $id)
     {

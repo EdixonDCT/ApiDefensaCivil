@@ -4,11 +4,18 @@ namespace App\Services\Apartment;
 
 use App\Models\Apartment\Apartment;
 use App\Models\Sectional\Sectional;
-use Illuminate\support\Arr;
+use Illuminate\Support\Arr;
 
+/**
+ * Servicio para gestionar la lógica de negocio de los Apartamentos.
+ */
 class ApartmentService
 {
-public static function getAll()
+    /**
+     * Obtiene la lista completa de apartamentos.
+     * * @return array Respuesta con la colección de apartamentos.
+     */
+    public static function getAll()
     {
         $apartment = Apartment::all();
 
@@ -16,7 +23,7 @@ public static function getAll()
             return [
                 "error" => false,
                 "code" => 200,
-                "message" => "No hay apartamentos registradas",
+                "message" => "No hay apartamentos registrados",
                 "data" => $apartment,
             ];
         }
@@ -24,11 +31,16 @@ public static function getAll()
         return [
             "error" => false,
             "code" => 200,
-            "message" => "apartamentos obtenidos exitosamente",
+            "message" => "Apartamentos obtenidos exitosamente",
             "data" => $apartment,
         ];
     }
 
+    /**
+     * Obtiene un apartamento específico por su ID.
+     * * @param int|string $id Identificador del apartamento.
+     * @return array Datos del apartamento o error 404.
+     */
     public function getById($id)
     {
         $apartment = Apartment::find($id);
@@ -49,6 +61,11 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Crea un nuevo apartamento.
+     * * @param array $data Datos para la creación.
+     * @return array Objeto creado con código 201.
+     */
     public function create(array $data)
     {
         $apartment = Apartment::create($data);
@@ -61,6 +78,12 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Actualización total de un apartamento.
+     * * @param array $data Datos a actualizar.
+     * @param int|string $id ID del apartamento.
+     * @return array Resultado de la actualización.
+     */
     public function update(array $data, $id)
     {
         $apartment = Apartment::find($id);
@@ -83,7 +106,13 @@ public static function getAll()
         ];
     }
 
-    public function partialUpdate(array $data,$id)
+    /**
+     * Actualización parcial (PATCH) de un apartamento.
+     * * @param array $data Campos específicos a modificar.
+     * @param int|string $id ID del apartamento.
+     * @return array
+     */
+    public function partialUpdate(array $data, $id)
     {
         $apartment = Apartment::find($id);
 
@@ -105,7 +134,13 @@ public static function getAll()
         ];
     }
 
-    public function changeState(array $data,$id)
+    /**
+     * Cambia exclusivamente el estado (activo/inactivo) del apartamento.
+     * * @param array $data Debe contener el nuevo estado.
+     * @param int|string $id ID del apartamento.
+     * @return array
+     */
+    public function changeState(array $data, $id)
     {
         $apartment = Apartment::find($id);
 
@@ -127,6 +162,11 @@ public static function getAll()
         ];
     }
 
+    /**
+     * Elimina un apartamento, validando que no tenga registros dependientes.
+     * * @param int|string $id ID del apartamento a eliminar.
+     * @return array Confirmación o error 409 si hay integridad referencial en juego.
+     */
     public function delete($id)
     {
         $apartment = Apartment::find($id);
@@ -139,11 +179,12 @@ public static function getAll()
             ];
         }
         
+        // Verificación de integridad: Evita borrar si tiene ciudades relacionadas
         if ($apartment->city->count()) {
             return [
                 "error" => true,
-                "code" => 409,
-                "message" => "No se puede eliminar la Apartamento porque tiene registros relacionados",
+                "code" => 409, // Conflict
+                "message" => "No se puede eliminar el Apartamento porque tiene registros relacionados",
             ];
         }
 

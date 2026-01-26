@@ -4,34 +4,62 @@ namespace App\Http\Requests\StateUser;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase UpdateStateUserRequest
+ * * Valida la edición de un estado de usuario existente.
+ * Permite cambiar el nombre del estado asegurando que no se duplique,
+ * pero ignorando el registro actual para evitar errores de validación falsos.
+ */
 class UpdateStateUserRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario está autorizado para realizar esta solicitud.
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
+
+    /**
+     * Define las reglas de validación para la actualización.
+     * @return array
+     */
     public function rules(): array
     {
-        $stateUser = $this->route('state_user_id');
+        /**
+         * Obtenemos el ID desde el parámetro de la ruta.
+         */
+        $stateUserId = $this->route('state_user_id');
+
         return [
-            'name' => 'required|alpha|string|max:50|unique:state_users,name,'.$stateUser,
+            'name' => "required|alpha|string|max:50|unique:state_users,name,{$stateUserId}",
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error personalizados con :attribute y sin puntos finales.
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del estado de usuario es obligatorio.',
-            'name.alpha' => 'El nombre del estado de usuario debe tener solo letras.',
-            'name.string' => 'El nombre del estado de usuario debe tener solo caracteres de tipo texto.',
-            'name.unique' => 'El nombre del estado de usuario ya existe.',
-            'name.max' => 'El nombre del estado de usuario tiene maximo 50 caracteres.'
+            'name.required' => 'El :attribute es obligatorio',
+            'name.alpha'    => 'El :attribute debe contener solo letras',
+            'name.string'   => 'El :attribute debe ser una cadena de texto válida',
+            'name.unique'   => 'El :attribute ingresado ya se encuentra registrado',
+            'name.max'      => 'El :attribute no debe superar los :max caracteres'
         ];
     }
-    public function attributes()
+
+    /**
+     * Define el nombre amigable del atributo.
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
             'name' => 'nombre del estado de usuario',
-    ];
+        ];
     }
 }

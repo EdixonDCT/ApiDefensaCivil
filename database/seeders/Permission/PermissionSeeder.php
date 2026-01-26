@@ -135,6 +135,40 @@ class PermissionSeeder extends Seeder
             ['housing-info.show', 'Ver información de vivienda'],
             ['housing-info.store', 'Crear información de vivienda'],
             ['housing-info.destroy', 'Eliminar información de vivienda'],
+            
+            // VULNERABLE QUESTIONS (FALTANTES)
+            ['vulnerable-questions.index', 'Listar preguntas de vulnerabilidad'],
+            ['vulnerable-questions.paginate', 'Paginar preguntas de vulnerabilidad'],
+            ['vulnerable-questions.show', 'Ver pregunta de vulnerabilidad'],
+            ['vulnerable-questions.store', 'Crear pregunta de vulnerabilidad'],
+            ['vulnerable-questions.update', 'Actualizar pregunta de vulnerabilidad'],
+            ['vulnerable-questions.partial-update', 'Actualizar parcialmente pregunta de vulnerabilidad'],
+            ['vulnerable-questions.change-state', 'Cambiar estado de pregunta de vulnerabilidad'],
+            ['vulnerable-questions.destroy', 'Eliminar pregunta de vulnerabilidad'],
+
+            // VULNERABLE TEST (FALTANTES)
+            ['vulnerable-tests.index', 'Listar tests de vulnerabilidad'],
+            ['vulnerable-tests.show', 'Ver resultados de test de vulnerabilidad'],
+            ['vulnerable-tests.store', 'Registrar respuestas de test de vulnerabilidad'],
+            ['vulnerable-tests.destroy', 'Eliminar test de vulnerabilidad'],
+
+            // ACTIONS (FALTANTES)
+            ['actions.index', 'Listar acciones'],
+            ['actions.show', 'Ver detalle de acción'],
+            ['actions.store', 'Crear nueva acción'],
+            ['actions.update', 'Actualizar acción'],
+            ['actions.destroy', 'Eliminar acción'],
+
+            // HISTORIES (FALTANTES)
+            ['histories.index', 'Listar todo el historial'],
+            ['histories.show', 'Ver detalle de historial'],
+            ['histories.store', 'Crear registro de historial'],
+            ['histories.update', 'Actualizar historial'],
+            ['histories.partial-update', 'Actualizar parcialmente historial'],
+            ['histories.destroy', 'Eliminar historial'],
+            ['histories.voluntario', 'Ver historial de acciones por voluntario'],
+            ['histories.supervisor', 'Ver historial de acciones por supervisor'],
+            ['histories.check-access', 'Validar acceso a planes en el historial'],
         ];
 
         foreach ($permissions as [$name, $description]) {

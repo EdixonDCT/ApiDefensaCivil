@@ -4,8 +4,15 @@ namespace App\Services\VulnerableTest;
 
 use App\Models\VulnerableTest\VulnerableTest;
 
+/**
+ * Servicio para gestionar la aplicación de los tests de vulnerabilidad.
+ * Almacena las respuestas del diagnóstico realizado a cada plan familiar.
+ */
 class VulnerableTestService
 {
+    /**
+     * Obtiene el historial de todos los tests aplicados en el sistema.
+     */
      public function index()
     {
         $tests = VulnerableTest::all();
@@ -27,8 +34,12 @@ class VulnerableTestService
         ];
     }
 
+    /**
+     * Obtiene todas las respuestas (items del test) de un Plan Familiar específico.
+     * @param int $familyPlan_id
+     */
     public function show($familyPlan_id)
-{
+    {
         $tests = VulnerableTest::where('family_plan_id', $familyPlan_id)->get();
 
         if ($tests->isEmpty()) {
@@ -48,6 +59,10 @@ class VulnerableTestService
         ];
     }
 
+    /**
+     * Registra una respuesta individual dentro de un test.
+     * Generalmente se ejecuta en un bucle dentro del controlador.
+     */
     public function create(array $data)
     {
         $test = VulnerableTest::create($data);
@@ -60,6 +75,10 @@ class VulnerableTestService
         ];
     }
 
+    /**
+     * Elimina todas las respuestas asociadas a un Plan Familiar.
+     * Útil para reiniciar un diagnóstico o limpiar datos huérfanos.
+     */
     public function delete($familyPlan_id)
     {
         $test = VulnerableTest::where('family_plan_id', $familyPlan_id)->delete();

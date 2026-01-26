@@ -8,13 +8,25 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Crea la tabla 'cities' vinculada (según el código) a un apartamento.
      */
     public function up(): void
     {
         Schema::create('cities', function (Blueprint $table) {
+            // ID único autoincremental para la ciudad
             $table->id();
-            $table->string('name',50)->unique();   
+
+            // Nombre de la ciudad (ej: 'Bogotá', 'Medellín')
+            // Único para evitar nombres repetidos y limitado a 50 caracteres
+            $table->string('name', 50)->unique();   
+
+            /** * RELACIÓN ACTUAL:
+             * Aquí estás diciendo que una CIUDAD pertenece a un APARTAMENTO.
+             * Generalmente es al revés (un apartamento está en una ciudad).
+             */
             $table->foreignId('apartment_id')->constrained();
+
+            // Auditoría básica
             $table->timestamps();
         });
     }

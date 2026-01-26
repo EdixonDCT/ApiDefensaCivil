@@ -10,55 +10,74 @@ use App\Http\Requests\Organization\ChangeStateOrganizationRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Organization\OrganizationService;
 
+/**
+ * Controlador de Organizaciones.
+ * Gestiona la entidad principal que agrupa las dependencias administrativas y territoriales.
+ */
 class OrganizationController extends Controller
 {
     protected $service;
 
+    /**
+     * Inyección del servicio de lógica para Organizaciones.
+     */
     public function __construct(OrganizationService $service)
     {
         $this->service = $service;
     }
 
+    /**
+     * Lista todas las organizaciones registradas.
+     */
     public function index()
     {
         $response = $this->service->getAll();
 
         if ($response['error'])
         {
-            return responseFormatter::error($response['message'],$response['code']);
+            // Nota: Se recomienda normalizar a ResponseFormatter (PascalCase).
+            return ResponseFormatter::error($response['message'], $response['code']);
         }
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    /**
+     * Muestra los detalles de una organización específica.
+     */
     public function show(string $id)
     {
-    $response = $this->service->getById($id);
+        $response = $this->service->getById($id);
 
-    if ($response['error'])
-        return ResponseFormatter::error($response['message'], $response['code']);
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
 
-    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    /**
+     * Registra una nueva organización en el sistema.
+     */
     public function store(StoreOrganizationRequest $request)
     {
-    $data = $request->validated();
+        $data = $request->validated();
+        $response = $this->service->create($data);
 
-    $response = $this->service->create($data);
+        if ($response['error'])
+        {    
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
 
-    if ($response['error'])
-    {    
-        return ResponseFormatter::error($response['message'], $response['code']);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
-    }
-
+    /**
+     * Actualización total de los datos de la organización (PUT).
+     */
     public function update(UpdateOrganizationRequest $request, string $id)
     {
         $data = $request->validated();
-
         $response = $this->service->update($data, $id);
 
         if ($response['error'])
@@ -69,34 +88,41 @@ class OrganizationController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    /**
+     * Actualización parcial de campos (PATCH).
+     */
     public function partialUpdate(PartialUpdateOrganizationRequest $request, string $id)
     {
-    $data = $request->validated();
+        $data = $request->validated();
+        $response = $this->service->partialUpdate($data, $id);
 
-    $response = $this->service->partialUpdate($data, $id);
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
 
-    if ($response['error'])
-    {
-        return ResponseFormatter::error($response['message'], $response['code']);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
-    }
-
+    /**
+     * Cambia el estado (Activa/Inactiva) de la organización.
+     */
     public function ChangeState(ChangeStateOrganizationRequest $request, string $id)
     {
-    $data = $request->validated();
+        $data = $request->validated();
+        $response = $this->service->changeState($data, $id);
 
-    $response = $this->service->changeState($data, $id);
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
 
-    if ($response['error'])
-    {
-        return ResponseFormatter::error($response['message'], $response['code']);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
-    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
-    }
-
+    /**
+     * Elimina una organización tras verificar que no tenga seccionales vinculadas.
+     */
     public function destroy(string $id)
     {
         $response = $this->service->delete($id);
@@ -109,13 +135,18 @@ class OrganizationController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    /**
+     * Obtiene todas las seccionales que pertenecen a una organización específica.
+     * Método clave para la navegación jerárquica de la estructura.
+     */
     public function getSectional(string $id)
     {
-    $response = $this->service->getAllForSectional($id);
+        $response = $this->service->getAllForSectional($id);
 
-    if ($response['error'])
-        return ResponseFormatter::error($response['message'], $response['code']);
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
 
-    return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 }
