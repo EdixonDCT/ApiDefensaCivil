@@ -164,7 +164,7 @@ class HistoryService
             ->where('user_id', auth()->id())
             ->where('action_id', 1)
             ->orderBy('date', 'desc')
-            ->paginate(3);
+            ->paginate(4);
 
         return [
             "error" => false,

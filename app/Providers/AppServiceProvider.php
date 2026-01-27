@@ -56,6 +56,21 @@ class AppServiceProvider extends ServiceProvider
         });
 
         /**
+         * Valida un valor de grupo sanguíneo básico.
+         *
+         * Reglas:
+         * - Debe comenzar con una o dos letras (A, B, AB, O)
+         * - Debe terminar obligatoriamente con un signo + o -
+         * - Longitud máxima de 3 caracteres
+         * - Letras mayusculas
+         * Ejemplos válidos: A+, O-, AB+
+         * Ejemplos inválidos: +A, A+B, ABC+, A, +
+         */
+        Validator::extend('blood_value', function ($attribute, $value) {
+            return preg_match('/^[A-Z]{1,2}[+-]$/', $value);
+        });
+
+        /**
          * Regla: unique_document_by_type
          * * Valida la unicidad de un documento filtrado por su tipo.
          * Esto evita que se registre el mismo número de documento con el mismo tipo dos veces.

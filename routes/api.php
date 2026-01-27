@@ -23,6 +23,9 @@ use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
 use App\Http\Controllers\API\History\HistoryController;
+use App\Http\Controllers\API\BloodGroup\BloodGroupController;
+use App\Http\Controllers\API\Nationality\NationalityController;
+use App\Http\Controllers\API\Kinship\KinshipController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -315,19 +318,81 @@ Route::prefix('histories')->group(function () {
     Route::get('/', [HistoryController::class, 'index']);
 
     // Traer un history por id
-    Route::get('/{id}', [HistoryController::class, 'show']);
+    Route::get('/{history_id}', [HistoryController::class, 'show']);
 
     // Crear history
     Route::post('/', [HistoryController::class, 'store']);
 
     // Actualizar history completo
-    Route::put('/{id}', [HistoryController::class, 'update']);
+    Route::put('/{history_id}', [HistoryController::class, 'update']);
 
     // Actualización parcial
-    Route::patch('/{id}', [HistoryController::class, 'partialUpdate']);
+    Route::patch('/{history_id}', [HistoryController::class, 'partialUpdate']);
 
     // Eliminar history
-    Route::delete('/{id}', [HistoryController::class, 'destroy']);
+    Route::delete('/{history_id}', [HistoryController::class, 'destroy']);
 
+});
+
+// Rutas para el catálogo de grupos sanguíneos
+Route::prefix('bloodGroups')->group(function () {
+
+    // Obtener todos los grupos sanguíneos
+    Route::get('/', [BloodGroupController::class, 'index']);
+
+    // Obtener un grupo sanguíneo por su ID
+    Route::get('/{bloodGroup_id}', [BloodGroupController::class, 'show']);
+
+    // Crear un nuevo grupo sanguíneo
+    Route::post('/', [BloodGroupController::class, 'store']);
+
+    // Actualizar completamente un grupo sanguíneo
+    Route::put('/{bloodGroup_id}', [BloodGroupController::class, 'update']);
+
+    // Eliminar un grupo sanguíneo
+    Route::delete('/{bloodGroup_id}', [BloodGroupController::class, 'destroy']);
+});
+
+// Rutas para el catálogo de nacionalidades
+Route::prefix('nationalities')->group(function () {
+
+    // Obtener todas las nacionalidades
+    Route::get('/', [NationalityController::class, 'index']);
+
+    // Obtener una nacionalidad por su ID
+    Route::get('/{nationality_id}', [NationalityController::class, 'show']);
+
+    // Crear una nueva nacionalidad
+    Route::post('/', [NationalityController::class, 'store']);
+
+    // Actualizar completamente una nacionalidad
+    Route::put('/{nationality_id}', [NationalityController::class, 'update']);
+
+    // Actualizar parcialmente una nacionalidad
+    Route::patch('/{nationality_id}', [NationalityController::class, 'partialUpdate']);
+
+    // Cambiar el estado (activa / inactiva) de una nacionalidad
+    Route::patch('/state/{nationality_id}', [NationalityController::class, 'changeState']);
+
+    // Eliminar una nacionalidad
+    Route::delete('/{nationality_id}', [NationalityController::class, 'destroy']);
+});
+// Rutas para el catálogo de grupos sanguíneos
+Route::prefix('kinships')->group(function () {
+
+    // Obtener todos los grupos sanguíneos
+    Route::get('/', [KinshipController::class, 'index']);
+
+    // Obtener un grupo sanguíneo por su ID
+    Route::get('/{kinship_id}', [KinshipController::class, 'show']);
+
+    // Crear un nuevo grupo sanguíneo
+    Route::post('/', [KinshipController::class, 'store']);
+
+    // Actualizar completamente un grupo sanguíneo
+    Route::put('/{kinship_id}', [KinshipController::class, 'update']);
+
+    // Eliminar un grupo sanguíneo
+    Route::delete('/{kinship_id}', [KinshipController::class, 'destroy']);
 });
 });
