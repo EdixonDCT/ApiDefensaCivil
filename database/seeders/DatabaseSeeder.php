@@ -22,6 +22,9 @@ use Database\Seeders\Permission\PermissionSeeder;
 use Database\Seeders\RolePermission\RolePermissionSeeder;
 use Database\Seeders\VulnerableQuestion\VulnerableQuestionSeeder;
 use Database\Seeders\Action\ActionSeeder;
+use Database\Seeders\BloodGroup\BloodGroupSeeder;
+use Database\Seeders\Nationality\NationalitySeeder;
+use Database\Seeders\Kinship\KinshipSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,7 +50,10 @@ class DatabaseSeeder extends Seeder
             ApartmentSeeder::class,
             CitySeeder::class,
             VulnerableQuestionSeeder::class,
-            ActionSeeder::class
+            ActionSeeder::class,
+            BloodGroupSeeder::class,
+            NationalitySeeder::class,
+            KinshipSeeder::class,
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders\Nationality;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Nationality\Nationality;
 
 class NationalitySeeder extends Seeder
 {

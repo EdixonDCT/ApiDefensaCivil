@@ -26,6 +26,8 @@ use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
 use App\Http\Controllers\API\Nationality\NationalityController;
 use App\Http\Controllers\API\Kinship\KinshipController;
+use App\Http\Controllers\API\Member\MemberController;
+use App\Http\Controllers\API\FamilyMember\FamilyMemberController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -395,4 +397,32 @@ Route::prefix('kinships')->group(function () {
     // Eliminar un grupo sanguíneo
     Route::delete('/{kinship_id}', [KinshipController::class, 'destroy']);
 });
+
+    Route::middleware('check.member.access')->group(function () {
+        Route::prefix('members')->group(function () {
+        // Obtener todos los miembros
+        Route::get('/', [MemberController::class, 'index']);
+        // Obtener un miembro por su ID
+        Route::get('/{member_id}', [MemberController::class, 'show']);
+        // Registrar un nuevo miembro
+        Route::post('/{plan_id}', [MemberController::class, 'store']);
+        // Actualizar completamente un miembro
+        Route::put('/{member_id}', [MemberController::class, 'update']);
+        // Actualizar parcialmente un miembro
+        Route::patch('/{member_id}', [MemberController::class, 'partialUpdate']);
+        // Eliminar un miembro
+        Route::delete('/{member_id}', [MemberController::class, 'destroy']);});
+
+        Route::prefix('familyMembers')->group(function () {
+        // Obtener todos los miembros
+        Route::get('/', [FamilyMemberController::class, 'index']);
+        // Obtener un miembro por su ID
+        Route::get('/{member_id}', [FamilyMemberController::class, 'show']);
+        // Registrar un nuevo miembro
+        Route::post('/{plan_id}', [FamilyMemberController::class, 'store']);
+        // Actualizar completamente un miembro
+        Route::put('/{member_id}', [FamilyMemberController::class, 'update']);
+        // Eliminar un miembro
+        Route::delete('/{member_id}', [FamilyMemberController::class, 'destroy']);});
+    });
 });

@@ -48,7 +48,7 @@ return new class extends Migration
             $table->string('phone', 10);
 
             // Observación o novedad relevante del integrante
-            $table->string('novelty', 255);
+            $table->string('novelty', 255)->nullable();;
 
             // Fechas de creación y actualización del registro
             $table->timestamps();
