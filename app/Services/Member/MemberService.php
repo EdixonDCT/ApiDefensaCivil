@@ -66,7 +66,7 @@ class MemberService
         }
 
         // Extraemos solo los miembros
-        $members = $familyMembers->pluck('member');
+        $members = $familyMembers->pluck('member')->paginate(10);
 
         return [
             "error" => false,
