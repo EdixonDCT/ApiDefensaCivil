@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Family;
+namespace App\Services\FamilyMember;
 
-use App\Models\Family\FamilyMember;
+use App\Models\FamilyMember\FamilyMember;
 
 /**
  * Servicio encargado de la gestión de los miembros asociados a planes familiares.
@@ -15,7 +15,7 @@ class FamilyMemberService
      */
     public static function getAll()
     {
-        $familyMembers = FamilyMember::with(['familyPlan', 'member'])->get();
+        $familyMembers = FamilyMember::all();
 
         if ($familyMembers->isEmpty()) {
             return [
@@ -29,35 +29,7 @@ class FamilyMemberService
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Miembros del plan familiar obtenidos exitosamente",
-            "data" => $familyMembers,
-        ];
-    }
-
-    /**
-     * Obtiene todos los miembros asociados a un plan familiar específico.
-     * @param int|string $familyPlanId
-     * @return array
-     */
-    public function getMembersByFamilyPlan($familyPlanId)
-    {
-        $familyMembers = FamilyMember::with('member')
-            ->where('family_plan_id', $familyPlanId)
-            ->get();
-
-        if ($familyMembers->isEmpty()) {
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "Este plan familiar no tiene miembros asociados",
-                "data" => $familyMembers,
-            ];
-        }
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Miembros del plan familiar obtenidos exitosamente",
+            "message" => "Miembros asociados a planes familiares obtenidos exitosamente",
             "data" => $familyMembers,
         ];
     }
@@ -69,7 +41,7 @@ class FamilyMemberService
      */
     public function getById($id)
     {
-        $familyMember = FamilyMember::with(['familyPlan', 'member'])->find($id);
+        $familyMember = FamilyMember::find($id);
 
         if (!$familyMember) {
             return [

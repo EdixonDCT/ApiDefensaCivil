@@ -138,4 +138,9 @@ class FamilyPlan extends Model
     {
         return $this->hasMany(History::class, 'family_plan_id');
     }
+
+    public function familyMembers()
+    {
+        return $this->hasMany(FamilyMember::class, 'family_plan_id');
+    }
 }

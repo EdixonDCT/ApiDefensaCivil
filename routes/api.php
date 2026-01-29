@@ -397,32 +397,36 @@ Route::prefix('kinships')->group(function () {
     // Eliminar un grupo sanguíneo
     Route::delete('/{kinship_id}', [KinshipController::class, 'destroy']);
 });
-
-    Route::middleware('check.member.access')->group(function () {
-        Route::prefix('members')->group(function () {
+    Route::prefix('members')->group(function () {
         // Obtener todos los miembros
         Route::get('/', [MemberController::class, 'index']);
         // Obtener un miembro por su ID
         Route::get('/{member_id}', [MemberController::class, 'show']);
+    });
+
+    Route::prefix('familyMembers')->group(function () {
+    // Obtener todos los miembros
+    Route::get('/', [FamilyMemberController::class, 'index']);
+    // Obtener un miembro por su ID
+    Route::get('/{familyMember_id}', [FamilyMemberController::class, 'show']);
+    // Registrar un nuevo miembro
+    Route::post('/', [FamilyMemberController::class, 'store']);
+    // Actualizar completamente un miembro
+    Route::put('/{familyMember_id}', [FamilyMemberController::class, 'update']);
+    // Eliminar un miembro
+    Route::delete('/{familyMember_id}', [FamilyMemberController::class, 'destroy']);});
+
+    Route::middleware('check.member.access')->group(function () {
+        Route::prefix('members')->group(function () {
+        // Obtener miembros asociados a un plan familiar
+        Route::get('/familyPlan/{plan_id}', [MemberController::class, 'getMembersForPlan']);
         // Registrar un nuevo miembro
         Route::post('/{plan_id}', [MemberController::class, 'store']);
         // Actualizar completamente un miembro
-        Route::put('/{member_id}', [MemberController::class, 'update']);
+        Route::put('/{plan_id}/{member_id}', [MemberController::class, 'update']);
         // Actualizar parcialmente un miembro
-        Route::patch('/{member_id}', [MemberController::class, 'partialUpdate']);
+        Route::patch('/{plan_id}/{member_id}', [MemberController::class, 'partialUpdate']);
         // Eliminar un miembro
-        Route::delete('/{member_id}', [MemberController::class, 'destroy']);});
-
-        Route::prefix('familyMembers')->group(function () {
-        // Obtener todos los miembros
-        Route::get('/', [FamilyMemberController::class, 'index']);
-        // Obtener un miembro por su ID
-        Route::get('/{member_id}', [FamilyMemberController::class, 'show']);
-        // Registrar un nuevo miembro
-        Route::post('/{plan_id}', [FamilyMemberController::class, 'store']);
-        // Actualizar completamente un miembro
-        Route::put('/{member_id}', [FamilyMemberController::class, 'update']);
-        // Eliminar un miembro
-        Route::delete('/{member_id}', [FamilyMemberController::class, 'destroy']);});
+        Route::delete('/{plan_id}/{member_id}', [MemberController::class, 'destroy']);});
     });
 });

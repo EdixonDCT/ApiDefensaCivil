@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\StateUser\StateUser;
 
-class stateUserSeeder extends Seeder
+class StateUserSeeder extends Seeder
 {
     public function run(): void
     {

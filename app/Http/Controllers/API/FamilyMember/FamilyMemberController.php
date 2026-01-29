@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\API\Family;
+namespace App\Http\Controllers\API\FamilyMember;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Services\Family\FamilyMemberService;
+use App\Services\FamilyMember\FamilyMemberService;
 use App\Http\Requests\FamilyMember\StoreFamilyMemberRequest;
 use App\Http\Requests\FamilyMember\UpdateFamilyMemberRequest;
 
@@ -47,24 +47,6 @@ class FamilyMemberController extends Controller
     public function show(string $id)
     {
         $response = $this->service->getById($id);
-
-        if ($response['error']) {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success(
-            $response['message'],
-            $response['code'],
-            $response['data'] ?? []
-        );
-    }
-
-    /**
-     * Obtiene todos los miembros asociados a un plan familiar específico.
-     */
-    public function getByFamilyPlan(string $family_plan_id)
-    {
-        $response = $this->service->getMembersByFamilyPlan($family_plan_id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);

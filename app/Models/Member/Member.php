@@ -86,4 +86,10 @@ class Member extends Model
     {
         return $this->belongsTo(Kinship::class);
     }
+
+    // Relación con los planes familiares a los que pertenece el integrante.
+    public function familyMembers()
+    {
+        return $this->hasMany(FamilyMember::class, 'family_plan_id');
+    }
 }

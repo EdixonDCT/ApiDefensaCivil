@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * Utiliza 'sometimes' para permitir actualizaciones parciales de los vínculos
  * entre usuarios, planes familiares y acciones realizadas.
  */
-class UpdateHistoryRequest extends FormRequest
+class PartialUpdateHistoryRequest extends FormRequest
 {
     /**
      * Determina si el usuario está autorizado para realizar esta solicitud.

@@ -29,7 +29,7 @@ class UpdateFamilyMemberRequest extends FormRequest
         /**
          * Capturamos el ID del registro family_member desde la ruta.
          */
-        $familyMemberId = $this->route('family_member_id');
+        $familyMemberId = $this->route('familyMember_id');
 
         return [
             /**
@@ -41,8 +41,7 @@ class UpdateFamilyMemberRequest extends FormRequest
              * El miembro debe existir y no duplicarse dentro del mismo plan familiar,
              * ignorando el registro actual.
              */
-            'member_id' => 'required|integer|exists:members,id|unique:family_members,member_id,' 
-                . $familyMemberId . ',id,family_plan_id,' . $this->family_plan_id,
+            'member_id' => 'required|integer|exists:members,id|unique:family_members,member_id,' .$familyMemberId . ',id,family_plan_id,' . $this->family_plan_id,
         ];
     }
 

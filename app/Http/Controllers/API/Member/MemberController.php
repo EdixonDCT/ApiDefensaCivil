@@ -75,6 +75,24 @@ class MemberController extends Controller
         );
     }
 
+    public function getMembersForPlan(string $family_plan_id)
+    {
+        $response = $this->service->getMembersForPlan($family_plan_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error(
+                $response['message'],
+                $response['code']
+            );
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
+    }
+
     /**
      * Registra un nuevo miembro en el sistema.
      */
@@ -100,7 +118,7 @@ class MemberController extends Controller
     /**
      * Actualización total de un miembro (PUT).
      */
-    public function update(UpdateMemberRequest $request, string $id)
+    public function update(UpdateMemberRequest $request,string $plan_id,string $id)
     {
         $data = $request->validated();
         $response = $this->service->update($data, $id);
@@ -122,7 +140,7 @@ class MemberController extends Controller
     /**
      * Actualización parcial de un miembro (PATCH).
      */
-    public function partialUpdate(PartialUpdateMemberRequest $request, string $id)
+    public function partialUpdate(PartialUpdateMemberRequest $request,string $plan_id,string $id)
     {
         $data = $request->validated();
         $response = $this->service->partialUpdate($data, $id);
@@ -144,9 +162,9 @@ class MemberController extends Controller
     /**
      * Elimina un miembro del sistema.
      */
-    public function destroy(string $id)
+    public function destroy(string $family_plan_id, string $member_id)
     {
-        $response = $this->service->delete($id);
+        $response = $this->service->delete($family_plan_id, $member_id);
 
         if ($response['error']) {
             return ResponseFormatter::error(

@@ -12,7 +12,7 @@ use App\Services\StateUser\StateUserService;
  * Controlador de Estados de Usuario.
  * Administra los posibles estados que puede tener una cuenta de usuario en la plataforma.
  */
-class stateUserController extends Controller
+class StateUserController extends Controller
 {
     protected $service;
 

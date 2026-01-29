@@ -48,6 +48,8 @@ class FamilyMember extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+
+    // Relación con el miembro asociado al plan familiar.
     public function member()
     {
         return $this->belongsTo(Member::class, 'member_id');

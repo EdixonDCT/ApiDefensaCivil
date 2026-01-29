@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\StateUser\stateUserSeeder;
+use Database\Seeders\StateUser\StateUserSeeder;
 use Database\Seeders\User\UserSeeder;
 use Database\Seeders\Gender\GenderSeeder;
 use Database\Seeders\DocumentType\DocumentTypeSeeder;
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionSeeder::class,
             RolePermissionSeeder::class,
-            stateUserSeeder::class,
+            StateUserSeeder::class,
             UserSeeder::class,
             GenderSeeder::class,
             DocumentTypeSeeder::class,

@@ -49,6 +49,32 @@ class MemberService
             "data" => $member,
         ];
     }
+    
+    /**
+     * Obtiene todos los miembros asociados a un plan familiar.
+     */
+    public function getMembersForPlan($family_plan_id)
+    {
+        $familyMembers = FamilyMember::where('family_plan_id', $family_plan_id)->with('member')->get();
+
+        if ($familyMembers->isEmpty()) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "No se encontraron miembros para este plan familiar",
+            ];
+        }
+
+        // Extraemos solo los miembros
+        $members = $familyMembers->pluck('member');
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Miembros del plan familiar obtenidos exitosamente",
+            "data" => $members,
+        ];
+    }
 
     /**
      * Crea un nuevo miembro y lo asocia a un plan familiar.
@@ -94,8 +120,17 @@ class MemberService
     /**
      * Actualiza un miembro (PUT).
      */
-    public function update(array $data, $id)
-    {
+    public function update(array $data,$plan_id, $id)
+    {   
+        $familyMember = FamilyMember::where('member_id', $id)->where('family_plan_id', $plan_id)->first();
+        if (!$familyMember) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Plan familiar no asociado al miembro",
+            ];
+        }
+
         $member = Member::find($id);
 
         if (!$member) {
@@ -119,8 +154,17 @@ class MemberService
     /**
      * Actualización parcial de un miembro (PATCH).
      */
-    public function partialUpdate(array $data, $id)
+    public function partialUpdate(array $data,$plan_id, $id)
     {
+        $familyMember = FamilyMember::where('member_id', $id)->where('family_plan_id', $plan_id)->first();
+        if (!$familyMember) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Plan familiar no asociado al miembro",
+            ];
+        }
+
         $member = Member::find($id);
 
         if (!$member) {
@@ -144,8 +188,20 @@ class MemberService
     /**
      * Elimina un miembro.
      */
-    public function delete($id)
+    public function delete($family_plan_id,$member_id)
     {
+        $familyMember = FamilyMember::where('member_id', $member_id)->where('family_plan_id', $family_plan_id)->first();
+
+        if (!$familyMember) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Miembro del plan familiar no encontrado",
+            ];
+        }
+
+        $familyMember->delete();
+
         $member = Member::find($id);
 
         if (!$member) {
