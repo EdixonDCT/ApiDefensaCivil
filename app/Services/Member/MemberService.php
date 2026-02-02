@@ -6,15 +6,8 @@ use App\Models\Member\Member;
 use App\Models\FamilyMember\FamilyMember;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Servicio para la gestión de los miembros.
- * Centraliza la lógica de negocio sin manejar autorización.
- */
 class MemberService
 {
-    /**
-     * Obtiene todos los miembros.
-     */
     public function getAll()
     {
         $members = Member::all();
@@ -27,9 +20,6 @@ class MemberService
         ];
     }
 
-    /**
-     * Obtiene un miembro por ID.
-     */
     public function getById($id)
     {
         $member = Member::find($id);
@@ -50,14 +40,17 @@ class MemberService
         ];
     }
     
-    /**
-     * Obtiene todos los miembros asociados a un plan familiar.
-     */
     public function getMembersForPlan($family_plan_id)
     {
-        $familyMembers = FamilyMember::where('family_plan_id', $family_plan_id)->with('member')->get();
+        $paginator = FamilyMember::where('family_plan_id', $family_plan_id)
+            ->with([
+                'member.bloodGroup', 
+                'member.documentType', 
+                'member.kinship'
+            ])
+            ->paginate(10);
 
-        if ($familyMembers->isEmpty()) {
+        if ($paginator->isEmpty()) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -65,36 +58,62 @@ class MemberService
             ];
         }
 
-        // Extraemos solo los miembros
-        $members = $familyMembers->pluck('member')->paginate(10);
+        $paginator->getCollection()->transform(function ($item) {
+            return [
+                'full_name'       => $item->member->names . ' ' . $item->member->last_names,
+                'birth_date'      => $item->member->birth_date,
+                'blood_group'     => $item->member->bloodGroup->name,
+                'document_type'   => $item->member->documentType->name,
+                'document_number' => $item->member->document_number,
+                'gender_id'       => $item->member->gender_id,
+                'kinship'         => $item->member->kinship->name,
+                'phone'           => $item->member->phone,
+            ];
+        });
 
         return [
-            "error" => false,
-            "code" => 200,
+            "error"   => false,
+            "code"    => 200,
             "message" => "Miembros del plan familiar obtenidos exitosamente",
-            "data" => $members,
+            "data"    => $paginator,
         ];
     }
 
-    /**
-     * Crea un nuevo miembro y lo asocia a un plan familiar.
-     * Usa transacción para garantizar integridad de datos.
-     */
-    public function create(array $data,$plan_id)
+    public function create(array $data, $plan_id)
     {
         DB::beginTransaction();
 
         try {
-            // 1. Crear el miembro
+            // Validar cabeza de familia
+            $existingHeads = FamilyMember::where('family_plan_id', $plan_id)
+                ->whereHas('member', fn($q) => $q->where('kinship_id', 1)) // 1 = cabeza de familia
+                ->count();
+
+            if ($existingHeads === 0 && ($data['kinship_id'] ?? 0) != 1) {
+                DB::rollBack();
+                return [
+                    "error" => true,
+                    "code" => 400,
+                    "message" => "El primer integrante del plan debe ser cabeza de familia",
+                ];
+            }
+
+            if ($existingHeads > 0 && ($data['kinship_id'] ?? 0) == 1) {
+                DB::rollBack();
+                return [
+                    "error" => true,
+                    "code" => 400,
+                    "message" => "Ya existe un miembro con rol cabeza de familia, no se puede duplicar",
+                ];
+            }
+
             $member = Member::create($data);
 
-            // 2. Crear relación con el plan familiar
             FamilyMember::create([
                 'member_id'      => $member->id,
                 'family_plan_id' => $plan_id,
             ]);
 
-            // 3. Confirmar transacción
             DB::commit();
 
             return [
@@ -103,42 +122,37 @@ class MemberService
                 "message" => "Miembro creado y asociado al plan familiar exitosamente",
                 "data" => $member,
             ];
+
         } catch (\Throwable $e) {
-
-            // Si algo falla, se revierte todo
             DB::rollBack();
-
             return [
                 "error" => true,
                 "code" => 500,
-                "message" => "Error al crear el miembro y asociarlo al plan familiar",
-                "details" => $e->getMessage(), // útil para debug (puedes quitarlo en prod)
+                "message" => "Error al crear el miembro",
+                "details" => $e->getMessage(),
             ];
         }
     }
 
-    /**
-     * Actualiza un miembro (PUT).
-     */
-    public function update(array $data,$plan_id, $id)
-    {   
+    public function update(array $data, $plan_id, $id)
+    {
         $familyMember = FamilyMember::where('member_id', $id)->where('family_plan_id', $plan_id)->first();
-        if (!$familyMember) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Plan familiar no asociado al miembro",
-            ];
-        }
+        if (!$familyMember) return ["error" => true, "code" => 404, "message" => "Plan familiar no asociado al miembro"];
 
         $member = Member::find($id);
+        if (!$member) return ["error" => true, "code" => 404, "message" => "Miembro no encontrado"];
 
-        if (!$member) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Miembro no encontrado",
-            ];
+        // Validar cambio de cabeza de familia
+        if (isset($data['kinship_id']) && $data['kinship_id'] == 1) {
+            $existingHead = FamilyMember::where('family_plan_id', $plan_id)
+                ->whereHas('member', fn($q) => $q->where('kinship_id', 1))
+                ->where('member_id', '!=', $id)
+                ->first();
+
+            if ($existingHead) {
+                $prevHead = Member::find($existingHead->member_id);
+                $prevHead->update(['kinship_id' => 17]); // rol anterior pasa a 17
+            }
         }
 
         $member->update($data);
@@ -146,78 +160,40 @@ class MemberService
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Miembro actualizado exitosamente",
+            "message" => "Miembro actualizado exitosamente, pero el anterior cabeza de familia fue modificado",
             "data" => $member,
         ];
     }
 
-    /**
-     * Actualización parcial de un miembro (PATCH).
-     */
-    public function partialUpdate(array $data,$plan_id, $id)
+    public function partialUpdate(array $data, $plan_id, $id)
     {
-        $familyMember = FamilyMember::where('member_id', $id)->where('family_plan_id', $plan_id)->first();
-        if (!$familyMember) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Plan familiar no asociado al miembro",
-            ];
-        }
-
-        $member = Member::find($id);
-
-        if (!$member) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Miembro no encontrado",
-            ];
-        }
-
-        $member->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Miembro actualizado parcialmente exitosamente",
-            "data" => $member,
-        ];
+        return $this->update($data, $plan_id, $id); // misma lógica que update
     }
 
-    /**
-     * Elimina un miembro.
-     */
-    public function delete($family_plan_id,$member_id)
+    public function delete($plan_id, $member_id)
     {
-        $familyMember = FamilyMember::where('member_id', $member_id)->where('family_plan_id', $family_plan_id)->first();
+        $familyMember = FamilyMember::where('member_id', $member_id)
+            ->where('family_plan_id', $plan_id)->first();
 
-        if (!$familyMember) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Miembro del plan familiar no encontrado",
-            ];
+        if (!$familyMember) return ["error" => true, "code" => 404, "message" => "Miembro del plan familiar no encontrado"];
+
+        $member = Member::find($member_id);
+        if (!$member) return ["error" => true, "code" => 404, "message" => "Miembro no encontrado"];
+
+        // Validar si es cabeza de familia
+        if ($member->kinship_id == 1) {
+            $otherMembers = FamilyMember::where('family_plan_id', $plan_id)
+                ->where('member_id', '!=', $member_id)
+                ->count();
+
+            if ($otherMembers == 0) {
+                return ["error" => true, "code" => 400, "message" => "No se puede eliminar al miembro cabeza de familia, debe asignar otro antes"];
+            }
         }
 
         $familyMember->delete();
-
-        $member = Member::find($id);
-
-        if (!$member) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Miembro no encontrado",
-            ];
-        }
-
         $member->delete();
 
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Miembro eliminado exitosamente",
-        ];
+        return ["error" => false, "code" => 200, "message" => "Miembro eliminado exitosamente"];
     }
 }

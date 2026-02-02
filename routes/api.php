@@ -418,15 +418,15 @@ Route::prefix('kinships')->group(function () {
 
     Route::middleware('check.member.access')->group(function () {
         Route::prefix('members')->group(function () {
-        // Obtener miembros asociados a un plan familiar
-        Route::get('/familyPlan/{plan_id}', [MemberController::class, 'getMembersForPlan']);
-        // Registrar un nuevo miembro
-        Route::post('/{plan_id}', [MemberController::class, 'store']);
-        // Actualizar completamente un miembro
-        Route::put('/{plan_id}/{member_id}', [MemberController::class, 'update']);
-        // Actualizar parcialmente un miembro
-        Route::patch('/{plan_id}/{member_id}', [MemberController::class, 'partialUpdate']);
-        // Eliminar un miembro
-        Route::delete('/{plan_id}/{member_id}', [MemberController::class, 'destroy']);});
+            // Obtener miembros asociados a un plan familiar
+            Route::get('/familyPlan/{plan_id}', [MemberController::class, 'getMembersForPlan']);
+            // Registrar un nuevo miembro
+            Route::post('/{plan_id}', [MemberController::class, 'store']);
+            // Actualizar completamente un miembro
+            Route::put('/{plan_id}/{member_id}', [MemberController::class, 'update']);
+            // Actualizar parcialmente un miembro
+            Route::patch('/{plan_id}/{member_id}', [MemberController::class, 'partialUpdate']);
+            // Eliminar un miembro
+            Route::delete('/{plan_id}/{member_id}', [MemberController::class, 'destroy']);});
     });
 });

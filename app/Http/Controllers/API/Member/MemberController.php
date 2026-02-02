@@ -121,7 +121,7 @@ class MemberController extends Controller
     public function update(UpdateMemberRequest $request,string $plan_id,string $id)
     {
         $data = $request->validated();
-        $response = $this->service->update($data, $id);
+        $response = $this->service->update($data,$plan_id,$id);
 
         if ($response['error']) {
             return ResponseFormatter::error(
