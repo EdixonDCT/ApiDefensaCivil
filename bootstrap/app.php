@@ -6,7 +6,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
 use App\Http\Middlewares\ForceJsonRequestHeader;
-use App\Http\Middlewares\CheckMemberAccess;
 use App\Exceptions\ApiExceptionHandler;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -28,7 +27,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role' => RoleMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
-            'check.member.access' => CheckMemberAccess::class,
         ]);
 
         $middleware->api(prepend: [

@@ -28,6 +28,8 @@ use App\Http\Controllers\API\Nationality\NationalityController;
 use App\Http\Controllers\API\Kinship\KinshipController;
 use App\Http\Controllers\API\Member\MemberController;
 use App\Http\Controllers\API\FamilyMember\FamilyMemberController;
+use App\Http\Controllers\API\ConditionType\ConditionTypeController;
+use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -397,11 +399,22 @@ Route::prefix('kinships')->group(function () {
     // Eliminar un grupo sanguíneo
     Route::delete('/{kinship_id}', [KinshipController::class, 'destroy']);
 });
+
     Route::prefix('members')->group(function () {
         // Obtener todos los miembros
         Route::get('/', [MemberController::class, 'index']);
         // Obtener un miembro por su ID
         Route::get('/{member_id}', [MemberController::class, 'show']);
+        // Obtener miembros asociados a un plan familiar
+        Route::get('/familyPlan/{plan_id}', [MemberController::class, 'getMembersForPlan']);
+        // Registrar un nuevo miembro
+        Route::post('/{plan_id}', [MemberController::class, 'store']);
+        // Actualizar completamente un miembro
+        Route::put('/{member_id}', [MemberController::class, 'update']);
+        // Actualizar parcialmente un miembro
+        Route::patch('/{member_id}', [MemberController::class, 'partialUpdate']);
+        // Eliminar un miembro
+        Route::delete('/{member_id}', [MemberController::class, 'destroy']);
     });
 
     Route::prefix('familyMembers')->group(function () {
@@ -416,17 +429,49 @@ Route::prefix('kinships')->group(function () {
     // Eliminar un miembro
     Route::delete('/{familyMember_id}', [FamilyMemberController::class, 'destroy']);});
 
-    Route::middleware('check.member.access')->group(function () {
-        Route::prefix('members')->group(function () {
-            // Obtener miembros asociados a un plan familiar
-            Route::get('/familyPlan/{plan_id}', [MemberController::class, 'getMembersForPlan']);
-            // Registrar un nuevo miembro
-            Route::post('/{plan_id}', [MemberController::class, 'store']);
-            // Actualizar completamente un miembro
-            Route::put('/{plan_id}/{member_id}', [MemberController::class, 'update']);
-            // Actualizar parcialmente un miembro
-            Route::patch('/{plan_id}/{member_id}', [MemberController::class, 'partialUpdate']);
-            // Eliminar un miembro
-            Route::delete('/{plan_id}/{member_id}', [MemberController::class, 'destroy']);});
+    Route::prefix('conditionTypes')->group(function () {
+        // Obtener todos los tipos de condición
+        Route::get('/', [ConditionTypeController::class, 'index']);
+        // Obtener un tipo de condición por su ID
+        Route::get('/{conditionType_id}', [ConditionTypeController::class, 'show']);
+        // Registrar un nuevo tipo de condición
+        Route::post('/', [ConditionTypeController::class, 'store']);
+        // Actualizar completamente un tipo de condición
+        Route::put('/{conditionType_id}', [ConditionTypeController::class, 'update']);
+        // Eliminar un tipo de condición
+        Route::delete('/{conditionType_id}', [ConditionTypeController::class, 'destroy']);
     });
+
+    Route::prefix('conditionMembers')->group(function () {
+    // Obtener todos los registros
+    Route::get('/', [ConditionMemberController::class, 'index']);
+    // Obtener un registro específico por su ID
+    Route::get('/{conditionMember_id}', [ConditionMemberController::class, 'show']);
+    // Obtener todos los registros de un miembro específico
+    Route::get('/member/{member_id}/plan/{plan_id}', [ConditionMemberController::class, 'getByMember']);
+    // Crear un nuevo registro (POST) -> plan_id en la ruta aunque no se usa
+    Route::post('/plan/{plan_id}', [ConditionMemberController::class, 'store']);
+    // Actualización total (PUT) -> plan_id en la ruta aunque no se usa
+    Route::put('/plan/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'update']);
+    // Actualización parcial (PATCH) -> plan_id en la ruta aunque no se usa
+    Route::patch('/plan/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
+    // Eliminar un registro (DELETE) -> plan_id en la ruta aunque no se usa
+    Route::delete('/plan/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);
+    });
+        
+    Route::prefix('conditionMembers')->group(function () {
+    // Obtener todos los registros
+    Route::get('/', [ConditionMemberController::class, 'index']);
+    // Obtener un registro específico por su ID
+    Route::get('/{conditionMember_id}', [ConditionMemberController::class, 'show']);
+    // Obtener todos los registros de un miembro específico
+    Route::get('/member/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'getByMember']);
+    // Crear un nuevo registro (POST) -> plan_id en la ruta aunque no se usa
+    Route::post('/{plan_id}', [ConditionMemberController::class, 'store']);
+    // Actualización total (PUT) -> plan_id en la ruta aunque no se usa
+    Route::put('/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'update']);
+    // Actualización parcial (PATCH) -> plan_id en la ruta aunque no se usa
+    Route::patch('/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
+    // Eliminar un registro (DELETE) -> plan_id en la ruta aunque no se usa
+    Route::delete('/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);});
 });

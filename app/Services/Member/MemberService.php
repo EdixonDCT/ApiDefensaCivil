@@ -130,27 +130,43 @@ class MemberService
         }
     }
 
-    public function update(array $data, $plan_id, $id)
+    public function update(array $data, $id)
     {
-        $familyMember = FamilyMember::where('member_id', $id)->where('family_plan_id', $plan_id)->first();
-        if (!$familyMember) return ["error" => true, "code" => 404, "message" => "Plan familiar no asociado al miembro"];
+        // 1️⃣ Buscar la relación FamilyMember del miembro
+        $familyMember = FamilyMember::where('member_id', $id)->first();
 
+        if (!$familyMember) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Plan familiar no asociado al miembro"
+            ];
+        }
+
+        // 2️⃣ Buscar miembro
         $member = Member::find($id);
-        if (!$member) return ["error" => true, "code" => 404, "message" => "Miembro no encontrado"];
+        if (!$member) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Miembro no encontrado"
+            ];
+        }
 
-        // Validar cambio de cabeza de familia
+        // 3️⃣ Validar cambio de cabeza de familia
         if (isset($data['kinship_id']) && $data['kinship_id'] == 1) {
-            $existingHead = FamilyMember::where('family_plan_id', $plan_id)
+            $existingHead = FamilyMember::where('family_plan_id', $familyMember->family_plan_id)
                 ->whereHas('member', fn($q) => $q->where('kinship_id', 1))
                 ->where('member_id', '!=', $id)
                 ->first();
 
             if ($existingHead) {
                 $prevHead = Member::find($existingHead->member_id);
-                $prevHead->update(['kinship_id' => 17]); // rol anterior pasa a 17
+                $prevHead->update(['kinship_id' => 17]); // el rol anterior pasa a 17
             }
         }
 
+        // 4️⃣ Actualizar datos del miembro
         $member->update($data);
 
         return [
@@ -161,17 +177,16 @@ class MemberService
         ];
     }
 
-    public function partialUpdate(array $data, $plan_id, $id)
+
+    public function partialUpdate(array $data, $id)
     {
-        return $this->update($data, $plan_id, $id); // misma lógica que update
+        return $this->update($data, $id); // misma lógica que update
     }
 
-    public function delete($plan_id, $member_id)
+    public function delete($member_id)
     {
-        // 1️⃣ Buscar relación plan-miembro
-        $familyMember = FamilyMember::where('family_plan_id', $plan_id)
-            ->where('member_id', $member_id)
-            ->first();
+        // 1️⃣ Buscar la relación FamilyMember
+        $familyMember = FamilyMember::where('member_id', $member_id)->first();
 
         if (!$familyMember) {
             return [
@@ -192,15 +207,15 @@ class MemberService
             ];
         }
 
-        // 3️⃣ Contar miembros del plan
-        $totalMembers = FamilyMember::where('family_plan_id', $plan_id)->count();
+        // 3️⃣ Contar miembros del plan usando family_plan_id del FamilyMember
+        $totalMembers = FamilyMember::where('family_plan_id', $familyMember->family_plan_id)->count();
 
         // 4️⃣ Validar cabeza de familia
         if ($member->kinship_id == 1 && $totalMembers > 1) {
             return [
                 "error" => true,
                 "code" => 400,
-                "message" => "No se puede eliminar al cabeza de familia mientras existan otros integrantes, amenos que otorge la posicion de cabeza de familia a otro miembro"
+                "message" => "No se puede eliminar al cabeza de familia mientras existan otros integrantes, a menos que se otorgue la posición de cabeza de familia a otro miembro"
             ];
         }
 
@@ -214,5 +229,4 @@ class MemberService
             "message" => "Miembro eliminado exitosamente"
         ];
     }
-
 }

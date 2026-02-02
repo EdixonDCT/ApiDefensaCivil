@@ -25,6 +25,7 @@ use Database\Seeders\Action\ActionSeeder;
 use Database\Seeders\BloodGroup\BloodGroupSeeder;
 use Database\Seeders\Nationality\NationalitySeeder;
 use Database\Seeders\Kinship\KinshipSeeder;
+use Database\Seeders\ConditionType\ConditionTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -54,6 +55,7 @@ class DatabaseSeeder extends Seeder
             BloodGroupSeeder::class,
             NationalitySeeder::class,
             KinshipSeeder::class,
+            ConditionTypeSeeder::class,
         ]);
     }
 }

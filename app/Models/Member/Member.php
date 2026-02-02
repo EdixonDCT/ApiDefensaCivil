@@ -13,6 +13,8 @@ use App\Models\DocumentType\DocumentType;
 use App\Models\Nationality\Nationality;
 use App\Models\Gender\Gender;
 use App\Models\Kinship\Kinship;
+use App\Models\FamilyMember\FamilyMember;
+use App\Models\ConditionMember\ConditionMember;
 
 /**
  * Clase Member
@@ -91,5 +93,11 @@ class Member extends Model
     public function familyMembers()
     {
         return $this->hasMany(FamilyMember::class, 'family_plan_id');
+    }
+
+    // Relación con los condiciones de integrantes los que pertenece el integrante.
+    public function conditionMember()
+    {
+        return $this->hasMany(ConditionMember::class, 'member_id');
     }
 }
