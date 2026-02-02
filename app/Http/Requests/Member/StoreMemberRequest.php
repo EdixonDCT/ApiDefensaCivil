@@ -43,7 +43,7 @@ class StoreMemberRequest extends FormRequest
             'document_type_id' => 'required|exists:document_types,id',
 
             // Número de documento (no se valida formato porque depende del tipo)
-            'document_number' => 'required|string|max:20',
+            'document_number' => 'required|numeric|max_digits:20',
 
             // Nacionalidad registrada en el catálogo correspondiente
             'nationality_id' => 'required|exists:nationalities,id',
@@ -83,6 +83,8 @@ class StoreMemberRequest extends FormRequest
 
             // Límite máximo de caracteres
             'max' => 'El :attribute no puede superar los :max caracteres',
+
+            'numeric' => 'El :attribute debe tener caracteres numericos'
         ];
     }
 

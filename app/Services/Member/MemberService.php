@@ -44,40 +44,36 @@ class MemberService
     {
         $paginator = FamilyMember::where('family_plan_id', $family_plan_id)
             ->with([
-                'member.bloodGroup', 
-                'member.documentType', 
+                'member.bloodGroup',
+                'member.documentType',
                 'member.kinship'
             ])
             ->paginate(10);
 
-        if ($paginator->isEmpty()) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "No se encontraron miembros para este plan familiar",
-            ];
-        }
-
+        // Transformar aunque esté vacío (no rompe)
         $paginator->getCollection()->transform(function ($item) {
             return [
-                'full_name'       => $item->member->names . ' ' . $item->member->last_names,
-                'birth_date'      => $item->member->birth_date,
-                'blood_group'     => $item->member->bloodGroup->name,
-                'document_type'   => $item->member->documentType->name,
-                'document_number' => $item->member->document_number,
-                'gender_id'       => $item->member->gender_id,
-                'kinship'         => $item->member->kinship->name,
-                'phone'           => $item->member->phone,
+                'id'               => $item->member->id,
+                'full_name'        => $item->member->names . ' ' . $item->member->last_names,
+                'birth_date'       => $item->member->birth_date,
+                'blood_group'      => $item->member->bloodGroup->name ?? null,
+                'document_number'  => $item->member->document_number,
+                'gender_id'        => $item->member->gender_id,
+                'kinship'          => $item->member->kinship->name ?? null,
+                'phone'            => $item->member->phone,
             ];
         });
 
         return [
             "error"   => false,
             "code"    => 200,
-            "message" => "Miembros del plan familiar obtenidos exitosamente",
+            "message" => $paginator->isEmpty()
+                ? "Este plan familiar no tiene miembros registrados"
+                : "Miembros del plan familiar obtenidos exitosamente",
             "data"    => $paginator,
         ];
     }
+
 
     public function create(array $data, $plan_id)
     {
@@ -172,28 +168,51 @@ class MemberService
 
     public function delete($plan_id, $member_id)
     {
-        $familyMember = FamilyMember::where('member_id', $member_id)
-            ->where('family_plan_id', $plan_id)->first();
+        // 1️⃣ Buscar relación plan-miembro
+        $familyMember = FamilyMember::where('family_plan_id', $plan_id)
+            ->where('member_id', $member_id)
+            ->first();
 
-        if (!$familyMember) return ["error" => true, "code" => 404, "message" => "Miembro del plan familiar no encontrado"];
-
-        $member = Member::find($member_id);
-        if (!$member) return ["error" => true, "code" => 404, "message" => "Miembro no encontrado"];
-
-        // Validar si es cabeza de familia
-        if ($member->kinship_id == 1) {
-            $otherMembers = FamilyMember::where('family_plan_id', $plan_id)
-                ->where('member_id', '!=', $member_id)
-                ->count();
-
-            if ($otherMembers == 0) {
-                return ["error" => true, "code" => 400, "message" => "No se puede eliminar al miembro cabeza de familia, debe asignar otro antes"];
-            }
+        if (!$familyMember) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Miembro del plan familiar no encontrado"
+            ];
         }
 
+        // 2️⃣ Buscar miembro
+        $member = Member::find($member_id);
+
+        if (!$member) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Miembro no encontrado"
+            ];
+        }
+
+        // 3️⃣ Contar miembros del plan
+        $totalMembers = FamilyMember::where('family_plan_id', $plan_id)->count();
+
+        // 4️⃣ Validar cabeza de familia
+        if ($member->kinship_id == 1 && $totalMembers > 1) {
+            return [
+                "error" => true,
+                "code" => 400,
+                "message" => "No se puede eliminar al cabeza de familia mientras existan otros integrantes, amenos que otorge la posicion de cabeza de familia a otro miembro"
+            ];
+        }
+
+        // 5️⃣ Eliminar
         $familyMember->delete();
         $member->delete();
 
-        return ["error" => false, "code" => 200, "message" => "Miembro eliminado exitosamente"];
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Miembro eliminado exitosamente"
+        ];
     }
+
 }

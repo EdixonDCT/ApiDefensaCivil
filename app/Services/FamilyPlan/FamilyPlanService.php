@@ -224,7 +224,8 @@ class FamilyPlanService
                 "message" => "Plan familiar no encontrado",
             ];
         }
-
+        History::where('family_plan_id', $id)->delete();
+        
         $familyPlan->delete();
 
         return [
