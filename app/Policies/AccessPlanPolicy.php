@@ -35,7 +35,7 @@ class AccessPlanPolicy
                    $user->profile->organization->sectional_id === $plan->sectional_id;
         }
 
-        // Otros roles tienen acceso completo
-        return true;
+        // El rol administrador tiene acceso a los planes familiares
+        return false;
     }
 }

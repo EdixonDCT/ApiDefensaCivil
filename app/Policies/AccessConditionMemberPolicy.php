@@ -27,7 +27,7 @@ class AccessConditionMemberPolicy
         if (!$member) return false;
 
         // 2️⃣ Obtener la relación con FamilyMember
-        $familyMember = $member->familyMembers()->first(); // asumimos que un member puede estar en varios planes, usamos el primero
+        $familyMember = $member->familyMember()->first(); // asumimos que un member puede estar en varios planes, usamos el primero
         if (!$familyMember) return false;
 
         // 3️⃣ Obtener el FamilyPlan

@@ -90,9 +90,9 @@ class Member extends Model
     }
 
     // Relación con los planes familiares a los que pertenece el integrante.
-    public function familyMembers()
+    public function familyMember()
     {
-        return $this->hasMany(FamilyMember::class, 'family_plan_id');
+        return $this->hasMany(FamilyMember::class, 'member_id');
     }
 
     // Relación con los condiciones de integrantes los que pertenece el integrante.

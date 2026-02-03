@@ -16,11 +16,8 @@ class AccessPlanMemberPolicy
      */
     public function access(Member $member): bool
     {
-        $user = auth()->user(); // siempre usamos el usuario logueado
-        if (!$user) return false;
-
         // Obtenemos el FamilyMember vinculado
-        $familyMember = $member->familyMembers()->first();
+        $familyMember = $member->familyMember()->first();
         if (!$familyMember) return false;
 
         // Obtenemos el FamilyPlan del FamilyMember

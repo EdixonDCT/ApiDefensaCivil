@@ -448,30 +448,14 @@ Route::prefix('kinships')->group(function () {
     // Obtener un registro específico por su ID
     Route::get('/{conditionMember_id}', [ConditionMemberController::class, 'show']);
     // Obtener todos los registros de un miembro específico
-    Route::get('/member/{member_id}/plan/{plan_id}', [ConditionMemberController::class, 'getByMember']);
+    Route::get('/member/{member_id}', [ConditionMemberController::class, 'getByMember']);
     // Crear un nuevo registro (POST) -> plan_id en la ruta aunque no se usa
-    Route::post('/plan/{plan_id}', [ConditionMemberController::class, 'store']);
+    Route::post('/', [ConditionMemberController::class, 'store']);
     // Actualización total (PUT) -> plan_id en la ruta aunque no se usa
-    Route::put('/plan/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'update']);
+    Route::put('/{conditionMember_id}', [ConditionMemberController::class, 'update']);
     // Actualización parcial (PATCH) -> plan_id en la ruta aunque no se usa
-    Route::patch('/plan/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
+    Route::patch('/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
     // Eliminar un registro (DELETE) -> plan_id en la ruta aunque no se usa
-    Route::delete('/plan/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);
+    Route::delete('/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);
     });
-        
-    Route::prefix('conditionMembers')->group(function () {
-    // Obtener todos los registros
-    Route::get('/', [ConditionMemberController::class, 'index']);
-    // Obtener un registro específico por su ID
-    Route::get('/{conditionMember_id}', [ConditionMemberController::class, 'show']);
-    // Obtener todos los registros de un miembro específico
-    Route::get('/member/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'getByMember']);
-    // Crear un nuevo registro (POST) -> plan_id en la ruta aunque no se usa
-    Route::post('/{plan_id}', [ConditionMemberController::class, 'store']);
-    // Actualización total (PUT) -> plan_id en la ruta aunque no se usa
-    Route::put('/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'update']);
-    // Actualización parcial (PATCH) -> plan_id en la ruta aunque no se usa
-    Route::patch('/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
-    // Eliminar un registro (DELETE) -> plan_id en la ruta aunque no se usa
-    Route::delete('/{plan_id}/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);});
 });
