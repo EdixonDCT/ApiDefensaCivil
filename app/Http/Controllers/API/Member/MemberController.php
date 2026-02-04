@@ -37,6 +37,19 @@ class MemberController extends Controller
 
     public function show(string $id)
     {
+        $member = Member::find($id);
+        if (!$member) {
+            return ResponseFormatter::error('Miembro no encontrado', 404);
+        }
+
+        // Validación de acceso al member (y su plan)
+        if (!(new AccessPlanMemberPolicy())->access($member)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este miembro',
+                403
+            );
+        }
+        
         $response = $this->service->getById($id);
 
         if ($response['error']) {

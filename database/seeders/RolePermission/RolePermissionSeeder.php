@@ -84,30 +84,31 @@ class RolePermissionSeeder extends Seeder
         | VOLUNTARIO → REGISTRA Y CONSULTA
         |--------------------------------------------------------------------------
         */
-        $voluntario->syncPermissions([
-            // Catálogos (solo lectura)
-            'home-frontend.voluntario',
-            'genders.index',
-            'document-types.index',
-            'cities.index',
-            'zones.index',
-            'sectors.index',
-            'housing-qualities.index',
-            'status-plans.index',
+        $voluntario->syncPermissions(Permission::all());
+        // $voluntario->syncPermissions([
+        //     // Catálogos (solo lectura)
+        //     'home-frontend.voluntario',
+        //     'genders.index',
+        //     'document-types.index',
+        //     'cities.index',
+        //     'zones.index',
+        //     'sectors.index',
+        //     'housing-qualities.index',
+        //     'status-plans.index',
 
-            // Plan familiar
-            'family-plans.index',
-            'family-plans.show',
-            'family-plans.store',
+        //     // Plan familiar
+        //     'family-plans.index',
+        //     'family-plans.show',
+        //     'family-plans.store',
 
-            // Vivienda
-            'housing-info.store',
+        //     // Vivienda
+        //     'housing-info.store',
 
-            // Perfil propio
-            'profiles.show',
-            'profiles.update',
-            'cities.apartments',
-            'apartments.index'
-        ]);
+        //     // Perfil propio
+        //     'profiles.show',
+        //     'profiles.update',
+        //     'cities.apartments',
+        //     'apartments.index'
+        // ]);
     }
 }

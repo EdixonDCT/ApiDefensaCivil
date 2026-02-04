@@ -1,194 +1,167 @@
 <?php
 
-namespace App\Services\ConditionMember;
+namespace App\Services\ConditionType;
 
-use App\Models\ConditionMember\ConditionMember;
+use App\Models\ConditionType\ConditionType;
 
 /**
  * Servicio para gestionar la lógica de negocio
- * de los registros de ConditionMember.
+ * de los registros de ConditionType.
  */
-class ConditionMemberService
+class ConditionTypeService
 {
     /**
-     * Obtiene la lista completa de ConditionMember.
+     * Obtiene la lista completa de ConditionType.
      *
-     * @return array Respuesta con la colección de registros.
+     * @return array
      */
     public static function getAll()
     {
-        $conditionMembers = ConditionMember::all();
+        $conditionTypes = ConditionType::all();
 
-        if ($conditionMembers->isEmpty()) {
+        if ($conditionTypes->isEmpty()) {
             return [
                 "error" => false,
                 "code" => 200,
-                "message" => "No hay registros de condición de miembros",
-                "data" => $conditionMembers,
+                "message" => "No hay registros de tipos de condición",
+                "data" => $conditionTypes,
             ];
         }
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Registros de condición de miembros obtenidos exitosamente",
-            "data" => $conditionMembers,
+            "message" => "Tipos de condición obtenidos exitosamente",
+            "data" => $conditionTypes,
         ];
     }
 
     /**
      * Obtiene un registro específico por su ID.
      *
-     * @param int|string $id ID del registro
+     * @param int|string $id
      * @return array
      */
     public function getById($id)
     {
-        $conditionMember = ConditionMember::find($id);
+        $conditionType = ConditionType::find($id);
 
-        if (!$conditionMember) {
+        if (!$conditionType) {
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Registro de condición de miembro no encontrado",
+                "message" => "Tipo de condición no encontrado",
             ];
         }
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Registro de condición de miembro obtenido exitosamente",
-            "data" => $conditionMember,
+            "message" => "Tipo de condición obtenido exitosamente",
+            "data" => $conditionType,
         ];
     }
 
     /**
-     * Obtiene todos los registros de un miembro específico.
+     * Crea un nuevo registro de ConditionType.
      *
-     * @param int|string $member_id ID del miembro
-     * @return array
-     */
-    public function getByMember($member_id)
-    {
-        $conditionMembers = ConditionMember::where('member_id', $member_id)->get();
-
-        if ($conditionMembers->isEmpty()) {
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "Este miembro no tiene registros de condición",
-                "data" => $conditionMembers,
-            ];
-        }
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Registros de condición del miembro obtenidos exitosamente",
-            "data" => $conditionMembers,
-        ];
-    }
-
-    /**
-     * Crea un nuevo registro de ConditionMember.
-     *
-     * @param array $data Datos para la creación
+     * @param array $data
      * @return array
      */
     public function create(array $data)
     {
-        $conditionMember = ConditionMember::create($data);
+        $conditionType = ConditionType::create($data);
 
         return [
             "error" => false,
             "code" => 201,
-            "message" => "Registro de condición de miembro creado exitosamente",
-            "data" => $conditionMember,
+            "message" => "Tipo de condición creado exitosamente",
+            "data" => $conditionType,
         ];
     }
 
     /**
      * Actualización total de un registro (PUT).
      *
-     * @param array $data Datos a actualizar
-     * @param int|string $id ID del registro
+     * @param array $data
+     * @param int|string $id
      * @return array
      */
     public function update(array $data, $id)
     {
-        $conditionMember = ConditionMember::find($id);
+        $conditionType = ConditionType::find($id);
 
-        if (!$conditionMember) {
+        if (!$conditionType) {
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Registro de condición de miembro no encontrado",
+                "message" => "Tipo de condición no encontrado",
             ];
         }
 
-        $conditionMember->update($data);
+        $conditionType->update($data);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Registro de condición de miembro actualizado exitosamente",
-            "data" => $conditionMember,
+            "message" => "Tipo de condición actualizado exitosamente",
+            "data" => $conditionType,
         ];
     }
 
     /**
      * Actualización parcial de un registro (PATCH).
      *
-     * @param array $data Campos a modificar
-     * @param int|string $id ID del registro
+     * @param array $data
+     * @param int|string $id
      * @return array
      */
     public function partialUpdate(array $data, $id)
     {
-        $conditionMember = ConditionMember::find($id);
+        $conditionType = ConditionType::find($id);
 
-        if (!$conditionMember) {
+        if (!$conditionType) {
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Registro de condición de miembro no encontrado",
+                "message" => "Tipo de condición no encontrado",
             ];
         }
 
-        $conditionMember->update($data);
+        $conditionType->update($data);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Registro de condición de miembro actualizado parcialmente exitosamente",
-            "data" => $conditionMember,
+            "message" => "Tipo de condición actualizado parcialmente exitosamente",
+            "data" => $conditionType,
         ];
     }
 
     /**
-     * Elimina un registro de ConditionMember.
+     * Elimina un registro de ConditionType.
      *
-     * @param int|string $id ID del registro
+     * @param int|string $id
      * @return array
      */
     public function delete($id)
     {
-        $conditionMember = ConditionMember::find($id);
+        $conditionType = ConditionType::find($id);
 
-        if (!$conditionMember) {
+        if (!$conditionType) {
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Registro de condición de miembro no encontrado",
+                "message" => "Tipo de condición no encontrado",
             ];
         }
 
-        $conditionMember->delete();
+        $conditionType->delete();
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Registro de condición de miembro eliminado exitosamente",
+            "message" => "Tipo de condición eliminado exitosamente",
         ];
     }
 }

@@ -70,7 +70,7 @@ class ConditionMemberService
      */
     public function getByMember($member_id)
     {
-        $conditionMembers = ConditionMember::where('member_id', $member_id)->get();
+        $conditionMembers = ConditionMember::with('conditionType')->where('member_id', $member_id)->get();
 
         if ($conditionMembers->isEmpty()) {
             return [

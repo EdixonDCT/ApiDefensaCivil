@@ -16,7 +16,8 @@ class UserSeeder extends Seeder
                 'state_user_id' => 1
             ]
         );
-        $edixon->assignRole('Administrador');
+        // $edixon->assignRole('Administrador');
+        $edixon->assignRole('Voluntario');
 
         $bruno = User::firstOrCreate(
             ['email' => 'bruno@gmail.com'],
