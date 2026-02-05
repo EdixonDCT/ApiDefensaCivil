@@ -44,7 +44,7 @@ class ConditionMemberService
      */
     public function getById($id)
     {
-        $conditionMember = ConditionMember::find($id);
+        $conditionMember = ConditionMember::with('conditionType')->find($id);
 
         if (!$conditionMember) {
             return [
@@ -57,7 +57,7 @@ class ConditionMemberService
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Registro de condición de miembro obtenido exitosamente",
+            "message" => "Registro de condición de miembro obtenido exitosamente",  
             "data" => $conditionMember,
         ];
     }

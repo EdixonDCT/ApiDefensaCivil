@@ -4,6 +4,7 @@ namespace App\Services\Member;
 
 use App\Models\Member\Member;
 use App\Models\FamilyMember\FamilyMember;
+use App\Models\ConditionMember\ConditionMember;
 use Illuminate\Support\Facades\DB;
 
 class MemberService
@@ -22,7 +23,8 @@ class MemberService
 
     public function getById($id)
     {
-        $member = Member::find($id);
+        $member = Member::with(['bloodGroup','documentType','kinship','gender','nationality'])->find($id);
+        $conditionMember = $member->conditionMember;
 
         if (!$member) {
             return [
@@ -36,7 +38,7 @@ class MemberService
             "error" => false,
             "code" => 200,
             "message" => "Miembro obtenido exitosamente",
-            "data" => $member,
+            "data" => $member,$conditionMember,
         ];
     }
     
@@ -220,6 +222,9 @@ class MemberService
         }
 
         // 5️⃣ Eliminar
+        $conditionMembers = ConditionMember::where('member_id', $member_id)->get();
+        foreach ($conditionMembers as $conditionMember) {
+            $conditionMember->delete();}    
         $familyMember->delete();
         $member->delete();
 
