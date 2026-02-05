@@ -12,7 +12,7 @@ use Database\Seeders\Sectional\SectionalSeeder;
 use Database\Seeders\Organization\OrganizationSeeder;
 use Database\Seeders\Profile\ProfileSeeder;
 use Database\Seeders\Zone\ZoneSeeder;
-use Database\Seeders\HousingQuality\HousingQualitySeeder;
+use Database\Seeders\HousingQuality\HousingQualitySeeder;   
 use Database\Seeders\Sector\SectorSeeder;
 use Database\Seeders\StatusPlan\StatusPlanSeeder;
 use Database\Seeders\Apartment\ApartmentSeeder;
@@ -22,10 +22,14 @@ use Database\Seeders\Permission\PermissionSeeder;
 use Database\Seeders\RolePermission\RolePermissionSeeder;
 use Database\Seeders\VulnerableQuestion\VulnerableQuestionSeeder;
 use Database\Seeders\Action\ActionSeeder;
+use Database\Seeders\AnimalGenders\AnimalGendersSeeder;
 use Database\Seeders\BloodGroup\BloodGroupSeeder;
 use Database\Seeders\Nationality\NationalitySeeder;
 use Database\Seeders\Kinship\KinshipSeeder;
 use Database\Seeders\ConditionType\ConditionTypeSeeder;
+use Database\Seeders\Pet\PetsSeeder;
+use Database\Seeders\PetVaccines\PetVaccinesSeeder;
+use Database\Seeders\Species\SpeciesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -56,6 +60,10 @@ class DatabaseSeeder extends Seeder
             NationalitySeeder::class,
             KinshipSeeder::class,
             ConditionTypeSeeder::class,
+            SpeciesSeeder::class,
+            AnimalGendersSeeder::class,
+            PetsSeeder::class,
+            PetVaccinesSeeder::class,
         ]);
     }
 }

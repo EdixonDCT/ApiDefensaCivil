@@ -22,6 +22,7 @@ use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
+use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
 use App\Http\Controllers\API\Nationality\NationalityController;
@@ -30,6 +31,9 @@ use App\Http\Controllers\API\Member\MemberController;
 use App\Http\Controllers\API\FamilyMember\FamilyMemberController;
 use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
+use App\Http\Controllers\Api\Pet\PetController;
+use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
+use App\Http\Controllers\Api\species\speciesController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -40,365 +44,366 @@ Route::get('/gendersPublic', [GenderController::class, 'index']);
 Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
 Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
+
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
-        ->middleware('ability:'.TokenAbility::ISSUE_ACCESS_TOKEN->value);
-    
+        ->middleware('ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value);
+
     Route::post('/logout', [AuthenticationController::class, 'logOut']);
 
     Route::prefix('statusPlans')->group(function () {
-    Route::get('/', [StatusPlanController::class, 'index']);
-    
-    Route::get('/{statusPlan_id}', [StatusPlanController::class, 'show']);
-    
-    Route::post('/', [StatusPlanController::class, 'store']);
+        Route::get('/', [StatusPlanController::class, 'index']);
 
-    Route::put('/{statusPlan_id}', [StatusPlanController::class, 'update']);
+        Route::get('/{statusPlan_id}', [StatusPlanController::class, 'show']);
 
-    Route::delete('/{statusPlan_id}', [StatusPlanController::class, 'destroy']);}); 
+        Route::post('/', [StatusPlanController::class, 'store']);
+
+        Route::put('/{statusPlan_id}', [StatusPlanController::class, 'update']);
+
+        Route::delete('/{statusPlan_id}', [StatusPlanController::class, 'destroy']);
+    });
     route::prefix('stateUsers')->group(function () {
-    route::get('/', [StateUserController::class, 'index']);
-    
-    route::get('/{state_user_id}', [StateUserController::class, 'show']);
-    
-    route::post('/', [StateUserController::class, 'store']);
+        route::get('/', [StateUserController::class, 'index']);
 
-    route::put('/{state_user_id}', [StateUserController::class, 'update']);
+        route::get('/{state_user_id}', [StateUserController::class, 'show']);
 
-    route::delete('/{state_user_id}', [StateUserController::class, 'destroy']);
-});
+        route::post('/', [StateUserController::class, 'store']);
 
-route::prefix('users')->group(function () {
-    route::get('/', [UserController::class, 'index']);
-    
-    route::get('/{user_id}', [UserController::class, 'show']);
-    
-    route::post('/', [UserController::class, 'store']);
+        route::put('/{state_user_id}', [StateUserController::class, 'update']);
 
-    route::put('/{user_id}', [UserController::class, 'update']);
+        route::delete('/{state_user_id}', [StateUserController::class, 'destroy']);
+    });
 
-    route::patch('/{user_id}', [UserController::class, 'partialUpdate']);
+    route::prefix('users')->group(function () {
+        route::get('/', [UserController::class, 'index']);
 
-    route::delete('/{user_id}', [UserController::class, 'destroy']);
-});
+        route::get('/{user_id}', [UserController::class, 'show']);
 
-route::prefix('genders')->group(function () {
-    route::get('/', [GenderController::class, 'index']);
-    
-    route::get('/{gender_id}', [GenderController::class, 'show']);
-    
-    route::post('/', [GenderController::class, 'store']);
+        route::post('/', [UserController::class, 'store']);
 
-    route::put('/{gender_id}', [GenderController::class, 'update']);
+        route::put('/{user_id}', [UserController::class, 'update']);
 
-    route::patch('/{gender_id}', [GenderController::class, 'partialUpdate']);
+        route::patch('/{user_id}', [UserController::class, 'partialUpdate']);
 
-    route::patch('/state/{gender_id}', [GenderController::class, 'changeState']);
+        route::delete('/{user_id}', [UserController::class, 'destroy']);
+    });
 
-    route::delete('/{gender_id}', [GenderController::class, 'destroy']);
-});
+    route::prefix('genders')->group(function () {
+        route::get('/', [GenderController::class, 'index']);
 
-route::prefix('sectionals')->group(function () {
-    route::get('/', [SectionalController::class, 'index']);
-    
-    route::get('/{sectional_id}', [SectionalController::class, 'show']);
-    
-    route::post('/', [SectionalController::class, 'store']);
+        route::get('/{gender_id}', [GenderController::class, 'show']);
 
-    route::put('/{sectional_id}', [SectionalController::class, 'update']);
+        route::post('/', [GenderController::class, 'store']);
 
-    route::patch('/{sectional_id}', [SectionalController::class, 'partialUpdate']);
+        route::put('/{gender_id}', [GenderController::class, 'update']);
 
-    route::patch('/state/{sectional_id}', [SectionalController::class, 'changeState']);
+        route::patch('/{gender_id}', [GenderController::class, 'partialUpdate']);
 
-    route::delete('/{sectional_id}', [SectionalController::class, 'destroy']);
-});
+        route::patch('/state/{gender_id}', [GenderController::class, 'changeState']);
 
-route::prefix('organizations')->group(function () {
-    route::get('/', [OrganizationController::class, 'index']);
-        
-    route::get('/{organization_id}', [OrganizationController::class, 'show']);
-    
-    route::get('/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
+        route::delete('/{gender_id}', [GenderController::class, 'destroy']);
+    });
 
-    route::post('/', [OrganizationController::class, 'store']);
+    route::prefix('sectionals')->group(function () {
+        route::get('/', [SectionalController::class, 'index']);
 
-    route::put('/{organization_id}', [OrganizationController::class, 'update']);
+        route::get('/{sectional_id}', [SectionalController::class, 'show']);
 
-    route::patch('/{organization_id}', [OrganizationController::class, 'partialUpdate']);
+        route::post('/', [SectionalController::class, 'store']);
 
-    route::patch('/state/{organization_id}', [OrganizationController::class, 'changeState']);
+        route::put('/{sectional_id}', [SectionalController::class, 'update']);
 
-    route::delete('/{organization_id}', [OrganizationController::class, 'destroy']);
-});
+        route::patch('/{sectional_id}', [SectionalController::class, 'partialUpdate']);
 
-route::prefix('profiles')->group(function () {
-    route::get('/', [ProfileController::class, 'index']);
-    
-    route::get('/{profile_id}', [ProfileController::class, 'show']);
-    
-    route::post('/', [ProfileController::class, 'store']);
+        route::patch('/state/{sectional_id}', [SectionalController::class, 'changeState']);
 
-    route::put('/{profile_id}', [ProfileController::class, 'update']);
+        route::delete('/{sectional_id}', [SectionalController::class, 'destroy']);
+    });
 
-    route::patch('/{profile_id}', [ProfileController::class, 'partialUpdate']);
+    route::prefix('organizations')->group(function () {
+        route::get('/', [OrganizationController::class, 'index']);
 
-    route::delete('/{profile_id}', [ProfileController::class, 'destroy']);
-});
+        route::get('/{organization_id}', [OrganizationController::class, 'show']);
 
-route::prefix('zones')->group(function () {
-    route::get('/', [ZoneController::class, 'index'])->middleware('permission:zones.index');
-    
-    route::get('/{zone_id}', [ZoneController::class, 'show']);
-    
-    route::post('/', [ZoneController::class, 'store']);
+        route::get('/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
-    route::put('/{zone_id}', [ZoneController::class, 'update']);
+        route::post('/', [OrganizationController::class, 'store']);
 
-    route::delete('/{zone_id}', [ZoneController::class, 'destroy']);
-});
+        route::put('/{organization_id}', [OrganizationController::class, 'update']);
 
-route::prefix('housingQualities')->group(function () {
-    route::get('/', [HousingQualityController::class, 'index'])->middleware('permission:housing-qualities.index');
-    
-    route::get('/{housingQuality_id}', [HousingQualityController::class, 'show']);
-    
-    route::post('/', [HousingQualityController::class, 'store']);
+        route::patch('/{organization_id}', [OrganizationController::class, 'partialUpdate']);
 
-    route::put('/{housingQuality_id}', [HousingQualityController::class, 'update']);
+        route::patch('/state/{organization_id}', [OrganizationController::class, 'changeState']);
 
-    route::delete('/{housingQuality_id}', [HousingQualityController::class, 'destroy']);
-    
-    route::patch('/{housingQuality_id}', [HousingQualityController::class, 'partialUpdate']);
+        route::delete('/{organization_id}', [OrganizationController::class, 'destroy']);
+    });
 
-    route::patch('/state/{housingQuality_id}', [HousingQualityController::class, 'changeState']);
-});
+    route::prefix('profiles')->group(function () {
+        route::get('/', [ProfileController::class, 'index']);
 
-route::prefix('sectors')->group(function () {
-    route::get('/', [SectorController::class, 'index'])->middleware('permission:sectors.index');
-    
-    route::get('/{sector_id}', [SectorController::class, 'show']);
-    
-    route::post('/', [SectorController::class, 'store']);
+        route::get('/{profile_id}', [ProfileController::class, 'show']);
 
-    route::put('/{sector_id}', [SectorController::class, 'update']);
+        route::post('/', [ProfileController::class, 'store']);
 
-    route::delete('/{sector_id}', [SectorController::class, 'destroy']);
-    
-    route::patch('/{sector_id}', [SectorController::class, 'partialUpdate']);
+        route::put('/{profile_id}', [ProfileController::class, 'update']);
 
-    route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
-});
+        route::patch('/{profile_id}', [ProfileController::class, 'partialUpdate']);
 
+        route::delete('/{profile_id}', [ProfileController::class, 'destroy']);
+    });
 
+    route::prefix('zones')->group(function () {
+        route::get('/', [ZoneController::class, 'index'])->middleware('permission:zones.index');
 
-route::prefix('apartments')->group(function () {
-    route::get('/', [ApartmentController::class, 'index'])->middleware('permission:apartments.index');
-    
-    route::get('/{apartment_id}', [ApartmentController::class, 'show']);
-    
-    route::post('/', [ApartmentController::class, 'store']);
+        route::get('/{zone_id}', [ZoneController::class, 'show']);
 
-    route::put('/{apartment_id}', [ApartmentController::class, 'update']);
+        route::post('/', [ZoneController::class, 'store']);
 
-    route::delete('/{apartment_id}', [ApartmentController::class, 'destroy']);
-    
-    route::patch('/{apartment_id}', [ApartmentController::class, 'partialUpdate']);
+        route::put('/{zone_id}', [ZoneController::class, 'update']);
 
-    route::patch('/state/{apartment_id}', [ApartmentController::class, 'changeState']);
-});
+        route::delete('/{zone_id}', [ZoneController::class, 'destroy']);
+    });
 
-route::prefix('cities')->group(function () {
-    route::get('/', [CityController::class, 'index']);
-        
-    route::get('/{city_id}', [CityController::class, 'show']);
-    
-    route::get('/apartment/{city_id}', [CityController::class, 'getApartment'])->middleware('permission:cities.apartments');
+    route::prefix('housingQualities')->group(function () {
+        route::get('/', [HousingQualityController::class, 'index'])->middleware('permission:housing-qualities.index');
 
-    route::post('/', [CityController::class, 'store']);
+        route::get('/{housingQuality_id}', [HousingQualityController::class, 'show']);
 
-    route::put('/{city_id}', [CityController::class, 'update']);
+        route::post('/', [HousingQualityController::class, 'store']);
 
-    route::patch('/{city_id}', [CityController::class, 'partialUpdate']);
+        route::put('/{housingQuality_id}', [HousingQualityController::class, 'update']);
 
-    route::patch('/state/{city_id}', [CityController::class, 'changeState']);
+        route::delete('/{housingQuality_id}', [HousingQualityController::class, 'destroy']);
 
-    route::delete('/{city_id}', [CityController::class, 'destroy']);
-});
+        route::patch('/{housingQuality_id}', [HousingQualityController::class, 'partialUpdate']);
 
-route::prefix('familyPlans')->group(function () {
-    route::get('/', [FamilyPlanController::class, 'index']);
-        
-    route::get('/{familyPlan_id}', [FamilyPlanController::class, 'show'])->middleware('permission:family-plans.show');
+        route::patch('/state/{housingQuality_id}', [HousingQualityController::class, 'changeState']);
+    });
 
-    route::post('/', [FamilyPlanController::class, 'store'])->middleware('permission:family-plans.store');
+    route::prefix('sectors')->group(function () {
+        route::get('/', [SectorController::class, 'index'])->middleware('permission:sectors.index');
 
-    route::put('/{familyPlan_id}', [FamilyPlanController::class, 'update']);
+        route::get('/{sector_id}', [SectorController::class, 'show']);
 
-    route::patch('/{familyPlan_id}', [FamilyPlanController::class, 'partialUpdate']);
+        route::post('/', [SectorController::class, 'store']);
 
-    route::patch('/identify/{familyPlan_id}', [FamilyPlanController::class, 'identify'])->middleware('permission:family-plans.identify');
+        route::put('/{sector_id}', [SectorController::class, 'update']);
 
-    route::patch('/state/{familyPlan_id}', [FamilyPlanController::class, 'changeState']);
+        route::delete('/{sector_id}', [SectorController::class, 'destroy']);
 
-    route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
+        route::patch('/{sector_id}', [SectorController::class, 'partialUpdate']);
 
-    route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
-});
+        route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
+    });
 
-route::prefix('housingInfo')->group(function () {
-    route::get('/', [HousingInfoController::class, 'index']);
-        
-    route::get('/{housingInfo_id}', [HousingInfoController::class, 'show'])->middleware('permission:housing-info.show');
 
-    route::post('/', [HousingInfoController::class, 'store'])->middleware('permission:housing-info.store');
 
-    route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy'])->middleware('permission:housing-info.destroy');
-});
+    route::prefix('apartments')->group(function () {
+        route::get('/', [ApartmentController::class, 'index'])->middleware('permission:apartments.index');
 
-    route::prefix('documentTypes')->group(function ()
-{
-    route::get('/', [DocumentTypeController::class, 'index']);
-    route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
-    route::post('/', [DocumentTypeController::class, 'store']);
-    route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
-    route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
-    route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
-    route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
-});
+        route::get('/{apartment_id}', [ApartmentController::class, 'show']);
 
-route::prefix('vulnerableQuestions')->group(function () {
-    route::get('/', [VulnerableQuestionController::class, 'index']);
-    
-    route::get('/paginate', [VulnerableQuestionController::class, 'paginate']);
+        route::post('/', [ApartmentController::class, 'store']);
 
-    route::get('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'show']);
-    
-    route::post('/', [VulnerableQuestionController::class, 'store']);
+        route::put('/{apartment_id}', [ApartmentController::class, 'update']);
 
-    route::put('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'update']);
+        route::delete('/{apartment_id}', [ApartmentController::class, 'destroy']);
 
-    route::patch('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'partialUpdate']);
+        route::patch('/{apartment_id}', [ApartmentController::class, 'partialUpdate']);
 
-    route::patch('/state/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'changeState']);
+        route::patch('/state/{apartment_id}', [ApartmentController::class, 'changeState']);
+    });
 
-    route::delete('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'destroy']);
-});
+    route::prefix('cities')->group(function () {
+        route::get('/', [CityController::class, 'index']);
 
-route::prefix('vulnerableTest')->group(function () {
-    route::get('/', [VulnerableTestController::class, 'index']);
-    
-    route::get('/{familyPlan_id}', [VulnerableTestController::class, 'show']);
-    
-    route::post('/', [VulnerableTestController::class, 'store']);
+        route::get('/{city_id}', [CityController::class, 'show']);
 
-    route::delete('/{familyPlan_id}', [VulnerableTestController::class, 'destroy']);
-});
+        route::get('/apartment/{city_id}', [CityController::class, 'getApartment'])->middleware('permission:cities.apartments');
 
-route::prefix('actions')->group(function () {
-    route::get('/', [ActionController::class, 'index']);
-    
-    route::get('/{action_id}', [ActionController::class, 'show']);
-    
-    route::post('/', [ActionController::class, 'store']);
+        route::post('/', [CityController::class, 'store']);
 
-    route::put('/{action_id}', [ActionController::class, 'update']);
+        route::put('/{city_id}', [CityController::class, 'update']);
 
-    route::delete('/{action_id}', [ActionController::class, 'destroy']);
-});
+        route::patch('/{city_id}', [CityController::class, 'partialUpdate']);
 
-Route::prefix('histories')->group(function () {
-    // Histories de voluntario
-    Route::get('/voluntario', [HistoryController::class, 'actionsByVoluntario']);
+        route::patch('/state/{city_id}', [CityController::class, 'changeState']);
 
-    // Histories de supervisor
-    Route::get('/supervisor', [HistoryController::class, 'actionsBySupervisor']);
+        route::delete('/{city_id}', [CityController::class, 'destroy']);
+    });
 
-    // Validar acceso a un plan
-    Route::get('/access/{planId}', [HistoryController::class, 'checkAccess']);
+    route::prefix('familyPlans')->group(function () {
+        route::get('/', [FamilyPlanController::class, 'index']);
 
-    // Traer todos los histories
-    Route::get('/', [HistoryController::class, 'index']);
+        route::get('/{familyPlan_id}', [FamilyPlanController::class, 'show'])->middleware('permission:family-plans.show');
 
-    // Traer un history por id
-    Route::get('/{history_id}', [HistoryController::class, 'show']);
+        route::post('/', [FamilyPlanController::class, 'store'])->middleware('permission:family-plans.store');
 
-    // Crear history
-    Route::post('/', [HistoryController::class, 'store']);
+        route::put('/{familyPlan_id}', [FamilyPlanController::class, 'update']);
 
-    // Actualizar history completo
-    Route::put('/{history_id}', [HistoryController::class, 'update']);
+        route::patch('/{familyPlan_id}', [FamilyPlanController::class, 'partialUpdate']);
 
-    // Actualización parcial
-    Route::patch('/{history_id}', [HistoryController::class, 'partialUpdate']);
+        route::patch('/identify/{familyPlan_id}', [FamilyPlanController::class, 'identify'])->middleware('permission:family-plans.identify');
 
-    // Eliminar history
-    Route::delete('/{history_id}', [HistoryController::class, 'destroy']);
+        route::patch('/state/{familyPlan_id}', [FamilyPlanController::class, 'changeState']);
 
-});
+        route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
 
-// Rutas para el catálogo de grupos sanguíneos
-Route::prefix('bloodGroups')->group(function () {
+        route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
+    });
 
-    // Obtener todos los grupos sanguíneos
-    Route::get('/', [BloodGroupController::class, 'index']);
+    route::prefix('housingInfo')->group(function () {
+        route::get('/', [HousingInfoController::class, 'index']);
 
-    // Obtener un grupo sanguíneo por su ID
-    Route::get('/{bloodGroup_id}', [BloodGroupController::class, 'show']);
+        route::get('/{housingInfo_id}', [HousingInfoController::class, 'show'])->middleware('permission:housing-info.show');
 
-    // Crear un nuevo grupo sanguíneo
-    Route::post('/', [BloodGroupController::class, 'store']);
+        route::post('/', [HousingInfoController::class, 'store'])->middleware('permission:housing-info.store');
 
-    // Actualizar completamente un grupo sanguíneo
-    Route::put('/{bloodGroup_id}', [BloodGroupController::class, 'update']);
+        route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy'])->middleware('permission:housing-info.destroy');
+    });
 
-    // Eliminar un grupo sanguíneo
-    Route::delete('/{bloodGroup_id}', [BloodGroupController::class, 'destroy']);
-});
+    route::prefix('documentTypes')->group(function () {
+        route::get('/', [DocumentTypeController::class, 'index']);
+        route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
+        route::post('/', [DocumentTypeController::class, 'store']);
+        route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
+        route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
+        route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
+        route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
+    });
 
-// Rutas para el catálogo de nacionalidades
-Route::prefix('nationalities')->group(function () {
+    route::prefix('vulnerableQuestions')->group(function () {
+        route::get('/', [VulnerableQuestionController::class, 'index']);
 
-    // Obtener todas las nacionalidades
-    Route::get('/', [NationalityController::class, 'index']);
+        route::get('/paginate', [VulnerableQuestionController::class, 'paginate']);
 
-    // Obtener una nacionalidad por su ID
-    Route::get('/{nationality_id}', [NationalityController::class, 'show']);
+        route::get('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'show']);
 
-    // Crear una nueva nacionalidad
-    Route::post('/', [NationalityController::class, 'store']);
+        route::post('/', [VulnerableQuestionController::class, 'store']);
 
-    // Actualizar completamente una nacionalidad
-    Route::put('/{nationality_id}', [NationalityController::class, 'update']);
+        route::put('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'update']);
 
-    // Actualizar parcialmente una nacionalidad
-    Route::patch('/{nationality_id}', [NationalityController::class, 'partialUpdate']);
+        route::patch('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'partialUpdate']);
 
-    // Cambiar el estado (activa / inactiva) de una nacionalidad
-    Route::patch('/state/{nationality_id}', [NationalityController::class, 'changeState']);
+        route::patch('/state/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'changeState']);
 
-    // Eliminar una nacionalidad
-    Route::delete('/{nationality_id}', [NationalityController::class, 'destroy']);
-});
-// Rutas para el catálogo de grupos sanguíneos
-Route::prefix('kinships')->group(function () {
+        route::delete('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'destroy']);
+    });
 
-    // Obtener todos los grupos sanguíneos
-    Route::get('/', [KinshipController::class, 'index']);
+    route::prefix('vulnerableTest')->group(function () {
+        route::get('/', [VulnerableTestController::class, 'index']);
 
-    // Obtener un grupo sanguíneo por su ID
-    Route::get('/{kinship_id}', [KinshipController::class, 'show']);
+        route::get('/{familyPlan_id}', [VulnerableTestController::class, 'show']);
 
-    // Crear un nuevo grupo sanguíneo
-    Route::post('/', [KinshipController::class, 'store']);
+        route::post('/', [VulnerableTestController::class, 'store']);
 
-    // Actualizar completamente un grupo sanguíneo
-    Route::put('/{kinship_id}', [KinshipController::class, 'update']);
+        route::delete('/{familyPlan_id}', [VulnerableTestController::class, 'destroy']);
+    });
 
-    // Eliminar un grupo sanguíneo
-    Route::delete('/{kinship_id}', [KinshipController::class, 'destroy']);
-});
+    route::prefix('actions')->group(function () {
+        route::get('/', [ActionController::class, 'index']);
+
+        route::get('/{action_id}', [ActionController::class, 'show']);
+
+        route::post('/', [ActionController::class, 'store']);
+
+        route::put('/{action_id}', [ActionController::class, 'update']);
+
+        route::delete('/{action_id}', [ActionController::class, 'destroy']);
+    });
+
+    Route::prefix('histories')->group(function () {
+        // Histories de voluntario
+        Route::get('/voluntario', [HistoryController::class, 'actionsByVoluntario']);
+
+        // Histories de supervisor
+        Route::get('/supervisor', [HistoryController::class, 'actionsBySupervisor']);
+
+        // Validar acceso a un plan
+        Route::get('/access/{planId}', [HistoryController::class, 'checkAccess']);
+
+        // Traer todos los histories
+        Route::get('/', [HistoryController::class, 'index']);
+
+        // Traer un history por id
+        Route::get('/{history_id}', [HistoryController::class, 'show']);
+
+        // Crear history
+        Route::post('/', [HistoryController::class, 'store']);
+
+        // Actualizar history completo
+        Route::put('/{history_id}', [HistoryController::class, 'update']);
+
+        // Actualización parcial
+        Route::patch('/{history_id}', [HistoryController::class, 'partialUpdate']);
+
+        // Eliminar history
+        Route::delete('/{history_id}', [HistoryController::class, 'destroy']);
+    });
+
+    // Rutas para el catálogo de grupos sanguíneos
+    Route::prefix('bloodGroups')->group(function () {
+
+        // Obtener todos los grupos sanguíneos
+        Route::get('/', [BloodGroupController::class, 'index']);
+
+        // Obtener un grupo sanguíneo por su ID
+        Route::get('/{bloodGroup_id}', [BloodGroupController::class, 'show']);
+
+        // Crear un nuevo grupo sanguíneo
+        Route::post('/', [BloodGroupController::class, 'store']);
+
+        // Actualizar completamente un grupo sanguíneo
+        Route::put('/{bloodGroup_id}', [BloodGroupController::class, 'update']);
+
+        // Eliminar un grupo sanguíneo
+        Route::delete('/{bloodGroup_id}', [BloodGroupController::class, 'destroy']);
+    });
+
+    // Rutas para el catálogo de nacionalidades
+    Route::prefix('nationalities')->group(function () {
+
+        // Obtener todas las nacionalidades
+        Route::get('/', [NationalityController::class, 'index']);
+
+        // Obtener una nacionalidad por su ID
+        Route::get('/{nationality_id}', [NationalityController::class, 'show']);
+
+        // Crear una nueva nacionalidad
+        Route::post('/', [NationalityController::class, 'store']);
+
+        // Actualizar completamente una nacionalidad
+        Route::put('/{nationality_id}', [NationalityController::class, 'update']);
+
+        // Actualizar parcialmente una nacionalidad
+        Route::patch('/{nationality_id}', [NationalityController::class, 'partialUpdate']);
+
+        // Cambiar el estado (activa / inactiva) de una nacionalidad
+        Route::patch('/state/{nationality_id}', [NationalityController::class, 'changeState']);
+
+        // Eliminar una nacionalidad
+        Route::delete('/{nationality_id}', [NationalityController::class, 'destroy']);
+    });
+    // Rutas para el catálogo de grupos sanguíneos
+    Route::prefix('kinships')->group(function () {
+
+        // Obtener todos los grupos sanguíneos
+        Route::get('/', [KinshipController::class, 'index']);
+
+        // Obtener un grupo sanguíneo por su ID
+        Route::get('/{kinship_id}', [KinshipController::class, 'show']);
+
+        // Crear un nuevo grupo sanguíneo
+        Route::post('/', [KinshipController::class, 'store']);
+
+        // Actualizar completamente un grupo sanguíneo
+        Route::put('/{kinship_id}', [KinshipController::class, 'update']);
+
+        // Eliminar un grupo sanguíneo
+        Route::delete('/{kinship_id}', [KinshipController::class, 'destroy']);
+    });
 
     Route::prefix('members')->group(function () {
         // Obtener todos los miembros
@@ -418,16 +423,17 @@ Route::prefix('kinships')->group(function () {
     });
 
     Route::prefix('familyMembers')->group(function () {
-    // Obtener todos los miembros
-    Route::get('/', [FamilyMemberController::class, 'index']);
-    // Obtener un miembro por su ID
-    Route::get('/{familyMember_id}', [FamilyMemberController::class, 'show']);
-    // Registrar un nuevo miembro
-    Route::post('/', [FamilyMemberController::class, 'store']);
-    // Actualizar completamente un miembro
-    Route::put('/{familyMember_id}', [FamilyMemberController::class, 'update']);
-    // Eliminar un miembro
-    Route::delete('/{familyMember_id}', [FamilyMemberController::class, 'destroy']);});
+        // Obtener todos los miembros
+        Route::get('/', [FamilyMemberController::class, 'index']);
+        // Obtener un miembro por su ID
+        Route::get('/{familyMember_id}', [FamilyMemberController::class, 'show']);
+        // Registrar un nuevo miembro
+        Route::post('/', [FamilyMemberController::class, 'store']);
+        // Actualizar completamente un miembro
+        Route::put('/{familyMember_id}', [FamilyMemberController::class, 'update']);
+        // Eliminar un miembro
+        Route::delete('/{familyMember_id}', [FamilyMemberController::class, 'destroy']);
+    });
 
     Route::prefix('conditionTypes')->group(function () {
         // Obtener todos los tipos de condición
@@ -443,19 +449,92 @@ Route::prefix('kinships')->group(function () {
     });
 
     Route::prefix('conditionMembers')->group(function () {
-    // Obtener todos los registros
-    Route::get('/', [ConditionMemberController::class, 'index']);
-    // Obtener un registro específico por su ID
-    Route::get('/{conditionMember_id}', [ConditionMemberController::class, 'show']);
-    // Obtener todos los registros de un miembro específico
-    Route::get('/member/{member_id}', [ConditionMemberController::class, 'getByMember']);
-    // Crear un nuevo registro (POST) -> plan_id en la ruta aunque no se usa
-    Route::post('/', [ConditionMemberController::class, 'store']);
-    // Actualización total (PUT) -> plan_id en la ruta aunque no se usa
-    Route::put('/{conditionMember_id}', [ConditionMemberController::class, 'update']);
-    // Actualización parcial (PATCH) -> plan_id en la ruta aunque no se usa
-    Route::patch('/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
-    // Eliminar un registro (DELETE) -> plan_id en la ruta aunque no se usa
-    Route::delete('/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);
+        // Obtener todos los registros
+        Route::get('/', [ConditionMemberController::class, 'index']);
+        // Obtener un registro específico por su ID
+        Route::get('/{conditionMember_id}', [ConditionMemberController::class, 'show']);
+        // Obtener todos los registros de un miembro específico
+        Route::get('/member/{member_id}', [ConditionMemberController::class, 'getByMember']);
+        // Crear un nuevo registro (POST) -> plan_id en la ruta aunque no se usa
+        Route::post('/', [ConditionMemberController::class, 'store']);
+        // Actualización total (PUT) -> plan_id en la ruta aunque no se usa
+        Route::put('/{conditionMember_id}', [ConditionMemberController::class, 'update']);
+        // Actualización parcial (PATCH) -> plan_id en la ruta aunque no se usa
+        Route::patch('/{conditionMember_id}', [ConditionMemberController::class, 'partialUpdate']);
+        // Eliminar un registro (DELETE) -> plan_id en la ruta aunque no se usa
+        Route::delete('/{conditionMember_id}', [ConditionMemberController::class, 'destroy']);
+    });
+
+    Route::prefix('species')->group(function () {
+        // Obtener todas las especies
+        Route::get('/', [speciesController::class, 'index']);
+        // Obtener una especie por ID
+        Route::get('/{id}', [speciesController::class, 'show']);
+        // Crear nueva especie
+        Route::post('/', [speciesController::class, 'store']);
+        // Actualización completa
+        Route::put('/{id}', [speciesController::class, 'update']);
+        // Actualización parcial
+        Route::patch('/{id}', [speciesController::class, 'partialUpdate']);
+        // Eliminar especie
+        Route::delete('/{id}', [speciesController::class, 'destroy']);
     });
 });
+
+Route::prefix('animal-genders')->group(function () {
+    // Obtener todos los géneros de animales
+    Route::get('/', [AnimalGenderController::class, 'index']);
+    // Obtener un género de animal por ID
+    Route::get('/{id}', [AnimalGenderController::class, 'show']);
+    // Crear nuevo género de animal
+    Route::post('/', [AnimalGenderController::class, 'store']);
+    // Actualización completa
+    Route::put('/{id}', [AnimalGenderController::class, 'update']);
+    // Actualización parcial
+    Route::patch('/{id}', [AnimalGenderController::class, 'partialUpdate']);
+    // Eliminar género de animal
+    Route::delete('/{id}', [AnimalGenderController::class, 'destroy']);
+});
+
+Route::prefix('pets')->group(function () {
+    Route::get('/', [PetController::class, 'index']);
+
+    Route::get('/{id}', [PetController::class, 'show']);
+
+    Route::post('/', [PetController::class, 'store']);
+
+    Route::put('/{id}', [PetController::class, 'update']);
+
+    Route::patch('/{id}', [PetController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [PetController::class, 'destroy']);
+});
+
+Route::prefix( 'pets')->group(function () {
+    Route::get('/', [PetController::class, 'index']);
+
+    Route::get('/{id}', [PetController::class, 'show']);
+
+    Route::post('/', [PetController::class, 'store']);
+
+    Route::put('/{id}', [PetController::class, 'update']);
+
+    Route::patch('/{id}', [PetController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [PetController::class, 'destroy']);
+});
+
+Route::prefix('pet-vaccines')->group(function () {
+    Route::get('/', [PetVaccineController::class, 'index']);
+
+    Route::get('/{id}', [PetVaccineController::class, 'show']);
+
+    Route::post('/', [PetVaccineController::class, 'store']);
+
+    Route::put('/{id}', [PetVaccineController::class, 'update']);
+
+    Route::patch('/{id}', [PetVaccineController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [PetVaccineController::class, 'destroy']);
+});
+
