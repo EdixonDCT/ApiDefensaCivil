@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Services\HousingInfo;
+
+use App\Models\HousingInfo\HousingInfo;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+
+/**
+ * Servicio para la gestión de imágenes e información de vivienda.
+ * Maneja la carga y eliminación física de archivos en el disco 'public'.
+ */
+class HousingInfoService
+{
+    /**
+     * Obtiene todas las imágenes de vivienda registradas.
+     */
+    public function getAll()
+    {
+        $images = HousingInfo::all();
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $images->isEmpty() 
+                ? "No hay imágenes registradas" 
+                : "Imágenes obtenidas exitosamente",
+            "data" => $images,
+        ];
+    }
+
+    /**
+     * Obtiene las imágenes asociadas a un Plan Familiar específico.
+     * @param int $familyPlanId
+     */
+    public function getById(int $familyPlanId)
+    {
+        $images = HousingInfo::where('family_plan_id', $familyPlanId)->get();
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $images->isEmpty() 
+                ? "No hay imágenes para este plan familiar" 
+                : "Imágenes obtenidas exitosamente",
+            "data" => $images,
+        ];
+    }
+    
+    /**
+     * Sube una imagen al storage y crea el registro en la base de datos.
+     * @param array $data Debe contener 'path' (instancia de UploadedFile) y 'family_plan_id'.
+     */
+    public function create(array $data)
+    {
+        /** @var UploadedFile $file */
+        $file = $data['path'];
+
+        // Almacena el archivo en 'storage/app/public/imagenes'
+        $filePath = $file->store('imagenes', 'public');
+
+        $image = HousingInfo::create([
+            'family_plan_id' => $data['family_plan_id'],
+            'path' => $filePath, // Guardamos la ruta relativa
+        ]);
+
+        return [
+            "error" => false,
+            "code" => 201,
+            "message" => "Imagen creada exitosamente",
+            "data" => $image,
+        ];
+    }
+
+    /**
+     * Elimina el registro de la base de datos y borra el archivo físico del disco.
+     * @param int $id ID del Plan Familiar (busca la primera imagen asociada).
+     */
+    public function delete(int $id)
+    {
+         $image = HousingInfo::where('family_plan_id', $id)->first();
+
+        if (!$image) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "No hay imagen para este plan familiar",
+            ];
+        }
+
+        // Eliminación física del archivo para liberar espacio en disco
+        if ($image->path && Storage::disk('public')->exists($image->path)) {
+            Storage::disk('public')->delete($image->path);
+        }
+
+        $image->delete();
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Imagen eliminada exitosamente",
+        ];
+    }
+}

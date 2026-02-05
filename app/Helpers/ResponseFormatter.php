@@ -4,9 +4,6 @@ namespace App\Helpers;
 
 class ResponseFormatter
 {
-    /**
-     * Create a new class instance.
-     */
     public static function success($message = "Operación exitosa", $status = 200, $data) {
 
       return response()->json([
@@ -15,7 +12,6 @@ class ResponseFormatter
         "message"=> $message,
         "data" => $data
       ], $status);
-
     }
 
     public static function error($message, $status, $errors = []) {
@@ -26,6 +22,5 @@ class ResponseFormatter
         "message"=> $message,
         "errors" => $errors
       ], $status);
-
     }
 }
