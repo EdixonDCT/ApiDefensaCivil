@@ -479,48 +479,49 @@ Route::middleware('auth:sanctum')->group(function () {
         // Eliminar especie
         Route::delete('/{id}', [SpeciesController::class, 'destroy']);
     });
+
+    Route::prefix('animalGenders')->group(function () {
+        // Obtener todos los géneros de animales
+        Route::get('/', [AnimalGenderController::class, 'index']);
+        // Obtener un género de animal por ID
+        Route::get('/{id}', [AnimalGenderController::class, 'show']);
+        // Crear nuevo género de animal
+        Route::post('/', [AnimalGenderController::class, 'store']);
+        // Actualización completa
+        Route::put('/{id}', [AnimalGenderController::class, 'update']);
+        // Actualización parcial
+        Route::patch('/{id}', [AnimalGenderController::class, 'partialUpdate']);
+        // Eliminar género de animal
+        Route::delete('/{id}', [AnimalGenderController::class, 'destroy']);
+    });
+
+    Route::prefix('pets')->group(function () {
+        Route::get('/', [PetController::class, 'index']);
+
+        Route::get('/{id}', [PetController::class, 'show']);
+
+        Route::get('/familyPlan/{plan_id}', [PetController::class, 'getPetsForPlan']);
+
+        Route::post('/', [PetController::class, 'getPetsForPlan']);
+
+        Route::put('/{id}', [PetController::class, 'update']);
+
+        Route::patch('/{id}', [PetController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [PetController::class, 'destroy']);
+    });
+
+    Route::prefix('petVaccines')->group(function () {
+        Route::get('/', [PetVaccineController::class, 'index']);
+
+        Route::get('/{id}', [PetVaccineController::class, 'show']);
+
+        Route::post('/', [PetVaccineController::class, 'store']);
+
+        Route::put('/{id}', [PetVaccineController::class, 'update']);
+
+        Route::patch('/{id}', [PetVaccineController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [PetVaccineController::class, 'destroy']);
+    });
 });
-
-Route::prefix('animalGenders')->group(function () {
-    // Obtener todos los géneros de animales
-    Route::get('/', [AnimalGenderController::class, 'index']);
-    // Obtener un género de animal por ID
-    Route::get('/{id}', [AnimalGenderController::class, 'show']);
-    // Crear nuevo género de animal
-    Route::post('/', [AnimalGenderController::class, 'store']);
-    // Actualización completa
-    Route::put('/{id}', [AnimalGenderController::class, 'update']);
-    // Actualización parcial
-    Route::patch('/{id}', [AnimalGenderController::class, 'partialUpdate']);
-    // Eliminar género de animal
-    Route::delete('/{id}', [AnimalGenderController::class, 'destroy']);
-});
-
-Route::prefix('pets')->group(function () {
-    Route::get('/', [PetController::class, 'index']);
-
-    Route::get('/{id}', [PetController::class, 'show']);
-
-    Route::post('/', [PetController::class, 'store']);
-
-    Route::put('/{id}', [PetController::class, 'update']);
-
-    Route::patch('/{id}', [PetController::class, 'partialUpdate']);
-
-    Route::delete('/{id}', [PetController::class, 'destroy']);
-});
-
-Route::prefix('petVaccines')->group(function () {
-    Route::get('/', [PetVaccineController::class, 'index']);
-
-    Route::get('/{id}', [PetVaccineController::class, 'show']);
-
-    Route::post('/', [PetVaccineController::class, 'store']);
-
-    Route::put('/{id}', [PetVaccineController::class, 'update']);
-
-    Route::patch('/{id}', [PetVaccineController::class, 'partialUpdate']);
-
-    Route::delete('/{id}', [PetVaccineController::class, 'destroy']);
-});
-

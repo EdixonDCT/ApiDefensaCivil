@@ -2,21 +2,19 @@
 
 namespace App\Policies;
 
-use App\Models\Pet;
+use App\Models\Pet\Pet;
 use App\Policies\AccessPlanPolicy;
 
 class AccessPetPolicy
 {
-    public function access(Pet $pet): bool
+    public function access(Pet $Pet): bool
     {
-        // 1️⃣ Validar que el pet tenga family_plan_id
-        if (!$pet) return false;
+        if (!$Pet) return false;
 
-        if (!$pet->family_plan_id) {
+        if (!$Pet) {
             return false;
         }
 
-        // 2️⃣ Delegar la validación al AccessPlanPolicy
-        return $this->planPolicy->access($pet->family_plan_id);
+         return (new AccessPlanPolicy())->access($Pet->family_plan_id);
     }
 }

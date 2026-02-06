@@ -13,9 +13,9 @@ class SpeciesSeeder extends Seeder
      */
     public function run(): void
     {
-        Species::create(['name' => 'Perro', 'active' => true]);
-        Species::create(['name' => 'Gato', 'active' => true]);
-        Species::create(['name' => 'Conejo', 'active' => true]);
-        Species::create(['name' => 'Hamster', 'active' => true]);
+        Species::create(['name' => 'Perro']);
+        Species::create(['name' => 'Gato']);
+        Species::create(['name' => 'Conejo']);
+        Species::create(['name' => 'Hamster']);
     }
 }

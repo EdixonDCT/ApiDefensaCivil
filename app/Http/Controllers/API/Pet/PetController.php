@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pet\StorePetRequest;
 use App\Http\Requests\Pet\UpdatePetRequest;
 use App\Http\Requests\Pet\PartialUpdatePetRequest;
-use App\Models\Pet\pets;
+use App\Models\Pet\Pet;
 use App\Services\Pet\PetService;
+use App\Policies\AccessPlanPolicy;
+use App\Policies\AccessPetPolicy;
 
 class PetController extends Controller
 {
@@ -32,18 +34,53 @@ class PetController extends Controller
 
     public function show(string $id)
     {
-        $pet = pets::find($id);
+        $Pet = Pet::find($id);
 
-        if (!$pet) {
+        if (!$Pet) {
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        return ResponseFormatter::success("Registro obtenido exitosamente", 200, $pet);
+        if (!(new AccessPetPolicy())->access($Pet)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este miembro',
+                403
+            );
+        }
+
+        return ResponseFormatter::success("Registro obtenido exitosamente", 200, $Pet);
+    }
+
+        public function getPetsForPlan(string $family_plan_id)
+    {
+        // Validación de acceso al plan
+        if (!(new AccessPlanPolicy())->access($family_plan_id)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para acceder a este plan',
+                403
+            );
+        }
+
+        $response = $this->service->getPetsForPlan($family_plan_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
     public function store(StorePetRequest $request)
     {
-        $response = $this->service->create($request->validated());
+        // Validación de acceso al plan
+        if (!(new AccessPlanPolicy())->access($request->family_plan_id))
+        {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para agregar miembros a este plan',
+                403
+            );
+        }
+        $data = $request->validated();
+        $response = $this->service->create($data);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
@@ -54,10 +91,17 @@ class PetController extends Controller
 
     public function update(UpdatePetRequest $request, string $id)
     {
-        $pet = pets::find($id);
+        $Pet = Pet::find($id);
 
-        if (!$pet) {
+        if (!$Pet) {
             return ResponseFormatter::error("Registro no encontrado", 404);
+        }
+
+        if (!(new AccessPetPolicy())->access($Pet)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este miembro',
+                403
+            );
         }
 
         $response = $this->service->update($request->validated(), $id);
@@ -71,10 +115,17 @@ class PetController extends Controller
 
     public function partialUpdate(PartialUpdatePetRequest $request, string $id)
     {
-        $pet = pets::find($id);
+        $Pet = Pet::find($id);
 
-        if (!$pet) {
+        if (!$Pet) {
             return ResponseFormatter::error("Registro no encontrado", 404);
+        }
+
+        if (!(new AccessPetPolicy())->access($Pet)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este miembro',
+                403
+            );
         }
 
         $response = $this->service->partialUpdate($request->validated(), $id);
@@ -88,10 +139,17 @@ class PetController extends Controller
 
     public function destroy(string $id)
     {
-        $pet = pets::find($id);
+        $Pet = Pet::find($id);
 
-        if (!$pet) {
+        if (!$Pet) {
             return ResponseFormatter::error("Registro no encontrado", 404);
+        }
+
+        if (!(new AccessPetPolicy())->access($Pet)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este miembro',
+                403
+            );
         }
 
         $response = $this->service->delete($id);
