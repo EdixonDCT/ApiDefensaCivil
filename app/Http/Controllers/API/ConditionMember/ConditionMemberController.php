@@ -46,7 +46,18 @@ class ConditionMemberController extends Controller
             return ResponseFormatter::error("No tiene acceso a este registro", 403);
         }
 
-        return ResponseFormatter::success("Registro obtenido exitosamente", 200, $conditionMember);
+        // 3. Obtener las condiciones del Member
+        $response = $this->service->getById($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
     }
 
     public function getByMember(string $member_id)
