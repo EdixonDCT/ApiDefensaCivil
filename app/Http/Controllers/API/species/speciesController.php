@@ -18,7 +18,6 @@ class speciesController extends Controller
     public function __construct(SpecieServices $service)
     {
         $this->service = $service;
-        // $this->speciesPolicy = new AccessSpeciesPolicy();
     }
 
     public function index()
@@ -36,10 +35,6 @@ class speciesController extends Controller
         if (!$species) {
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
-
-        // if (!$this->speciesPolicy->access($species)) {
-        //     return ResponseFormatter::error("No tiene acceso a este registro", 403);
-        // }
 
         return ResponseFormatter::success("Registro obtenido exitosamente", 200, $species);
     }
@@ -68,10 +63,6 @@ class speciesController extends Controller
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        // if (!$this->speciesPolicy->access($species)) {
-        //     return ResponseFormatter::error("No tiene acceso a este registro", 403);
-        // }
-
         $data = $request->validated();
         $response = $this->service->update($data, $id);
 
@@ -89,10 +80,6 @@ class speciesController extends Controller
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        if (!$this->speciesPolicy->access($species)) {
-            return ResponseFormatter::error("No tiene acceso a este registro", 403);
-        }
-
         $data = $request->validated();
         $response = $this->service->partialUpdate($data, $id);
 
@@ -108,10 +95,6 @@ class speciesController extends Controller
         $species = Species::find($id);
         if (!$species) {
             return ResponseFormatter::error("Registro no encontrado", 404);
-        }
-
-        if (!$this->speciesPolicy->access($species)) {
-            return ResponseFormatter::error("No tiene acceso a este registro", 403);
         }
 
         $response = $this->service->delete($id);

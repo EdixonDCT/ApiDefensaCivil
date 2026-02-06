@@ -3,12 +3,11 @@
 namespace App\Models\AnimalGender;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AnimalGender extends Model
 {
-    protected $table = 'animal_genders';
+    use HasFactory;
 
-    protected $fillable = [
-        'name'
-    ];
+    protected $fillable = ['name','is_active'];
 }

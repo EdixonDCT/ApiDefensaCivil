@@ -33,7 +33,7 @@ use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
 use App\Http\Controllers\Api\Pet\PetController;
 use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
-use App\Http\Controllers\Api\species\speciesController;
+use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -467,21 +467,21 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('species')->group(function () {
         // Obtener todas las especies
-        Route::get('/', [speciesController::class, 'index']);
+        Route::get('/', [SpeciesController::class, 'index']);
         // Obtener una especie por ID
-        Route::get('/{id}', [speciesController::class, 'show']);
+        Route::get('/{id}', [SpeciesController::class, 'show']);
         // Crear nueva especie
-        Route::post('/', [speciesController::class, 'store']);
+        Route::post('/', [SpeciesController::class, 'store']);
         // Actualización completa
-        Route::put('/{id}', [speciesController::class, 'update']);
+        Route::put('/{id}', [SpeciesController::class, 'update']);
         // Actualización parcial
-        Route::patch('/{id}', [speciesController::class, 'partialUpdate']);
+        Route::patch('/{id}', [SpeciesController::class, 'partialUpdate']);
         // Eliminar especie
-        Route::delete('/{id}', [speciesController::class, 'destroy']);
+        Route::delete('/{id}', [SpeciesController::class, 'destroy']);
     });
 });
 
-Route::prefix('animal-genders')->group(function () {
+Route::prefix('animalGenders')->group(function () {
     // Obtener todos los géneros de animales
     Route::get('/', [AnimalGenderController::class, 'index']);
     // Obtener un género de animal por ID
@@ -510,21 +510,7 @@ Route::prefix('pets')->group(function () {
     Route::delete('/{id}', [PetController::class, 'destroy']);
 });
 
-Route::prefix( 'pets')->group(function () {
-    Route::get('/', [PetController::class, 'index']);
-
-    Route::get('/{id}', [PetController::class, 'show']);
-
-    Route::post('/', [PetController::class, 'store']);
-
-    Route::put('/{id}', [PetController::class, 'update']);
-
-    Route::patch('/{id}', [PetController::class, 'partialUpdate']);
-
-    Route::delete('/{id}', [PetController::class, 'destroy']);
-});
-
-Route::prefix('pet-vaccines')->group(function () {
+Route::prefix('petVaccines')->group(function () {
     Route::get('/', [PetVaccineController::class, 'index']);
 
     Route::get('/{id}', [PetVaccineController::class, 'show']);

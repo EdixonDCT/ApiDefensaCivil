@@ -4,7 +4,7 @@ namespace Database\Seeders\AnimalGenders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\AnimalGender\AnimalGender;
 
 class AnimalGendersSeeder extends Seeder
 {
@@ -13,11 +13,7 @@ class AnimalGendersSeeder extends Seeder
      */
     public function run(): void
     {
-        $genders = [
-            ['nombre' => 'Macho', 'active' => true],
-            ['nombre' => 'Hembra', 'active' => true],
-        ];
-
-        DB::table('animal_genders')->insert($genders);
+        AnimalGender::create(['name' => 'Macho']);
+        AnimalGender::create(['name' => 'Hembra']);
     }
 }

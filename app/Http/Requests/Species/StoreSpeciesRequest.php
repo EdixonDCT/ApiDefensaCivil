@@ -25,7 +25,6 @@ class StoreSpeciesRequest extends FormRequest
     {
         return [
             'name'   => 'required|string|max:50|unique:species,name',
-            'active' => 'required|boolean',
         ];
     }
 
@@ -39,9 +38,6 @@ class StoreSpeciesRequest extends FormRequest
             'name.string'   => 'El :attribute debe ser una cadena de texto válida',
             'name.max'      => 'El :attribute no debe superar los :max caracteres',
             'name.unique'   => 'El :attribute ya se encuentra registrado',
-
-            'active.required' => 'El :attribute es obligatorio',
-            'active.boolean'  => 'El :attribute debe ser verdadero o falso',
         ];
     }
 
@@ -52,7 +48,6 @@ class StoreSpeciesRequest extends FormRequest
     {
         return [
             'name'   => 'nombre de la especie',
-            'active' => 'estado',
         ];
     }
 }

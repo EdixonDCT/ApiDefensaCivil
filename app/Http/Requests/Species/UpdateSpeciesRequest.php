@@ -27,7 +27,7 @@ class UpdateSpeciesRequest extends FormRequest
 
         return [
             'name'   => "required|string|max:50|unique:species,name,{$speciesId}",
-            'active' => 'required|boolean',
+            'is_active' => 'required|boolean',
         ];
     }
 
@@ -42,8 +42,8 @@ class UpdateSpeciesRequest extends FormRequest
             'name.max'      => 'El :attribute no debe superar los :max caracteres',
             'name.unique'   => 'El :attribute ya se encuentra registrado',
 
-            'active.required' => 'El :attribute es obligatorio',
-            'active.boolean'  => 'El :attribute debe ser verdadero o falso',
+            'is_active.required' => 'El :attribute es obligatorio',
+            'is_active.boolean'  => 'El :attribute debe ser verdadero o falso',
         ];
     }
 
@@ -54,7 +54,7 @@ class UpdateSpeciesRequest extends FormRequest
     {
         return [
             'name'   => 'nombre de la especie',
-            'active' => 'estado',
+            'is_active' => 'estado de la especie',
         ];
     }
 }
