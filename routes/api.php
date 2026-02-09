@@ -33,7 +33,10 @@ use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
 use App\Http\Controllers\Api\Pet\PetController;
 use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
+use App\Http\Controllers\API\RiskFactor\RiskFactorController;
+use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
 use App\Http\Controllers\Api\Species\SpeciesController;
+use App\Http\Controllers\Api\ThreatType\ThreatTypeController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -523,5 +526,51 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{id}', [PetVaccineController::class, 'partialUpdate']);
 
         Route::delete('/{id}', [PetVaccineController::class, 'destroy']);
+    });
+
+    Route::prefix('threatTypes')->group(function () {
+    
+        Route::get('/', [ThreatTypeController::class, 'index']);
+    
+        Route::get('/{id}', [ThreatTypeController::class, 'show']);
+    
+        Route::post('/', [ThreatTypeController::class, 'store']);
+    
+        Route::put('/{id}', [ThreatTypeController::class, 'update']);
+    
+        Route::patch('/{id}', [ThreatTypeController::class, 'partialUpdate']);
+    
+        Route::delete('/{id}', [ThreatTypeController::class, 'destroy']);
+    });
+    
+    Route::prefix('riskFactors')->group(function () {
+        Route::get('/', [RiskFactorController::class, 'index']);
+    
+        Route::get('/{id}', [RiskFactorController::class, 'show']);
+    
+        Route::get('/familyPlan/{family_plan_id}', [RiskFactorController::class, 'getByFamilyPlan']);
+    
+        Route::post('/', [RiskFactorController::class, 'store']);
+    
+        Route::put('/{id}', [RiskFactorController::class, 'update']);
+    
+        Route::patch('/{id}', [RiskFactorController::class, 'partialUpdate']);
+    
+        Route::delete('/{id}', [RiskFactorController::class, 'destroy']);
+    });
+    
+    Route::prefix('riskReductionActions')->group(function () {
+    
+        Route::get('/', [RiskReductionActionController::class, 'index']);
+    
+        Route::get('/{id}', [RiskReductionActionController::class, 'show']);
+    
+        Route::post('/', [RiskReductionActionController::class, 'store']);
+    
+        Route::put('/{id}', [RiskReductionActionController::class, 'update']);
+    
+        Route::patch('/{id}', [RiskReductionActionController::class, 'partialUpdate']);
+    
+        Route::delete('/{id}', [RiskReductionActionController::class, 'destroy']);
     });
 });
