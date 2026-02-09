@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
             StatusPlanSeeder::class,
             ApartmentSeeder::class,
             CitySeeder::class,
-            VulnerableQuestionSeeder::class,
+            VulnerableQuestionSeeder::class,    
             ActionSeeder::class,
             BloodGroupSeeder::class,
             NationalitySeeder::class,
@@ -62,8 +62,8 @@ class DatabaseSeeder extends Seeder
             ConditionTypeSeeder::class,
             SpeciesSeeder::class,
             AnimalGendersSeeder::class,
-            PetsSeeder::class,
-            PetVaccinesSeeder::class,
+            // PetsSeeder::class,
+            // PetVaccinesSeeder::class,
         ]);
     }
 }

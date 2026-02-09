@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('animal_genders', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 50);
-            $table->boolean('active')->default(true);
+            $table->string('name', 50);
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
     }

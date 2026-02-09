@@ -15,6 +15,8 @@ use App\Models\StatusPlan\StatusPlan;
 use App\Models\Sectional\Sectional;
 use App\Models\VulnerableTest\VulnerableTest;
 use App\Models\History\History;
+use App\Models\FamilyMember\FamilyMember;
+use App\Models\Pet\Pet;
 
 /**
  * Clase FamilyPlan
@@ -142,5 +144,10 @@ class FamilyPlan extends Model
     public function familyMembers()
     {
         return $this->hasMany(FamilyMember::class, 'family_plan_id');
+    }
+
+    public function pets()
+    {
+        return $this->hasMany(Pet::class, 'family_plan_id');
     }
 }

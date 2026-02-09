@@ -23,7 +23,7 @@ class PartialUpdateSpeciesRequest extends FormRequest
 
         return [
             'name'   => "sometimes|string|max:50|unique:species,name,{$speciesId}",
-            'active' => 'sometimes|boolean',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 
@@ -37,7 +37,7 @@ class PartialUpdateSpeciesRequest extends FormRequest
             'name.max'     => 'El :attribute no debe superar los :max caracteres',
             'name.unique'  => 'El :attribute ya se encuentra registrado',
 
-            'active.boolean' => 'El :attribute debe ser verdadero o falso',
+            'is_active.boolean' => 'El :attribute debe ser verdadero o falso',
         ];
     }
 
@@ -48,7 +48,7 @@ class PartialUpdateSpeciesRequest extends FormRequest
     {
         return [
             'name'   => 'nombre de la especie',
-            'active' => 'estado',
+            'is_active' => 'estado de la especie',
         ];
     }
 }

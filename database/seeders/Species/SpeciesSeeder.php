@@ -4,7 +4,7 @@ namespace Database\Seeders\Species;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Species\Species;
 
 class SpeciesSeeder extends Seeder
 {
@@ -13,13 +13,9 @@ class SpeciesSeeder extends Seeder
      */
     public function run(): void
     {
-        $species = [
-            ['name' => 'Perro', 'active' => true],
-            ['name' => 'Gato', 'active' => true],
-            ['name' => 'Conejo', 'active' => true],
-            ['name' => 'Hamster', 'active' => true],
-        ];
-
-        DB::table('species')->insert($species);
+        Species::create(['name' => 'Perro']);
+        Species::create(['name' => 'Gato']);
+        Species::create(['name' => 'Conejo']);
+        Species::create(['name' => 'Hamster']);
     }
 }
