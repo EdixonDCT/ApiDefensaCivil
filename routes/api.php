@@ -516,6 +516,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/{id}', [PetVaccineController::class, 'show']);
 
+        Route::get('/pet/{pet_id}', [PetVaccineController::class, 'getVaccinesForPets']);
+        
         Route::post('/', [PetVaccineController::class, 'store']);
 
         Route::put('/{id}', [PetVaccineController::class, 'update']);

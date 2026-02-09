@@ -6,23 +6,38 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PartialUpdatePetVaccineRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'name'   => 'sometimes|string|max:255',
+            'date'   => 'sometimes|date',
+            'pet_id' => 'sometimes|exists:pets,id',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.string'     => 'El :attribute debe ser texto.',
+            'name.max'        => 'El :attribute no puede superar los 255 caracteres.',
+
+            'date.date'       => 'La :attribute no tiene un formato válido.',
+
+            'pet_id.exists'   => 'La mascota seleccionada no existe.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name'   => 'nombre de la vacuna',
+            'date'   => 'fecha de aplicación',
+            'pet_id' => 'mascota',
         ];
     }
 }
