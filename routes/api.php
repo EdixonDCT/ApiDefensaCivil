@@ -502,7 +502,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/familyPlan/{plan_id}', [PetController::class, 'getPetsForPlan']);
 
-        Route::post('/', [PetController::class, 'getPetsForPlan']);
+        Route::post('/', [PetController::class, 'store']);
 
         Route::put('/{id}', [PetController::class, 'update']);
 

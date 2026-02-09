@@ -34,9 +34,11 @@ class PetService
 
     public function getById($id)
     {
-        $Pet = Pet::find($id);
+        $pet = Pet::with(['species','animalGender'])->find($id);
+        
+        $conditionPet = $pet->petVaccine;
 
-        if (!$Pet) {
+        if (!$pet) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -48,9 +50,10 @@ class PetService
             "error" => false,
             "code" => 200,
             "message" => "Mascota obtenida exitosamente",
-            "data" => $Pet,
+            "data" => $pet,$conditionPet,
         ];
     }
+    
     public function getPetsForPlan($family_plan_id)
     {
         $paginator = Pet::where('family_plan_id', $family_plan_id)

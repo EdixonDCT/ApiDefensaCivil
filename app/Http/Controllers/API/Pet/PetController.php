@@ -46,21 +46,27 @@ class PetController extends Controller
                 403
             );
         }
+        
+       $response = $this->service->getById($id);
 
-        return ResponseFormatter::success("Registro obtenido exitosamente", 200, $Pet);
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-        public function getPetsForPlan(string $family_plan_id)
+    public function getPetsForPlan(string $plan_id)
     {
         // Validación de acceso al plan
-        if (!(new AccessPlanPolicy())->access($family_plan_id)) {
+        if (!(new AccessPlanPolicy())->access($plan_id)) {
             return ResponseFormatter::error(
                 'Usted no tiene autorización para acceder a este plan',
                 403
             );
         }
 
-        $response = $this->service->getPetsForPlan($family_plan_id);
+        $response = $this->service->getPetsForPlan($plan_id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
@@ -75,7 +81,7 @@ class PetController extends Controller
         if (!(new AccessPlanPolicy())->access($request->family_plan_id))
         {
             return ResponseFormatter::error(
-                'Usted no tiene autorización para agregar miembros a este plan',
+                'Usted no tiene autorización para agregar mascotas a este plan',
                 403
             );
         }
@@ -99,7 +105,7 @@ class PetController extends Controller
 
         if (!(new AccessPetPolicy())->access($Pet)) {
             return ResponseFormatter::error(
-                'Usted no tiene autorización para modificar este miembro',
+                'Usted no tiene autorización para modificar esta mascota',
                 403
             );
         }
@@ -123,7 +129,7 @@ class PetController extends Controller
 
         if (!(new AccessPetPolicy())->access($Pet)) {
             return ResponseFormatter::error(
-                'Usted no tiene autorización para modificar este miembro',
+                'Usted no tiene autorización para modificar esta mascota',
                 403
             );
         }
@@ -147,7 +153,7 @@ class PetController extends Controller
 
         if (!(new AccessPetPolicy())->access($Pet)) {
             return ResponseFormatter::error(
-                'Usted no tiene autorización para modificar este miembro',
+                'Usted no tiene autorización para modificar esta mascota',
                 403
             );
         }

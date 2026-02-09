@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\FamilyPlan\FamilyPlan;
 use App\Models\Species\Species;
 use App\Models\AnimalGender\AnimalGender;
+use App\Models\PetVaccine\PetVaccine;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Pet extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name','breed','age','animal_gender_id','species_id','family_plan_id',];
 
     public function familyPlan()
@@ -21,5 +26,9 @@ class Pet extends Model
     public function animalGender()
     {
         return $this->belongsTo(AnimalGender::class, 'animal_gender_id');
+    }
+    public function petVaccine()
+    {
+        return $this->hasMany(PetVaccine::class, 'pet_id');
     }
 }
