@@ -6,23 +6,23 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRiskReductionActionRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function rules()
     {
         return [
-            //
+            'action'        => 'required|string|max:255',
+            'member_id'     => 'required|exists:members,id',
+            'risk_factor_id'=> 'required|exists:risk_factors,id',
+            'end_date'      => 'required|date|after_or_equal:today',
         ];
+    }
+
+    public function messages()
+    {
+        return (new StoreRiskReductionActionRequest())->messages();
     }
 }
