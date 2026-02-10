@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Pet\Pet;
 
-class species extends Model
+class Species extends Model
 {
     use HasFactory;
 

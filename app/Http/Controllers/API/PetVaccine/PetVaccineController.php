@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\PetVaccine;
+namespace App\Http\Controllers\API\PetVaccine;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;

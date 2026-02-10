@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\species;
+namespace App\Http\Controllers\API\Species;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ use App\Models\Species\species;
 use App\Services\Species\SpecieServices;
 use Illuminate\Http\Request;
 
-class speciesController extends Controller
+class SpeciesController extends Controller
 {
     protected $service;
 

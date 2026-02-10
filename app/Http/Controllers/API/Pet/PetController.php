@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Pet;
+namespace App\Http\Controllers\API\Pet;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
