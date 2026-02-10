@@ -23,6 +23,7 @@ use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
+use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
 use App\Http\Controllers\API\Nationality\NationalityController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
 use App\Http\Controllers\Api\Pet\PetController;
 use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
+use App\Http\Controllers\Api\Resource\ResourceController;
 use App\Http\Controllers\API\RiskFactor\RiskFactorController;
 use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
 use App\Http\Controllers\Api\Species\SpeciesController;
@@ -529,48 +531,71 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('threatTypes')->group(function () {
-    
+
         Route::get('/', [ThreatTypeController::class, 'index']);
-    
+
         Route::get('/{id}', [ThreatTypeController::class, 'show']);
-    
+
         Route::post('/', [ThreatTypeController::class, 'store']);
-    
+
         Route::put('/{id}', [ThreatTypeController::class, 'update']);
-    
+
         Route::patch('/{id}', [ThreatTypeController::class, 'partialUpdate']);
-    
+
         Route::delete('/{id}', [ThreatTypeController::class, 'destroy']);
     });
-    
+
     Route::prefix('riskFactors')->group(function () {
         Route::get('/', [RiskFactorController::class, 'index']);
-    
+
         Route::get('/{id}', [RiskFactorController::class, 'show']);
-    
+
         Route::get('/familyPlan/{family_plan_id}', [RiskFactorController::class, 'getByFamilyPlan']);
-    
+
         Route::post('/', [RiskFactorController::class, 'store']);
-    
+
         Route::put('/{id}', [RiskFactorController::class, 'update']);
-    
+
         Route::patch('/{id}', [RiskFactorController::class, 'partialUpdate']);
-    
+
         Route::delete('/{id}', [RiskFactorController::class, 'destroy']);
     });
-    
+
     Route::prefix('riskReductionActions')->group(function () {
-    
+
         Route::get('/', [RiskReductionActionController::class, 'index']);
-    
+
         Route::get('/{id}', [RiskReductionActionController::class, 'show']);
-    
+
         Route::post('/', [RiskReductionActionController::class, 'store']);
-    
+
         Route::put('/{id}', [RiskReductionActionController::class, 'update']);
-    
+
         Route::patch('/{id}', [RiskReductionActionController::class, 'partialUpdate']);
-    
+
         Route::delete('/{id}', [RiskReductionActionController::class, 'destroy']);
+    });
+    Route::prefix('Resource')->group(function () {
+
+        Route::get('/', [ResourceController::class, 'index']);
+
+        Route::get('/{id}', [ResourceController::class, 'show']);
+
+        Route::post('/', [ResourceController::class, 'store']);
+
+        Route::put('/{id}', [ResourceController::class, 'update']);
+
+        Route::patch('/{id}', [ResourceController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [ResourceController::class, 'destroy']);
+    });
+    Route::prefix('AvailableResource')->group(function () {
+    
+        Route::get('/', [AvailableResourceController::class, 'index']);
+        Route::get('/{id}', [AvailableResourceController::class, 'show']);
+        Route::post('/', [AvailableResourceController::class, 'store']);
+        Route::put('/{id}', [AvailableResourceController::class, 'update']);
+        Route::patch('/{id}', [AvailableResourceController::class, 'partialUpdate']);
+        Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
 });
