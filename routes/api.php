@@ -593,7 +593,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('AvailableResource')->group(function () {
 
         Route::get('/', [AvailableResourceController::class, 'index']);
-
+    
         Route::get('/{id}', [AvailableResourceController::class, 'show']);
 
         Route::post('/', [AvailableResourceController::class, 'store']);
