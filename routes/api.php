@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
@@ -23,7 +24,6 @@ use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
-use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
 use App\Http\Controllers\API\Nationality\NationalityController;
@@ -39,6 +39,8 @@ use App\Http\Controllers\API\RiskFactor\RiskFactorController;
 use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
 use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Controllers\Api\ThreatType\ThreatTypeController;
+use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
+use App\Http\Controllers\Api\VulnerabilityGrade\VulnerabilityGradeController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -202,8 +204,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
     });
-
-
 
     route::prefix('apartments')->group(function () {
         route::get('/', [ApartmentController::class, 'index'])->middleware('permission:apartments.index');
@@ -575,6 +575,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [RiskReductionActionController::class, 'destroy']);
     });
+
     Route::prefix('Resource')->group(function () {
 
         Route::get('/', [ResourceController::class, 'index']);
@@ -589,13 +590,47 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [ResourceController::class, 'destroy']);
     });
+
     Route::prefix('AvailableResource')->group(function () {
-    
+
         Route::get('/', [AvailableResourceController::class, 'index']);
+    
         Route::get('/{id}', [AvailableResourceController::class, 'show']);
+
         Route::post('/', [AvailableResourceController::class, 'store']);
+
         Route::put('/{id}', [AvailableResourceController::class, 'update']);
+
         Route::patch('/{id}', [AvailableResourceController::class, 'partialUpdate']);
+
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
+    Route::prefix('vulnerability-grades')->group(function () {
+    
+        Route::get('/', [VulnerabilityGradeController::class, 'index']);
+    
+        Route::get('/{id}', [VulnerabilityGradeController::class, 'show']);
+    
+        Route::post('/', [VulnerabilityGradeController::class, 'store']);
+    
+        Route::put('/{id}', [VulnerabilityGradeController::class, 'update']);
+    
+        Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
+    
+        Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
+    });
+});
+
+
+Route::prefix('vulnerabilityFactors')->group(function () {
+
+    Route::get('/', [VulnerabilityFactorController::class, 'index']);
+
+    Route::get('/{id}', [VulnerabilityFactorController::class, 'show']);
+
+    Route::post('/', [VulnerabilityFactorController::class, 'store']);
+
+    Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
+
+    Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
 });
