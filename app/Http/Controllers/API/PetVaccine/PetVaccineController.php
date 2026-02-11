@@ -57,9 +57,9 @@ class PetVaccineController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function getVaccinesForPets(string $pet)
+    public function getVaccinesForPets(string $id)
     {
-        $pet = Pet::find($pet);
+        $pet = Pet::find($id);
 
         if (!$pet) {
             return ResponseFormatter::error("Registro no encontrado", 404);
@@ -84,7 +84,13 @@ class PetVaccineController extends Controller
     public function store(StorePetVaccineRequest $request)
     {
         // Validación de acceso al plan
-        if (!(new AccessPetPolicy())->access($request->pet_id))
+        $pet = Pet::find($request->pet_id);
+
+        if (!$pet) {
+            return ResponseFormatter::error("Mascota no encontrada", 404);
+        }
+
+        if (!(new AccessPetPolicy())->access($pet))
         {
             return ResponseFormatter::error(
                 'Usted no tiene autorización para agregar vacunas a esta mascota',

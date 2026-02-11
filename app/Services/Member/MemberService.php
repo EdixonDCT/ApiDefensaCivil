@@ -221,10 +221,17 @@ class MemberService
             ];
         }
 
-        // 5️⃣ Eliminar
-        $conditionMembers = ConditionMember::where('member_id', $member_id)->get();
-        foreach ($conditionMembers as $conditionMember) {
-            $conditionMember->delete();}    
+        $conditionMembers = ConditionMember::where('member_id', $member_id)->exists();
+
+        if ($conditionMembers) {
+            return [
+                "error" => true,
+                "code" => 400,
+                "message" => "No se puede eliminar porque posee condiciones"
+            ];
+        }
+
+        // Si no tiene condiciones, se elimina
         $familyMember->delete();
         $member->delete();
 

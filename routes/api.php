@@ -22,7 +22,6 @@ use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
-use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
 use App\Http\Controllers\API\Nationality\NationalityController;
@@ -31,9 +30,10 @@ use App\Http\Controllers\API\Member\MemberController;
 use App\Http\Controllers\API\FamilyMember\FamilyMemberController;
 use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
+use App\Http\Controllers\Api\Species\SpeciesController;
+use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\Api\Pet\PetController;
 use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
-use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -252,6 +252,8 @@ Route::middleware('auth:sanctum')->group(function () {
         route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
 
         route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
+
+        route::get('/checkAccess/{familyPlan_id}', [FamilyPlanController::class, 'checkAccess']);
     });
 
     route::prefix('housingInfo')->group(function () {
@@ -320,9 +322,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Histories de supervisor
         Route::get('/supervisor', [HistoryController::class, 'actionsBySupervisor']);
-
-        // Validar acceso a un plan
-        Route::get('/access/{planId}', [HistoryController::class, 'checkAccess']);
 
         // Traer todos los histories
         Route::get('/', [HistoryController::class, 'index']);

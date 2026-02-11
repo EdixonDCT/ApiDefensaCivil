@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Species\PartialUpdateSpeciesRequest;
 use App\Http\Requests\Species\StoreSpeciesRequest;
 use App\Http\Requests\Species\UpdateSpeciesRequest;
-use App\Models\Species\species;
+use App\Models\Species\Species;
 use App\Services\Species\SpecieServices;
 use Illuminate\Http\Request;
 
