@@ -592,10 +592,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('AvailableResource')->group(function () {
     
         Route::get('/', [AvailableResourceController::class, 'index']);
+        
         Route::get('/{id}', [AvailableResourceController::class, 'show']);
+        
         Route::post('/', [AvailableResourceController::class, 'store']);
+        
         Route::put('/{id}', [AvailableResourceController::class, 'update']);
+        
         Route::patch('/{id}', [AvailableResourceController::class, 'partialUpdate']);
+        
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
 });
