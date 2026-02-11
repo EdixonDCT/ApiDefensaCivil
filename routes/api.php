@@ -39,6 +39,7 @@ use App\Http\Controllers\API\RiskFactor\RiskFactorController;
 use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
 use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Controllers\Api\ThreatType\ThreatTypeController;
+use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
 use App\Http\Controllers\Api\VulnerabilityGrade\VulnerabilityGradeController;
 use App\Http\Middleware\DecodeBearerToken;
 
@@ -604,19 +605,32 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
+    Route::prefix('vulnerability-grades')->group(function () {
+    
+        Route::get('/', [VulnerabilityGradeController::class, 'index']);
+    
+        Route::get('/{id}', [VulnerabilityGradeController::class, 'show']);
+    
+        Route::post('/', [VulnerabilityGradeController::class, 'store']);
+    
+        Route::put('/{id}', [VulnerabilityGradeController::class, 'update']);
+    
+        Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
+    
+        Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
+    });
 });
 
-Route::prefix('vulnerability-grades')->group(function () {
 
-    Route::get('/', [VulnerabilityGradeController::class, 'index']);
+Route::prefix('vulnerabilityFactors')->group(function () {
 
-    Route::get('/{id}', [VulnerabilityGradeController::class, 'show']);
+    Route::get('/', [VulnerabilityFactorController::class, 'index']);
 
-    Route::post('/', [VulnerabilityGradeController::class, 'store']);
+    Route::get('/{id}', [VulnerabilityFactorController::class, 'show']);
 
-    Route::put('/{id}', [VulnerabilityGradeController::class, 'update']);
+    Route::post('/', [VulnerabilityFactorController::class, 'store']);
 
-    Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
+    Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
 
-    Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
+    Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
 });
