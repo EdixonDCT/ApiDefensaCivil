@@ -10,6 +10,7 @@ use App\Http\Requests\RiskFactor\PartialUpdateRiskFactorRequest;
 use App\Models\RiskFactor\RiskFactor;
 use App\Services\RiskFactor\RiskFactorService;
 use App\Policies\AccessRiskFactorPolicy;
+use App\Policies\AccessPlanPolicy;
 
 class RiskFactorController extends Controller
 {
@@ -61,18 +62,38 @@ class RiskFactorController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    // Obtener factores de riesgo por plan familiar (paginado)
+
+    public function getForPlan(string $plan_id)
+    {
+        // Validación de acceso al plan
+        if (!(new AccessPlanPolicy())->access($plan_id)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para acceder a este plan',
+                403
+            );
+        }
+
+        $response = $this->service->getByFamilyPlan($plan_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
     /**
      * Crea un nuevo factor de riesgo
      */
     public function store(StoreRiskFactorRequest $request)
     {
-        $data = $request->validated();
-
         // Si necesitas validar acceso a algún plan:
-        // if (!(new AccessPlanPolicy())->access($data['plan_id'])) {
-        //     return ResponseFormatter::error('No tiene autorización para este plan', 403);
-        // }
+        if (!(new AccessPlanPolicy())->access($request->family_plan_id)) {
+            return ResponseFormatter::error('No tiene autorización para este plan', 403);
+        }
 
+        $data = $request->validated();
         $response = $this->service->create($data);
 
         if ($response['error']) {

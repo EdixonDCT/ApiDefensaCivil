@@ -552,7 +552,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/{id}', [RiskFactorController::class, 'show']);
 
-        Route::get('/familyPlan/{family_plan_id}', [RiskFactorController::class, 'getByFamilyPlan']);
+        Route::get('/familyPlan/{family_plan_id}', [RiskFactorController::class, 'getForPlan']);
 
         Route::post('/', [RiskFactorController::class, 'store']);
 

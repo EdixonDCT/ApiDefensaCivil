@@ -36,7 +36,7 @@ class RiskFactorService
     // Obtener factor de riesgo por ID con relaciones y datos relacionados
     public function getById($id)
     {
-        $riskFactor = RiskFactor::with(['threatType', 'familyPlan'])->find($id);
+        $riskFactor = RiskFactor::with('threatType')->find($id);
 
         if (!$riskFactor) {
             return [
@@ -46,15 +46,11 @@ class RiskFactorService
             ];
         }
 
-        // Ejemplo de datos relacionados opcionales, igual que $conditionPet en PetService
-        $relatedData = $riskFactor->relatedData ?? null;
-
         return [
             "error" => false,
             "code" => 200,
             "message" => "Factor de riesgo obtenido exitosamente",
             "data" => $riskFactor,
-            "related" => $relatedData,
         ];
     }
 
@@ -62,7 +58,7 @@ class RiskFactorService
     public function getByFamilyPlan($family_plan_id)
     {
         $paginator = RiskFactor::where('family_plan_id', $family_plan_id)
-            ->with(['threatType', 'familyPlan'])
+            ->with('threatType')
             ->paginate(10);
 
         return [
