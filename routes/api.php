@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
@@ -34,6 +35,14 @@ use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\Api\Pet\PetController;
 use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
+use App\Http\Controllers\Api\Resource\ResourceController;
+use App\Http\Controllers\API\RiskFactor\RiskFactorController;
+use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
+use App\Http\Controllers\Api\Species\SpeciesController;
+use App\Http\Controllers\Api\ThreatType\ThreatTypeController;
+use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
+use App\Http\Controllers\Api\VulnerabilityGrade\VulnerabilityGradeController;
+use App\Http\Controllers\Api\Vulnerability\VulnerabilityController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -197,8 +206,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
     });
-
-
 
     route::prefix('apartments')->group(function () {
         route::get('/', [ApartmentController::class, 'index'])->middleware('permission:apartments.index');
@@ -524,5 +531,125 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{id}', [PetVaccineController::class, 'partialUpdate']);
 
         Route::delete('/{id}', [PetVaccineController::class, 'destroy']);
+    });
+
+    Route::prefix('threatTypes')->group(function () {
+
+        Route::get('/', [ThreatTypeController::class, 'index']);
+
+        Route::get('/{id}', [ThreatTypeController::class, 'show']);
+
+        Route::post('/', [ThreatTypeController::class, 'store']);
+
+        Route::put('/{id}', [ThreatTypeController::class, 'update']);
+
+        Route::patch('/{id}', [ThreatTypeController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [ThreatTypeController::class, 'destroy']);
+    });
+
+    Route::prefix('riskFactors')->group(function () {
+        Route::get('/', [RiskFactorController::class, 'index']);
+
+        Route::get('/{id}', [RiskFactorController::class, 'show']);
+
+        Route::get('/familyPlan/{family_plan_id}', [RiskFactorController::class, 'getByFamilyPlan']);
+
+        Route::post('/', [RiskFactorController::class, 'store']);
+
+        Route::put('/{id}', [RiskFactorController::class, 'update']);
+
+        Route::patch('/{id}', [RiskFactorController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [RiskFactorController::class, 'destroy']);
+    });
+
+    Route::prefix('riskReductionActions')->group(function () {
+
+        Route::get('/', [RiskReductionActionController::class, 'index']);
+
+        Route::get('/{id}', [RiskReductionActionController::class, 'show']);
+
+        Route::post('/', [RiskReductionActionController::class, 'store']);
+
+        Route::put('/{id}', [RiskReductionActionController::class, 'update']);
+
+        Route::patch('/{id}', [RiskReductionActionController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [RiskReductionActionController::class, 'destroy']);
+    });
+
+    Route::prefix('Resource')->group(function () {
+
+        Route::get('/', [ResourceController::class, 'index']);
+
+        Route::get('/{id}', [ResourceController::class, 'show']);
+
+        Route::post('/', [ResourceController::class, 'store']);
+
+        Route::put('/{id}', [ResourceController::class, 'update']);
+
+        Route::patch('/{id}', [ResourceController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [ResourceController::class, 'destroy']);
+    });
+
+    Route::prefix('AvailableResource')->group(function () {
+
+        Route::get('/', [AvailableResourceController::class, 'index']);
+    
+        Route::get('/{id}', [AvailableResourceController::class, 'show']);
+
+        Route::post('/', [AvailableResourceController::class, 'store']);
+
+        Route::put('/{id}', [AvailableResourceController::class, 'update']);
+
+        Route::patch('/{id}', [AvailableResourceController::class, 'partialUpdate']);
+
+        Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
+    });
+    Route::prefix('vulnerabilityGrades')->group(function () {
+    
+        Route::get('/', [VulnerabilityGradeController::class, 'index']);
+    
+        Route::get('/{id}', [VulnerabilityGradeController::class, 'show']);
+    
+        Route::post('/', [VulnerabilityGradeController::class, 'store']);
+    
+        Route::put('/{id}', [VulnerabilityGradeController::class, 'update']);
+    
+        Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
+    
+        Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
+    });
+
+    Route::prefix('vulnerabilityFactors')->group(function () {
+
+    Route::get('/', [VulnerabilityFactorController::class, 'index']);
+
+    Route::get('/{id}', [VulnerabilityFactorController::class, 'show']);
+
+    Route::post('/', [VulnerabilityFactorController::class, 'store']);
+
+    Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
+
+    Route::patch('/{id}', [VulnerabilityFactorController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
+    });
+
+    Route::prefix('vulnerabilities')->group(function () {
+
+    Route::get('/', [VulnerabilityController::class, 'index']);
+
+    Route::get('/{id}', [VulnerabilityController::class, 'show']);
+
+    Route::post('/', [VulnerabilityController::class, 'store']);
+
+    Route::put('/{id}', [VulnerabilityController::class, 'update']);
+
+    Route::patch('/{id}', [VulnerabilityController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [VulnerabilityController::class, 'destroy']);
     });
 });
