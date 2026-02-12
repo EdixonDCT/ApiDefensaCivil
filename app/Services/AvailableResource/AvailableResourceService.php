@@ -52,6 +52,22 @@ class AvailableResourceService
         ];
     }
 
+    // Obtener factores de riesgo por plan familiar (paginado)
+    public function getByFamilyPlan($family_plan_id)
+    {
+        $paginator = AvailableResource::where('family_plan_id', $family_plan_id)
+            ->with('resource')
+            ->paginate(10);
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $paginator->isEmpty()
+                ? "Este plan familiar no tiene recursos disponibles registrados"
+                : "Recursos disponibles del plan familiar obtenidos exitosamente",
+            "data" => $paginator,
+        ];
+    }
+
     public function create(array $data)
     {
         $resource = AvailableResource::create($data);

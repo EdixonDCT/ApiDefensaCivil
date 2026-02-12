@@ -8,8 +8,6 @@ use App\Http\Requests\Resource\StoreResourceRequest;
 use App\Http\Requests\Resource\UpdateResourceRequest;
 use App\Http\Requests\Resource\PartialUpdateResourceRequest;
 use App\Models\Resource\Resource;
-use App\Policies\AccessPlanPolicy;
-use App\Policies\AccessResourcePolicy;
 use App\Services\Resource\ResourceService;
 
 class ResourceController extends Controller
@@ -37,15 +35,8 @@ class ResourceController extends Controller
         $resource = Resource::find($id);
 
         if (!$resource) {
-            return ResponseFormatter::error("Record not found", 404);
+            return ResponseFormatter::error("Registro no encontrado", 404);
         }
-
-        // if (!(new AccessResourcePolicy())->access($resource)) {
-        //     return ResponseFormatter::error(
-        //         'You are not authorized to access this resource',
-        //         403
-        //     );
-        // }
 
         $response = $this->service->getById($id);
 
@@ -56,32 +47,8 @@ class ResourceController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function getResourcesForPlan(string $plan_id)
+    public function store(StoreResourceRequest $request)
     {
-        // if (!(new AccessPlanPolicy())->access($plan_id)) {
-        //     return ResponseFormatter::error(
-        //         'You are not authorized to access this plan',
-        //         403
-        //     );
-        // }
-
-        $response = $this->service->getResourcesForPlan($plan_id);
-
-        if ($response['error']) {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
-    }
-
-    public function store(UpdateResourceRequest $request)
-    {
-        // if (!(new AccessPlanPolicy())->access($request->plan_id)) {
-        //     return ResponseFormatter::error(
-        //         'You are not authorized to add resources to this plan',
-        //         403
-        //     );
-        // }
 
         $data = $request->validated();
         $response = $this->service->create($data);
@@ -98,15 +65,8 @@ class ResourceController extends Controller
         $resource = Resource::find($id);
 
         if (!$resource) {
-            return ResponseFormatter::error("Record not found", 404);
+            return ResponseFormatter::error("Registro no encontrado", 404);
         }
-
-        // if (!(new AccessResourcePolicy())->access($resource)) {
-        //     return ResponseFormatter::error(
-        //         'You are not authorized to update this resource',
-        //         403
-        //     );
-        // }
 
         $response = $this->service->update($request->validated(), $id);
 
@@ -122,15 +82,8 @@ class ResourceController extends Controller
         $resource = Resource::find($id);
 
         if (!$resource) {
-            return ResponseFormatter::error("Record not found", 404);
+            return ResponseFormatter::error("Registro no encontrado", 404);
         }
-
-        // if (!(new AccessResourcePolicy())->access($resource)) {
-        //     return ResponseFormatter::error(
-        //         'You are not authorized to update this resource',
-        //         403
-        //     );
-        // }
 
         $response = $this->service->partialUpdate($request->validated(), $id);
 
@@ -146,15 +99,8 @@ class ResourceController extends Controller
         $resource = Resource::find($id);
 
         if (!$resource) {
-            return ResponseFormatter::error("Record not found", 404);
+            return ResponseFormatter::error("Registro no encontrado", 404);
         }
-
-        // if (!(new AccessResourcePolicy())->access($resource)) {
-        //     return ResponseFormatter::error(
-        //         'You are not authorized to delete this resource',
-        //         403
-        //     );
-        // }
 
         $response = $this->service->delete($id);
 

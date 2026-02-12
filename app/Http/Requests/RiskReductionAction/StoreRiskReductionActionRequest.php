@@ -4,36 +4,76 @@ namespace App\Http\Requests\RiskReductionAction;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase StoreRiskReductionActionRequest
+ *
+ * Centraliza la validación necesaria para registrar
+ * una acción de reducción de riesgo.
+ */
 class StoreRiskReductionActionRequest extends FormRequest
 {
-    public function authorize()
+    /**
+     * Define si el usuario puede ejecutar esta acción.
+     * Actualmente no se restringe por permisos.
+     */
+    public function authorize(): bool
     {
-        return true; // Se puede agregar política si es necesario
+        return true;
     }
 
-    public function rules()
+    /**
+     * Reglas técnicas de validación.
+     * Cada campo representa la información básica y relacional
+     * de la acción de mitigación.
+     */
+    public function rules(): array
     {
         return [
-            'action'        => 'required|string|max:255',
-            'member_id'     => 'required|exists:members,id',
-            'risk_factor_id'=> 'required|exists:risk_factors,id',
-            'end_date'      => 'required|date|after_or_equal:today',
+            // Descripción de la acción
+            'action' => 'required|string|max:255',
+
+            // Miembro responsable de la acción
+            'member_id' => 'required|exists:members,id',
+
+            // Factor de riesgo asociado
+            'risk_factor_id' => 'required|exists:risk_factors,id',
+
+            // Fecha límite para ejecutar la acción
+            'end_date' => 'required|date|after_or_equal:today',
         ];
     }
 
-    public function messages()
+    /**
+     * Mensajes de error reutilizables.
+     * Se usan reglas globales para mantener consistencia.
+     */
+    public function messages(): array
     {
         return [
-            'action.required'          => 'La acción es gei, completa esto',
-            'action.string'            => 'La acción debe ser texto gei',
-            'action.max'               => 'La acción es demasiado larga gei',
-            'member_id.required'       => 'Debes asignar un miembro gei',
-            'member_id.exists'         => 'El miembro seleccionado no existe gei',
-            'risk_factor_id.required'  => 'Debes asociar un factor de riesgo gei',
-            'risk_factor_id.exists'    => 'El factor de riesgo seleccionado no existe gei',
-            'end_date.required'        => 'Debes indicar la fecha gei',
-            'end_date.date'            => 'La fecha no es válida gei',
-            'end_date.after_or_equal'  => 'La fecha debe ser hoy o posterior gei',
+            'required' => 'El :attribute es obligatorio',
+
+            'string' => 'El :attribute debe ser una cadena de texto válida',
+
+            'max' => 'El :attribute no puede superar los :max caracteres',
+
+            'exists' => 'El :attribute seleccionado no existe en el sistema',
+
+            'date' => 'El :attribute debe tener un formato de fecha válido',
+
+            'after_or_equal' => 'La :attribute debe ser igual o posterior a la fecha actual',
+        ];
+    }
+
+    /**
+     * Traducción de nombres técnicos a nombres entendibles.
+     */
+    public function attributes(): array
+    {
+        return [
+            'action' => 'acción de reducción',
+            'member_id' => 'miembro responsable',
+            'risk_factor_id' => 'factor de riesgo',
+            'end_date' => 'fecha límite',
         ];
     }
 }

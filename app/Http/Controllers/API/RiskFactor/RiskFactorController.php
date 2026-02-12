@@ -46,12 +46,12 @@ class RiskFactorController extends Controller
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        // if (!(new AccessRiskFactorPolicy())->access($factor)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para ver este factor de riesgo',
-        //         403
-        //     );
-        // }
+        if (!(new AccessRiskFactorPolicy())->access($factor)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para ver este factor de riesgo',
+                403
+            );
+        }
 
         $response = $this->service->getById($id);
 
@@ -114,12 +114,12 @@ class RiskFactorController extends Controller
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        // if (!(new AccessRiskFactorPolicy())->access($factor)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para modificar este factor de riesgo',
-        //         403
-        //     );
-        // }
+        if (!(new AccessRiskFactorPolicy())->access($factor)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este factor de riesgo',
+                403
+            );
+        }
 
         $response = $this->service->update($request->validated(), $id);
 
@@ -141,12 +141,12 @@ class RiskFactorController extends Controller
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        // if (!(new AccessRiskFactorPolicy())->access($factor)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para modificar este factor de riesgo',
-        //         403
-        //     );
-        // }
+        if (!(new AccessRiskFactorPolicy())->access($factor)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para modificar este factor de riesgo',
+                403
+            );
+        }
 
         $response = $this->service->partialUpdate($request->validated(), $id);
 
@@ -168,12 +168,12 @@ class RiskFactorController extends Controller
             return ResponseFormatter::error("Registro no encontrado", 404);
         }
 
-        // if (!(new AccessRiskFactorPolicy())->access($factor)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para eliminar este factor de riesgo',
-        //         403
-        //     );
-        // }
+            if (!(new AccessRiskFactorPolicy())->access($factor)) {
+                return ResponseFormatter::error(
+                    'Usted no tiene autorización para eliminar este factor de riesgo',
+                    403
+                );
+            }
 
         $response = $this->service->delete($id);
 
