@@ -30,6 +30,9 @@ use Database\Seeders\ConditionType\ConditionTypeSeeder;
 use Database\Seeders\Pet\PetsSeeder;
 use Database\Seeders\PetVaccines\PetVaccinesSeeder;
 use Database\Seeders\Species\SpeciesSeeder;
+use Database\Seeders\ThreatType\ThreatTypeSeeder;
+use Database\Seeders\Vulnerability\VulnerabilitySeeder;
+use Database\Seeders\VulnerabilityGrade\VulnerabilityGradeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -62,8 +65,9 @@ class DatabaseSeeder extends Seeder
             ConditionTypeSeeder::class,
             SpeciesSeeder::class,
             AnimalGendersSeeder::class,
-            // PetsSeeder::class,
-            // PetVaccinesSeeder::class,
+            ThreatTypeSeeder::class,
+            VulnerabilitySeeder::class,
+            VulnerabilityGradeSeeder::class,
         ]);
     }
 }
