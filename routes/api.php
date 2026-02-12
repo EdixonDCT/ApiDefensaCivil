@@ -38,11 +38,10 @@ use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
 use App\Http\Controllers\Api\Resource\ResourceController;
 use App\Http\Controllers\API\RiskFactor\RiskFactorController;
 use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
-use App\Http\Controllers\Api\Species\SpeciesController;
-use App\Http\Controllers\Api\ThreatType\ThreatTypeController;
+use App\Http\Controllers\API\ThreatType\ThreatTypeController;
 use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
-use App\Http\Controllers\Api\VulnerabilityGrade\VulnerabilityGradeController;
-use App\Http\Controllers\Api\Vulnerability\VulnerabilityController;
+use App\Http\Controllers\API\VulnerabilityGrade\VulnerabilityGradeController;
+use App\Http\Controllers\API\Vulnerability\VulnerabilityController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -537,15 +536,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/', [ThreatTypeController::class, 'index']);
 
-        Route::get('/{id}', [ThreatTypeController::class, 'show']);
+        Route::get('/{threatType_id}', [ThreatTypeController::class, 'show']);
 
         Route::post('/', [ThreatTypeController::class, 'store']);
 
-        Route::put('/{id}', [ThreatTypeController::class, 'update']);
+        Route::put('/{threatType_id}', [ThreatTypeController::class, 'update']);
 
-        Route::patch('/{id}', [ThreatTypeController::class, 'partialUpdate']);
+        Route::patch('/{threatType_id}', [ThreatTypeController::class, 'partialUpdate']);
 
-        Route::delete('/{id}', [ThreatTypeController::class, 'destroy']);
+        Route::delete('/{threatType_id}', [ThreatTypeController::class, 'destroy']);
     });
 
     Route::prefix('riskFactors')->group(function () {
