@@ -41,6 +41,7 @@ use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Controllers\Api\ThreatType\ThreatTypeController;
 use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
 use App\Http\Controllers\Api\VulnerabilityGrade\VulnerabilityGradeController;
+use App\Http\Controllers\Api\Vulnerability\VulnerabilityController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -605,7 +606,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
-    Route::prefix('vulnerability-grades')->group(function () {
+    Route::prefix('vulnerabilityGrades')->group(function () {
     
         Route::get('/', [VulnerabilityGradeController::class, 'index']);
     
@@ -619,10 +620,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
         Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
     });
-});
 
-
-Route::prefix('vulnerabilityFactors')->group(function () {
+    Route::prefix('vulnerabilityFactors')->group(function () {
 
     Route::get('/', [VulnerabilityFactorController::class, 'index']);
 
@@ -632,5 +631,23 @@ Route::prefix('vulnerabilityFactors')->group(function () {
 
     Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
 
+    Route::patch('/{id}', [VulnerabilityFactorController::class, 'partialUpdate']);
+
     Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
+    });
+
+    Route::prefix('vulnerabilities')->group(function () {
+
+    Route::get('/', [VulnerabilityController::class, 'index']);
+
+    Route::get('/{id}', [VulnerabilityController::class, 'show']);
+
+    Route::post('/', [VulnerabilityController::class, 'store']);
+
+    Route::put('/{id}', [VulnerabilityController::class, 'update']);
+
+    Route::patch('/{id}', [VulnerabilityController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [VulnerabilityController::class, 'destroy']);
+    });
 });
