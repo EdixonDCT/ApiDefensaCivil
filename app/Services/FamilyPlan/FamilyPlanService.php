@@ -234,4 +234,42 @@ class FamilyPlanService
             "message" => "Plan familiar eliminado exitosamente",
         ];
     }
+
+    public function checkAccess(string $planId): array
+    {
+    $user = auth()->user();
+    $access = false;
+
+    if ($user) {
+        $plan = FamilyPlan::find($planId);
+
+        if ($plan) {
+
+            $role = $user->roles->first()?->name ?? null;
+
+            // 🔹 Voluntario
+            if ($role === 'Voluntario') {
+                $access = History::where('user_id', $user->id)
+                    ->where('family_plan_id', $planId)
+                    ->exists();
+            }
+
+            // 🔹 Supervisor
+            if ($role === 'Supervisor') {
+                $access = $user->profile &&
+                          $user->profile->organization &&
+                          $user->profile->organization->sectional_id === $plan->sectional_id;
+            }
+        }
+    }
+
+    return [
+        "error" => false,
+        "code" => 200,
+        "message" => "Verificación de acceso realizada",
+        "data" => [
+            "access_check" => $access
+        ]
+    ];
+    }
 }

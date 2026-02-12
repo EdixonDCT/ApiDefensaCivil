@@ -52,6 +52,27 @@ class PetVaccineService
         ];
     }
 
+    public function getByPet($pet_id)
+    {
+        $pet = PetVaccine::with('pet')->where('pet_id', $pet_id)->get();
+
+        if ($pet->isEmpty()) {
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "Esta mascota no tiene registros de vacunas",
+                "data" => $pet,
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Registros de vacunas de la mascota obtenidos exitosamente",
+            "data" => $pet,
+        ];
+    }
+
     public function create(array $data)
     {
         $vaccine = PetVaccine::create($data);
