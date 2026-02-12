@@ -3,6 +3,7 @@
 namespace App\Services\Pet;
 
 use App\Models\Pet\Pet;
+use App\Models\PetVaccine\PetVaccine;
 
 class PetService
 {
@@ -137,7 +138,14 @@ class PetService
                 "message" => "Mascota no encontrada",
             ];
         }
-
+        $PetVaccine = PetVaccine::where('pet_id', $id)->exists();
+        if ($PetVaccine) {
+            return [
+                "error" => true,
+                "code" => 400,
+                "message" => "No se puede eliminar porque posee vacunas registradas",
+            ];
+        }
         $Pet->delete();
 
         return [

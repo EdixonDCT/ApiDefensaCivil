@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Pet;
+namespace App\Http\Controllers\API\Pet;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
@@ -42,11 +42,11 @@ class PetController extends Controller
 
         if (!(new AccessPetPolicy())->access($Pet)) {
             return ResponseFormatter::error(
-                'Usted no tiene autorización para modificar este miembro',
+                'Usted no tiene autorización para ver esta mascota',
                 403
             );
         }
-        
+
        $response = $this->service->getById($id);
 
         if ($response['error']) {

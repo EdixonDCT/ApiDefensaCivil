@@ -79,5 +79,9 @@ class VulnerableQuestionSeeder extends Seeder
             'description' => '¿Los integrantes de la familia saben dónde están ubicados los registros de agua, gas y los interruptores de luz y saben cómo cerrarlos?',
             'question_caution' => true,
         ]);
+        VulnerableQuestion::create([
+            'description' => '¿Los integrantes de la familia conocen los números de emergencia y saben a quién llamar en caso de un accidente, emergencia o situación de desastre (Bomberos, Policía, Defensa Civil, Cruz Roja, etc.)?',
+            'question_caution' => true,
+        ]);
     }
 }

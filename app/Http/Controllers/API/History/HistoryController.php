@@ -171,19 +171,4 @@ class HistoryController extends Controller
             $response['data'] ?? []
         );
     }
-
-    /**
-     * Valida si el usuario autenticado tiene permisos de seguridad para ver un plan específico.
-     * Crucial para la privacidad de los datos familiares.
-     */
-    public function checkAccess($planId)
-    {
-        $hasAccess = $this->service->canAccessPlan($planId);
-
-        return ResponseFormatter::success(
-            $hasAccess ? 'Acceso permitido' : 'Acceso denegado',
-            200,
-            ['has_access' => $hasAccess]
-        );
-    }
 }
