@@ -6,19 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRiskFactorRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -26,6 +18,7 @@ class StoreRiskFactorRequest extends FormRequest
             'description' => 'required|string|max:255',
             'ubication' => 'required|string|max:255',
             'family_plan_id' => 'required|exists:family_plans,id',
+            'distance' => 'required|integer|min:1',
         ];
     }
 
@@ -45,6 +38,10 @@ class StoreRiskFactorRequest extends FormRequest
 
             'family_plan_id.required' => 'El plan familiar es obligatorio.',
             'family_plan_id.exists' => 'El plan familiar seleccionado no existe.',
+
+            'distance.required' => 'La distancia es obligatoria.',
+            'distance.integer' => 'La distancia debe ser un número entero.',
+            'distance.min' => 'La distancia debe ser mayor o igual a 1 metros.',
         ];
     }
 }
