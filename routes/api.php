@@ -23,6 +23,8 @@ use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
+use App\Http\Controllers\Api\ActionPlan\ActionPlanController;
+use App\Http\Controllers\Api\ActionType\ActionTypeController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
@@ -594,7 +596,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('AvailableResource')->group(function () {
 
         Route::get('/', [AvailableResourceController::class, 'index']);
-    
+
         Route::get('/{id}', [AvailableResourceController::class, 'show']);
 
         Route::post('/', [AvailableResourceController::class, 'store']);
@@ -605,32 +607,59 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
+
     Route::prefix('vulnerability-grades')->group(function () {
-    
+
         Route::get('/', [VulnerabilityGradeController::class, 'index']);
-    
+
         Route::get('/{id}', [VulnerabilityGradeController::class, 'show']);
-    
+
         Route::post('/', [VulnerabilityGradeController::class, 'store']);
-    
+
         Route::put('/{id}', [VulnerabilityGradeController::class, 'update']);
-    
+
         Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
-    
+
         Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
     });
-});
 
+    Route::prefix('vulnerabilityFactors')->group(function () {
 
-Route::prefix('vulnerabilityFactors')->group(function () {
+        Route::get('/', [VulnerabilityFactorController::class, 'index']);
 
-    Route::get('/', [VulnerabilityFactorController::class, 'index']);
+        Route::get('/{id}', [VulnerabilityFactorController::class, 'show']);
 
-    Route::get('/{id}', [VulnerabilityFactorController::class, 'show']);
+        Route::post('/', [VulnerabilityFactorController::class, 'store']);
 
-    Route::post('/', [VulnerabilityFactorController::class, 'store']);
+        Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
 
-    Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
+        Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
+    });
 
-    Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
+    Route::prefix('ActionType')->group(function () {
+
+        Route::get('/', [ActionTypeController::class, 'index']);
+
+        Route::get('/{id}', [ActionTypeController::class, 'show']);
+
+        Route::post('/', [ActionTypeController::class, 'store']);
+
+        Route::put('/{id}', [ActionTypeController::class, 'update']);
+
+        Route::delete('/{id}', [ActionTypeController::class, 'destroy']);
+    });
+
+    Route::prefix('action_plans')->group(function () {
+
+        Route::get('/', [ActionPlanController::class, 'index']);
+
+        Route::get('/{id}', [ActionPlanController::class, 'show']);
+
+        Route::post('/', [ActionPlanController::class, 'store']);
+
+        Route::put('/{id}', [ActionPlanController::class, 'update']);
+
+        Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
+    });
+    
 });
