@@ -11,7 +11,7 @@ class AccessPetPolicy
     {
         if (!$Pet) return false;
 
-        if (!$Pet) {
+        if (!$Pet->family_plan_id) {
             return false;
         }
 
