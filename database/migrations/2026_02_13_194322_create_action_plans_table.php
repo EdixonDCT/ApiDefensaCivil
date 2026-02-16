@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('integrante_id');
+            
             $table->unsignedBigInteger('vulnerability_factor_id');
 
             $table->timestamps();

@@ -14,7 +14,7 @@ use App\Policies\AccessActionPlanPolicy;
 class ActionPlanController extends Controller
 {
     protected $service;
-
+    
     public function __construct(ActionPlanService $service)
     {
         $this->service = $service;

@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Api\ActionType;
+namespace App\Http\Controllers\Api\ActionPlanAction;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ActionType\StoreActionTypeRequest;
-use App\Http\Requests\ActionType\PartialUpdateActionTypeRequest;
-use App\Http\Requests\ActionType\UpdateActionTypeRequest;
-use App\Models\ActionType\ActionType;
-use App\Policies\AccessActionTypePolicy;
-use App\Services\ActionType\ActionTypeService;
+use App\Http\Requests\ActionPlanAction\StoreActionPlanActionRequest;
+use App\Http\Requests\ActionPlanAction\UpdateActionPlanActionRequest;
+use App\Http\Requests\ActionPlanAction\PartialUpdateActionPlanActionRequest;
+use App\Models\ActionPlanAction\ActionPlanAction;
+use App\Services\ActionPlanAction\ActionPlanActionService;
+// use App\Policies\AccessActionPlanActionPolicy;
 
-class ActionTypeController extends Controller
+class ActionPlanActionController extends Controller
 {
     protected $service;
 
-    public function __construct(ActionTypeService  $service)
+    public function __construct(ActionPlanActionService $service)
     {
         $this->service = $service;
     }
@@ -37,15 +37,15 @@ class ActionTypeController extends Controller
 
     public function show(string $id)
     {
-        $actionType = ActionType::find($id);
+        $actionPlanAction = ActionPlanAction::find($id);
 
-        if (!$actionType) {
-            return ResponseFormatter::error("Registro no encontrado", 404);
+        if (!$actionPlanAction) {
+            return ResponseFormatter::error('Registro no encontrado', 404);
         }
 
-        // if (!(new AccessActionTypePolicy())->access($actionType)) {
+        // if (!(new AccessActionPlanActionPolicy())->access($actionPlanAction)) {
         //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para acceder a este registro',
+        //         'Usted no tiene autorización para ver este registro',
         //         403
         //     );
         // }
@@ -63,7 +63,7 @@ class ActionTypeController extends Controller
         );
     }
 
-    public function store(StoreActionTypeRequest $request)
+    public function store(StoreActionPlanActionRequest $request)
     {
         $data = $request->validated();
 
@@ -80,15 +80,15 @@ class ActionTypeController extends Controller
         );
     }
 
-    public function update(UpdateActionTypeRequest $request, string $id)
+    public function update(UpdateActionPlanActionRequest $request, string $id)
     {
-        $actionType = ActionType::find($id);
+        $actionPlanAction = ActionPlanAction::find($id);
 
-        if (!$actionType) {
-            return ResponseFormatter::error("Registro no encontrado", 404);
+        if (!$actionPlanAction) {
+            return ResponseFormatter::error('Registro no encontrado', 404);
         }
 
-        // if (!(new AccessActionTypePolicy())->access($actionType)) {
+        // if (!(new AccessActionPlanActionPolicy())->access($actionPlanAction)) {
         //     return ResponseFormatter::error(
         //         'Usted no tiene autorización para modificar este registro',
         //         403
@@ -108,15 +108,15 @@ class ActionTypeController extends Controller
         );
     }
 
-    public function partialUpdate(PartialUpdateActionTypeRequest $request, string $id)
+    public function partialUpdate(PartialUpdateActionPlanActionRequest $request, string $id)
     {
-        $actionType = ActionType::find($id);
+        $actionPlanAction = ActionPlanAction::find($id);
 
-        if (!$actionType) {
-            return ResponseFormatter::error("Registro no encontrado", 404);
+        if (!$actionPlanAction) {
+            return ResponseFormatter::error('Registro no encontrado', 404);
         }
 
-        // if (!(new AccessActionTypePolicy())->access($actionType)) {
+        // if (!(new AccessActionPlanActionPolicy())->access($actionPlanAction)) {
         //     return ResponseFormatter::error(
         //         'Usted no tiene autorización para modificar este registro',
         //         403
@@ -138,13 +138,13 @@ class ActionTypeController extends Controller
 
     public function destroy(string $id)
     {
-        $actionType = ActionType::find($id);
+        $actionPlanAction = ActionPlanAction::find($id);
 
-        if (!$actionType) {
-            return ResponseFormatter::error("Registro no encontrado", 404);
+        if (!$actionPlanAction) {
+            return ResponseFormatter::error('Registro no encontrado', 404);
         }
 
-        // if (!(new AccessActionTypePolicy())->access($actionType)) {
+        // if (!(new AccessActionPlanActionPolicy())->access($actionPlanAction)) {
         //     return ResponseFormatter::error(
         //         'Usted no tiene autorización para eliminar este registro',
         //         403

@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\Api\ActionPlan\ActionPlanController;
+use App\Http\Controllers\Api\ActionPlanAction\ActionPlanActionController;
 use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +25,6 @@ use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
-use App\Http\Controllers\Api\ActionPlan\ActionPlanController;
 use App\Http\Controllers\Api\ActionType\ActionTypeController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\API\History\HistoryController;
@@ -660,6 +661,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [ActionPlanController::class, 'update']);
 
         Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
+    });
+    
+    Route::prefix('action_plans')->group(function () {
+
+        Route::get('/', [ActionPlanActionController::class, 'index']);
+
+        Route::get('/{id}', [ActionPlanActionController::class, 'show']);
+
+        Route::post('/', [ActionPlanActionController::class, 'store']);
+
+        Route::put('/{id}', [ActionPlanActionController::class, 'update']);
+
+        Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
     });
     
 });

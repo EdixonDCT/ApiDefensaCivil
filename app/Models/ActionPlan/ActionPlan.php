@@ -13,9 +13,8 @@ class ActionPlan extends Model
     protected $table = 'action_plans';
 
     protected $fillable = [
-        'name',
-        'description',
-        'action_type_id'
+        'integrante_id',
+        'vulnerability_factor_id',
     ];
 
     /*
