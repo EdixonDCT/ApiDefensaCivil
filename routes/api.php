@@ -3,6 +3,7 @@
 use App\Enums\TokenAbility;
 use App\Http\Controllers\Api\ActionPlan\ActionPlanController;
 use App\Http\Controllers\Api\ActionPlanAction\ActionPlanActionController;
+use App\Http\Controllers\Api\ActionType\ActionTypeController;
 use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -661,4 +662,44 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
+
+});
+
+Route::prefix('PlanActions')->group(function () {
+
+    Route::get('/', [ActionPlanController::class, 'index']);
+
+    Route::get('/{id}', [ActionPlanController::class, 'show']);
+
+    Route::post('/', [ActionPlanController::class, 'store']);
+
+    Route::put('/{id}', [ActionPlanController::class, 'update']);
+
+    Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
+});
+
+Route::prefix('action_types')->group(function () {
+
+    Route::get('/', [ActionTypeController::class, 'index']);
+
+    Route::get('/{id}', [ActionTypeController::class, 'show']);
+
+    Route::post('/', [ActionTypeController::class, 'store']);
+
+    Route::put('/{id}', [ActionTypeController::class, 'update']);
+
+    Route::delete('/{id}', [ActionTypeController::class, 'destroy']);
+});
+
+Route::prefix('action_plans')->group(function () {
+
+    Route::get('/', [ActionPlanActionController::class, 'index']);
+
+    Route::get('/{id}', [ActionPlanActionController::class, 'show']);
+
+    Route::post('/', [ActionPlanActionController::class, 'store']);
+
+    Route::put('/{id}', [ActionPlanActionController::class, 'update']);
+
+    Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
 });
