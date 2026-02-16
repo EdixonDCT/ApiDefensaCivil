@@ -17,8 +17,8 @@ class UpdateRiskFactorRequest extends FormRequest
             'threat_type_id' => 'required|exists:threat_types,id',
             'description' => 'required|string|max:255',
             'ubication' => 'required|string|max:255',
+            'distance' => 'required|integer|min:1|max:5000',
             'family_plan_id' => 'required|exists:family_plans,id',
-            'distance' => 'required|integer|min:1',
         ];
     }
 
@@ -42,6 +42,7 @@ class UpdateRiskFactorRequest extends FormRequest
             'distance.required' => 'La distancia es obligatoria.',
             'distance.integer' => 'La distancia debe ser un número entero.',
             'distance.min' => 'La distancia debe ser mayor o igual a 1 metro.',
+            'distance.max' => 'La distancia no puede superar los 5000 metros.',
         ];
     }
 }

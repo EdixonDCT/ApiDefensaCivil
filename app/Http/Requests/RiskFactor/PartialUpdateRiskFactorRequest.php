@@ -18,8 +18,8 @@ class PartialUpdateRiskFactorRequest extends FormRequest
             'threat_type_id' => 'sometimes|exists:threat_types,id',
             'description' => 'sometimes|string|max:255',
             'ubication' => 'sometimes|string|max:255',
+            'distance' => 'sometimes|integer|min:1|max:5000',
             'family_plan_id' => 'sometimes|exists:family_plans,id',
-            'distance' => 'sometimes|integer|min:1',
         ];
     }
 
@@ -38,6 +38,7 @@ class PartialUpdateRiskFactorRequest extends FormRequest
 
             'distance.integer' => 'La distancia debe ser un número entero.',
             'distance.min' => 'La distancia debe ser mayor o igual a 1 metro.',
+            'distance.max' => 'La distancia no puede superar los 5000 metros.',
         ];
     }
 }

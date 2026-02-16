@@ -14,12 +14,12 @@ class UpdateAvailableResourceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'resource_id'     => 'required|exists:resources,id',
-            'location'        => 'required|string|max:255',
-            'distance'        => 'required|string|max:50',
-            'phone'           => 'required|string|max:10',
-            'description'     => 'required|string|max:255',
-            'family_plan_id'  => 'required|exists:family_plans,id',
+            'resource_id' => 'required|exists:resources,id',
+            'location' => 'required|string|max:255',
+            'distance' => 'required|integer|min:1|max:5000',
+            'phone' => 'required|string|max:10',
+            'description' => 'required|string|max:255',
+            'family_plan_id' => 'required|exists:family_plans,id',
         ];
     }
 
@@ -34,8 +34,9 @@ class UpdateAvailableResourceRequest extends FormRequest
             'location.max'      => 'La ubicación no puede superar los 255 caracteres.',
 
             'distance.required' => 'La distancia es obligatoria.',
-            'distance.string'   => 'La distancia debe ser texto.',
-            'distance.max'      => 'La distancia no puede superar los 50 caracteres.',
+            'distance.integer' => 'La distancia debe ser un número entero.',
+            'distance.min' => 'La distancia debe ser mayor o igual a 1 metro.',
+            'distance.max' => 'La distancia no puede superar los 5000 metros.',
 
             'phone.required' => 'El teléfono es obligatorio.',
             'phone.string'   => 'El teléfono debe ser texto.',

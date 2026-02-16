@@ -61,13 +61,32 @@ class RiskFactorService
             ->with('threatType')
             ->paginate(10);
 
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'threat_type_id' => $item->threat_type_id,
+                'threat_type_name' => $item->threatType->name,
+                'description' => $item->description,
+                'ubication' => $item->ubication,
+                'distance' => $item->distance,
+            ];
+        });
+
         return [
-            "error" => false,
-            "code" => 200,
-            "message" => $paginator->isEmpty()
+            "error"   => false,
+            "code"    => 200,
+            "message" => $items->isEmpty()
                 ? "Este plan familiar no tiene factores de riesgo registrados"
                 : "Factores de riesgo del plan familiar obtenidos exitosamente",
-            "data" => $paginator,
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
         ];
     }
 

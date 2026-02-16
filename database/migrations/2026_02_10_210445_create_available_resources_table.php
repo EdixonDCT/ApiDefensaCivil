@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('resource_id'); 
             $table->string('location', 255);
-            $table->string('distance', 50);
+            $table->unsignedInteger('distance');
             $table->string('phone', 10);
             $table->string('description', 255);
             $table->unsignedBigInteger('family_plan_id'); 
