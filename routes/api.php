@@ -105,6 +105,8 @@ Route::middleware('auth:sanctum')->group(function () {
         route::get('/', [GenderController::class, 'index']);
 
         route::get('/{gender_id}', [GenderController::class, 'show']);
+        
+        route::get('/history/{gender_id}', [GenderController::class, 'history']);
 
         route::post('/', [GenderController::class, 'store']);
 

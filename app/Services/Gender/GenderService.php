@@ -3,6 +3,7 @@
 namespace App\Services\Gender;
 
 use App\Models\Gender\Gender;
+use App\Models\Audit\Audit;
 use Illuminate\support\Arr;
 
 /**
@@ -69,6 +70,16 @@ class GenderService
     {
         $gender = Gender::create($data);
 
+        
+        $gender->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new' => 'Activo',
+        ]);
+
         return [
             "error" => false,
             "code" => 201,
@@ -92,7 +103,19 @@ class GenderService
             ];
         }
 
+        $oldStatus = $gender->is_active ? "Activo" : "Inactivo"; // si quieres auditar algún campo específico
+
         $gender->update($data);
+
+        // Guardar auditoría
+        $gender->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $gender->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -105,7 +128,7 @@ class GenderService
     /**
      * Actualización parcial de los datos del género.
      */
-    public function partialUpdate(array $data,$id)
+    public function partialUpdate(array $data, $id)
     {
         $gender = Gender::find($id);
 
@@ -117,7 +140,21 @@ class GenderService
             ];
         }
 
+        // Guardar estado viejo específico si existe
+        $oldStatus = $gender->is_active ? "Activo" : "Inactivo";
+
         $gender->update($data);
+
+        // Guardar auditoría de los cambios
+        $newStatus = $gender->is_active ? "Activo" : "Inactivo";
+        $gender->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $newStatus,
+        ]);
 
         return [
             "error" => false,
@@ -130,7 +167,7 @@ class GenderService
     /**
      * Modifica el estado de habilitación del género.
      */
-    public function changeState(array $data,$id)
+    public function changeState(array $data, $id)
     {
         $gender = Gender::find($id);
 
@@ -142,7 +179,23 @@ class GenderService
             ];
         }
 
+        // Solo guardamos el estado viejo
+        $oldStatus = $gender->is_active ? "Activo" : "Inactivo";
+
+        // Actualizamos únicamente el campo de estado
         $gender->update($data);
+
+        $newStatus = $gender->is_active ? "Activo" : "Inactivo";
+
+        // Auditoría específica para cambio de estado
+        $gender->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $newStatus,
+        ]);
 
         return [
             "error" => false,
@@ -178,12 +231,59 @@ class GenderService
             ];
         }
 
+        $originalData = $gender->toArray();
+
         $gender->delete();
 
+        // Auditoría del borrado
+        $gender->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $originalData['is_active'] ? "Activo" : "Inactivo",
+            'status_new'     => null
+            ]);
+        
         return [
             "error" => false,
             "code" => 200,
             "message" => "Genero eliminado exitosamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $gender = Gender::find($id);
+
+        if (!$gender) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Genero no encontrado",
+            ];
+        }
+
+        // Obtenemos todas las auditorías ordenadas por fecha descendente
+        $history = $gender->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time' => $audit->date_time,
+                    'user_name' => $audit->user_name,
+                    'rol' => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old' => $audit->status_old,
+                    'status_new' => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }
