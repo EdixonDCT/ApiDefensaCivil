@@ -10,35 +10,22 @@ class ActionSeeder extends Seeder
     public function run(): void
     {
         Action::create([
-            'name' => 'Crear'
+            'name' => 'Creado'
         ]);
-
         Action::create([
-            'name' => 'Editar'
+            'name' => 'Enviado'
         ]);
-
         Action::create([
-            'name' => 'Desactivar'
+            'name' => 'Editado'
         ]);
-
         Action::create([
-            'name' => 'Activar'
+            'name' => 'Aceptado'
         ]);
-
         Action::create([
-            'name' => 'Aceptar'
+            'name' => 'Rechazado cambios'
         ]);
-
         Action::create([
-            'name' => 'Rechazar cambios'
-        ]);
-
-        Action::create([
-            'name' => 'Rechazar total'
-        ]);
-
-        Action::create([
-            'name' => 'Proceso'
+            'name' => 'Rechazado total'
         ]);
     }
 }

@@ -155,7 +155,7 @@ class HistoryService
      */
     public function getActionsByVoluntario()
     {
-        $histories = History::with([
+        $paginator = History::with([
                 'action:id,name',
                 'familyPlan:id,last_names,city_id',
                 'familyPlan.city:id,name,apartment_id',
@@ -166,11 +166,39 @@ class HistoryService
             ->orderBy('date', 'desc')
             ->paginate(10);
 
+        $items = $paginator->getCollection()->transform(function ($item) {
+
+            $latestAction = History::where('family_plan_id', $item->family_plan_id)
+                ->orderBy('date', 'desc')
+                ->orderBy('time', 'desc')
+                ->first();
+
+            return [
+                'id' => $item->family_plan_id,
+                'date' => $latestAction->date,
+                'action_id' => $latestAction->action_id,
+                'action_name' => $latestAction->action->name,
+                'last_names' => $item->familyPlan->last_names,
+                'city_name' => $item->familyPlan->city->name,
+                'apartment_name' => $item->familyPlan->city->apartment->name
+            ];
+        });
+
         return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Historial de planes familiares creados por el Voluntario obtenidos exitosamente",
-            "data" => $histories,
+            "error"   => false,
+            "code"    => 200,
+            "message" => $items->isEmpty()
+                ? "No hay planes familiares disponibles"
+                : "Planes familiares obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(), //pagina actual
+                'per_page' => $paginator->perPage(),    //cuantos registros se muestran por pagina
+                'total' => $paginator->total(), //total de registros
+                'last_page' => $paginator->lastPage(), //ultima pagina
+                'from' => $paginator->firstItem(), //numero del primer registro de la pagina
+                'to' => $paginator->lastItem(), //numero del ultimo registro de la pagina
+            ],
         ];
     }
 
@@ -179,7 +207,11 @@ class HistoryService
      */
     public function getActionsBySupervisor()
     {
+        //mejorarlo
+        //el de voluntarios se obtiene en base a su sectional, 
+        // entonces aquí se hace lo mismo pero filtrando por esa seccional y no por el usuario_id
         // Cargamos el usuario con su perfil para obtener la organización
+        
         $user = User::with('profile.organization')->find(auth()->id());
 
         if (!$user || !$user->profile) {
@@ -196,7 +228,7 @@ class HistoryService
         // Filtramos los planes familiares que pertenecen a esa misma seccional
         $plans = FamilyPlan::where('sectional_id', $sectionalId)
             ->orderBy('created_at', 'desc')
-            ->paginate(2);
+            ->paginate(10);
 
         return [
             "error" => false,

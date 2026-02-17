@@ -14,6 +14,7 @@ class RiskFactor extends Model
     protected $fillable = [
         'threat_type_id',
         'description',
+        'distance',
         'ubication',
         'family_plan_id'
     ];

@@ -150,7 +150,8 @@ class HistoryController extends Controller
         return ResponseFormatter::success(
             $response['message'],
             $response['code'],
-            $response['data'] ?? []
+            $response['data'] ?? [],
+            $response['paginate']
         );
     }
 

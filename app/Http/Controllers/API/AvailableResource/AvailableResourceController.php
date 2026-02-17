@@ -67,7 +67,7 @@ class AvailableResourceController extends Controller
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
     }
 
     public function store(StoreAvailableResourceRequest $request)
