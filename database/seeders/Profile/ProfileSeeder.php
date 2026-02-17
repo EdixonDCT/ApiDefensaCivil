@@ -12,7 +12,7 @@ class ProfileSeeder extends Seeder
         Profile::create([
             'user_id' => 1,
             'names' => 'Edixon',
-            'last_names' => 'Perez',
+            'last_names' => 'Castillo',
             'birth_date' => '1995-01-01',
             'document_type_id' => 1,
             'document_number' => '12345678',

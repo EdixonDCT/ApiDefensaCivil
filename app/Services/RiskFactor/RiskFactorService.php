@@ -90,6 +90,26 @@ class RiskFactorService
         ];
     }
 
+    public function getRiskFactorSelect($family_plan_id)
+    {
+        $collection = RiskFactor::where('family_plan_id', $family_plan_id)->with('threatType')->get();
+
+        $items = $collection->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'threat_type_name' => $item->threatType->name,
+                'description' => $item->description,
+            ];
+        });
+
+        return [
+            "error"   => false,
+            "code"    => 200,
+            "message" => "Factores de riesgo del plan familiar obtenidos exitosamente",
+            "data"    => $items,
+        ];
+    }
+
     // Crear nuevo factor de riesgo
     public function create(array $data)
     {

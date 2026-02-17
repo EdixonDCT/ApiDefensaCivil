@@ -22,7 +22,7 @@ use Database\Seeders\Permission\PermissionSeeder;
 use Database\Seeders\RolePermission\RolePermissionSeeder;
 use Database\Seeders\VulnerableQuestion\VulnerableQuestionSeeder;
 use Database\Seeders\Action\ActionSeeder;
-use Database\Seeders\AnimalGenders\AnimalGendersSeeder;
+use Database\Seeders\AnimalGender\AnimalGenderSeeder;
 use Database\Seeders\BloodGroup\BloodGroupSeeder;
 use Database\Seeders\Nationality\NationalitySeeder;
 use Database\Seeders\Kinship\KinshipSeeder;
@@ -33,6 +33,7 @@ use Database\Seeders\Species\SpeciesSeeder;
 use Database\Seeders\ThreatType\ThreatTypeSeeder;
 use Database\Seeders\Vulnerability\VulnerabilitySeeder;
 use Database\Seeders\VulnerabilityGrade\VulnerabilityGradeSeeder;
+use Database\Seeders\ActionType\ActionTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -64,10 +65,11 @@ class DatabaseSeeder extends Seeder
             KinshipSeeder::class,
             ConditionTypeSeeder::class,
             SpeciesSeeder::class,
-            AnimalGendersSeeder::class,
+            AnimalGenderSeeder::class,
             ThreatTypeSeeder::class,
             VulnerabilitySeeder::class,
             VulnerabilityGradeSeeder::class,
+            ActionTypeSeeder::class,
         ]);
     }
 }

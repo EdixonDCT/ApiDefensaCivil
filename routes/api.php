@@ -420,6 +420,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{member_id}', [MemberController::class, 'show']);
         // Obtener miembros asociados a un plan familiar
         Route::get('/familyPlan/{plan_id}', [MemberController::class, 'getMembersForPlan']);
+        // Obtener miembros asociados a un plan familiar para el select de actionPlan
+        Route::get('/familyPlan/select/{plan_id}', [MemberController::class, 'getMembersSelect']);
         // Registrar un nuevo miembro
         Route::post('/{plan_id}', [MemberController::class, 'store']);
         // Actualizar completamente un miembro
@@ -557,6 +559,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/familyPlan/{family_plan_id}', [RiskFactorController::class, 'getForPlan']);
 
+        Route::get('/familyPlan/select/{family_plan_id}', [RiskFactorController::class, 'getRiskFactorSelect']);
+
         Route::post('/', [RiskFactorController::class, 'store']);
 
         Route::put('/{id}', [RiskFactorController::class, 'update']);
@@ -663,43 +667,46 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
 
-});
+    Route::prefix('actionTypes')->group(function () {
 
-Route::prefix('PlanActions')->group(function () {
+        Route::get('/', [ActionTypeController::class, 'index']);
+
+        Route::get('/{id}', [ActionTypeController::class, 'show']);
+
+        Route::post('/', [ActionTypeController::class, 'store']);
+
+        Route::put('/{id}', [ActionTypeController::class, 'update']);
+
+        Route::delete('/{id}', [ActionTypeController::class, 'destroy']);
+    });
+
+    Route::prefix('actionPlans')->group(function () {
 
     Route::get('/', [ActionPlanController::class, 'index']);
 
     Route::get('/{id}', [ActionPlanController::class, 'show']);
+
+    Route::get('/familyPlan/{id}',[ActionPlanController::class, 'getByPlan']);
 
     Route::post('/', [ActionPlanController::class, 'store']);
 
     Route::put('/{id}', [ActionPlanController::class, 'update']);
 
     Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
-});
+    });
 
-Route::prefix('action_types')->group(function () {
+    Route::prefix('actionPlanActions')->group(function () {
 
-    Route::get('/', [ActionTypeController::class, 'index']);
+        Route::get('/', [ActionPlanActionController::class, 'index']);
 
-    Route::get('/{id}', [ActionTypeController::class, 'show']);
+        Route::get('/{id}', [ActionPlanActionController::class, 'show']);
 
-    Route::post('/', [ActionTypeController::class, 'store']);
+        Route::get('actionPlan/{id}',[ActionPlanActionController::class, 'getActionForActionPlan']);
 
-    Route::put('/{id}', [ActionTypeController::class, 'update']);
+        Route::post('/', [ActionPlanActionController::class, 'store']);
 
-    Route::delete('/{id}', [ActionTypeController::class, 'destroy']);
-});
+        Route::put('/{id}', [ActionPlanActionController::class, 'update']);
 
-Route::prefix('action_plans')->group(function () {
-
-    Route::get('/', [ActionPlanActionController::class, 'index']);
-
-    Route::get('/{id}', [ActionPlanActionController::class, 'show']);
-
-    Route::post('/', [ActionPlanActionController::class, 'store']);
-
-    Route::put('/{id}', [ActionPlanActionController::class, 'update']);
-
-    Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
+        Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
+    });
 });

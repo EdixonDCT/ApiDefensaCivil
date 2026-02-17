@@ -11,15 +11,16 @@ return new class extends Migration
         Schema::create('action_plans', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('integrante_id');
+            $table->unsignedBigInteger('member_id');
             
-            $table->unsignedBigInteger('vulnerability_factor_id');
+            $table->unsignedBigInteger('risk_factor_id');
+
+            $table->foreign('member_id')->references('id')->on('members');
+
+            $table->foreign('risk_factor_id')->references('id')->on('risk_factors');
 
             $table->timestamps();
 
-            $table->foreign('integrante_id')->references('id')->on('members');
-
-            $table->foreign('vulnerability_factor_id')->references('id')->on('vulnerability_factors');
         });
     }
 

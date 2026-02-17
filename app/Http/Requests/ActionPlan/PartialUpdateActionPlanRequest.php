@@ -4,6 +4,11 @@ namespace App\Http\Requests\ActionPlan;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Clase PartialUpdateActionPlanRequest
+ * 
+ * Valida la actualización parcial (PATCH) de un plan de acción.
+ */
 class PartialUpdateActionPlanRequest extends FormRequest
 {
     public function authorize(): bool
@@ -14,21 +19,24 @@ class PartialUpdateActionPlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|max:255',
-            'description' => 'sometimes|nullable|string',
-            'action_type_id' => 'sometimes|exists:action_types,id'
+            'member_id'      => 'sometimes|exists:members,id',
+            'risk_factor_id' => 'sometimes|exists:risk_factors,id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.string' => 'El nombre debe ser un texto válido',
-            'name.max' => 'El nombre no puede superar los 255 caracteres',
+            'member_id.exists'        => 'El :attribute seleccionado no es válido',
+            'risk_factor_id.exists'   => 'El :attribute seleccionado no es válido',
+        ];
+    }
 
-            'description.string' => 'La descripción debe ser un texto válido',
-
-            'action_type_id.exists' => 'El tipo de acción no existe'
+    public function attributes(): array
+    {
+        return [
+            'member_id'      => 'miembro',
+            'risk_factor_id' => 'factor de riesgo',
         ];
     }
 }

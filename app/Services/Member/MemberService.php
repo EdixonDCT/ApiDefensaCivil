@@ -84,6 +84,26 @@ class MemberService
         ];
     }
 
+    public function getMembersSelect($family_plan_id)
+    {
+        $collection = FamilyMember::where('family_plan_id', $family_plan_id)->with(['member.kinship'])->get();
+
+        $items = $collection->transform(function ($item) {
+            return [
+                'id'              => $item->member->id,
+                'full_name'       => $item->member->names . ' ' . $item->member->last_names,
+                'document_number' => $item->member->document_number,
+                'kinship'         => $item->member->kinship->name,
+            ];
+        });
+        
+        return [
+            "error"   => false,
+            "code"    => 200,
+            "message" => "Miembros del plan familiar obtenidos exitosamente",
+            "data"    => $items,
+        ];
+    }
 
     public function create(array $data, $plan_id)
     {

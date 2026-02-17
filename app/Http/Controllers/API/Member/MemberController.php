@@ -78,6 +78,22 @@ class MemberController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [], $response['paginate']);
     }
 
+    public function getMembersSelect(string $family_plan_id)
+    {
+        // Validación de acceso al plan
+        if (!(new AccessPlanPolicy())->access($family_plan_id)) {
+            return ResponseFormatter::error('Usted no tiene autorización para acceder a este plan',403);
+        }
+
+        $response = $this->service->getMembersSelect($family_plan_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
     public function store(StoreMemberRequest $request, string $plan_id)
     {
         // Validación de acceso al plan

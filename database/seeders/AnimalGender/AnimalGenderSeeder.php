@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Seeders\AnimalGenders;
+namespace Database\Seeders\AnimalGender;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\AnimalGender\AnimalGender;
 
-class AnimalGendersSeeder extends Seeder
+class AnimalGenderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
