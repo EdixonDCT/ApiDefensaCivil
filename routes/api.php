@@ -36,6 +36,7 @@ use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
 use App\Http\Controllers\Api\Species\SpeciesController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
+use App\Http\Controllers\API\Notification\NotificationController;
 use App\Http\Controllers\Api\Pet\PetController;
 use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
 use App\Http\Controllers\API\RiskFactor\RiskFactorController;
@@ -525,7 +526,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [PetVaccineController::class, 'show']);
 
         Route::get('/pet/{pet_id}', [PetVaccineController::class, 'getVaccinesForPets']);
-        
+
         Route::post('/', [PetVaccineController::class, 'store']);
 
         Route::put('/{id}', [PetVaccineController::class, 'update']);
@@ -584,7 +585,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('vulnerabilityGrades')->group(function () {
-    
+
         Route::get('/', [VulnerabilityGradeController::class, 'index']);
 
         Route::get('/{id}', [VulnerabilityGradeController::class, 'show']);
@@ -596,7 +597,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
 
         Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
-    }); 
+    });
 
     Route::prefix('vulnerabilities')->group(function () {
 
@@ -634,7 +635,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('resources')->group(function () {
 
         Route::get('/', [ResourceController::class, 'index']);
-    
+
         Route::get('/{id}', [ResourceController::class, 'show']);
 
         Route::post('/', [ResourceController::class, 'store']);
@@ -649,9 +650,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('availableResources')->group(function () {
 
         Route::get('/', [AvailableResourceController::class, 'index']);
-    
+
         Route::get('/{id}', [AvailableResourceController::class, 'show']);
-    
+
         Route::get('/familyPlan/{family_plan_id}', [AvailableResourceController::class, 'getForPlan']);
 
         Route::post('/', [AvailableResourceController::class, 'store']);
@@ -663,43 +664,56 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [AvailableResourceController::class, 'destroy']);
     });
 
-});
 
-Route::prefix('PlanActions')->group(function () {
+    Route::prefix('PlanActions')->group(function () {
 
-    Route::get('/', [ActionPlanController::class, 'index']);
+        Route::get('/', [ActionPlanController::class, 'index']);
 
-    Route::get('/{id}', [ActionPlanController::class, 'show']);
+        Route::get('/{id}', [ActionPlanController::class, 'show']);
 
-    Route::post('/', [ActionPlanController::class, 'store']);
+        Route::post('/', [ActionPlanController::class, 'store']);
 
-    Route::put('/{id}', [ActionPlanController::class, 'update']);
+        Route::put('/{id}', [ActionPlanController::class, 'update']);
 
-    Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
-});
+        Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
+    });
 
-Route::prefix('action_types')->group(function () {
+    Route::prefix('action_types')->group(function () {
 
-    Route::get('/', [ActionTypeController::class, 'index']);
+        Route::get('/', [ActionTypeController::class, 'index']);
 
-    Route::get('/{id}', [ActionTypeController::class, 'show']);
+        Route::get('/{id}', [ActionTypeController::class, 'show']);
 
-    Route::post('/', [ActionTypeController::class, 'store']);
+        Route::post('/', [ActionTypeController::class, 'store']);
 
-    Route::put('/{id}', [ActionTypeController::class, 'update']);
+        Route::put('/{id}', [ActionTypeController::class, 'update']);
 
-    Route::delete('/{id}', [ActionTypeController::class, 'destroy']);
-});
+        Route::delete('/{id}', [ActionTypeController::class, 'destroy']);
+    });
 
-Route::prefix('action_plans')->group(function () {
+    Route::prefix('action_plans')->group(function () {
 
-    Route::get('/', [ActionPlanActionController::class, 'index']);
+        Route::get('/', [ActionPlanActionController::class, 'index']);
 
-    Route::get('/{id}', [ActionPlanActionController::class, 'show']);
+        Route::get('/{id}', [ActionPlanActionController::class, 'show']);
 
-    Route::post('/', [ActionPlanActionController::class, 'store']);
+        Route::post('/', [ActionPlanActionController::class, 'store']);
 
-    Route::put('/{id}', [ActionPlanActionController::class, 'update']);
+        Route::put('/{id}', [ActionPlanActionController::class, 'update']);
 
-    Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
+        Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
+    });
+
+    Route::prefix('notificacions')->group(function () {
+
+        Route::get('/', [NotificationController::class, 'index']);
+
+        Route::get('/{id}', [NotificationController::class, 'show']);
+
+        Route::post('/', [NotificationController::class, 'store']);
+
+        Route::put('/{id}', [NotificationController::class, 'update']);
+
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
 });

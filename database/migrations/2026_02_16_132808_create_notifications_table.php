@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade'); 
-            $table->foreignId('historial_id')->constrained('historial')->onDelete('cascade'); 
-            $table->boolean('leido')->default(false); 
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('history_id')->constrained('histories');
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
         });
     }
