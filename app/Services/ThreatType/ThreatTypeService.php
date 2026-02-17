@@ -46,31 +46,11 @@ class ThreatTypeService
             ];
         }
 
-        // Datos relacionados opcionales (ejemplo)
-        $relatedData = $threatType->relatedData ?? null;
-
         return [
             "error" => false,
             "code" => 200,
             "message" => "Tipo de amenaza obtenido exitosamente",
             "data" => $threatType,
-            "related" => $relatedData,
-        ];
-    }
-
-    // Obtener tipos de amenaza por plan familiar (paginado)
-    public function getByFamilyPlan($family_plan_id)
-    {
-        $paginator = ThreatType::where('family_plan_id', $family_plan_id)
-            ->paginate(10);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => $paginator->isEmpty()
-                ? "Este plan familiar no tiene tipos de amenaza registrados"
-                : "Tipos de amenaza del plan familiar obtenidos exitosamente",
-            "data" => $paginator,
         ];
     }
 

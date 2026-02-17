@@ -62,13 +62,35 @@ class PetService
                 'Species',
                 'AnimalGender'
             ])->paginate(10);
+        
+        $items = $paginator->getCollection()->transform(function ($item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'breed' => $item->breed,
+            'age' => $item->age,
+            'animal_gender_id' => $item->animal_gender_id,
+            'animal_gender_name' => $item->animalGender->name,
+            'species_id' => $item->species_id,
+            'species_name' => $item->species->name,
+        ];
+        });
+
         return [
             "error"   => false,
             "code"    => 200,
-            "message" => $paginator->isEmpty()
-                ? "Este plan familiar no tiene mascotas registrados"
-                : "Mascotas del plan familiar obtenidos exitosamente",
-            "data"    => $paginator,
+            "message" => $items->isEmpty()
+                ? "No hay mascotas registradas para este plan familiar"
+                : "Mascotas del plan familiar obtenidas exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(), //pagina actual
+                'per_page' => $paginator->perPage(),    //cuantos registros se muestran por pagina
+                'total' => $paginator->total(), //total de registros
+                'last_page' => $paginator->lastPage(), //ultima pagina
+                'from' => $paginator->firstItem(), //numero del primer registro de la pagina
+                'to' => $paginator->lastItem(), //numero del ultimo registro de la pagina
+            ],
         ];
     }
     public function create(array $data)

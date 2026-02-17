@@ -53,15 +53,15 @@ class MemberService
             ->paginate(10);
 
         // Transformar aunque esté vacío (no rompe)
-        $paginator->getCollection()->transform(function ($item) {
+        $items = $paginator->getCollection()->transform(function ($item) {
             return [
                 'id'               => $item->member->id,
                 'full_name'        => $item->member->names . ' ' . $item->member->last_names,
                 'birth_date'       => $item->member->birth_date,
-                'blood_group'      => $item->member->bloodGroup->name ?? null,
+                'blood_group'      => $item->member->bloodGroup->name,
                 'document_number'  => $item->member->document_number,
                 'gender_id'        => $item->member->gender_id,
-                'kinship'          => $item->member->kinship->name ?? null,
+                'kinship'          => $item->member->kinship->name,
                 'phone'            => $item->member->phone,
             ];
         });
@@ -69,10 +69,18 @@ class MemberService
         return [
             "error"   => false,
             "code"    => 200,
-            "message" => $paginator->isEmpty()
+            "message" => $items->isEmpty()
                 ? "Este plan familiar no tiene miembros registrados"
                 : "Miembros del plan familiar obtenidos exitosamente",
-            "data"    => $paginator,
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
         ];
     }
 

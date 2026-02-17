@@ -6,25 +6,18 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRiskFactorRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'threat_type_id' => 'required|exists:threat_types,id',
             'description' => 'required|string|max:255',
             'ubication' => 'required|string|max:255',
+            'distance' => 'required|integer|min:1|max:5000',
             'family_plan_id' => 'required|exists:family_plans,id',
         ];
     }
@@ -45,6 +38,11 @@ class UpdateRiskFactorRequest extends FormRequest
 
             'family_plan_id.required' => 'El plan familiar es obligatorio.',
             'family_plan_id.exists' => 'El plan familiar seleccionado no existe.',
+
+            'distance.required' => 'La distancia es obligatoria.',
+            'distance.integer' => 'La distancia debe ser un número entero.',
+            'distance.min' => 'La distancia debe ser mayor o igual a 1 metro.',
+            'distance.max' => 'La distancia no puede superar los 5000 metros.',
         ];
     }
 }

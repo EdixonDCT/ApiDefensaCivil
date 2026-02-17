@@ -180,22 +180,31 @@ class VulnerableQuestionService
      */
     public function paginate()
     {
-        $questions = VulnerableQuestion::where('is_active', true)->paginate(3);
+        $paginator = VulnerableQuestion::where('is_active', true)->paginate(3);
 
-        if ($questions->isEmpty()) {
+        $items = $paginator->getCollection()->transform(function ($item) {
             return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay preguntas vulnerables activas registradas",
-                "data" => $questions,
+                'id' => $item->id,
+                'description' => $item->description,
+                'question_caution' => $item->question_caution,
             ];
-        }
+        });
 
         return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Preguntas vulnerables obtenidas exitosamente",
-            "data" => $questions,
+            "error"   => false,
+            "code"    => 200,
+            "message" => $items->isEmpty()
+                ? "No hay preguntas vulnerables activas disponibles"
+                : "Preguntas vulnerables obtenidas exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(), //pagina actual
+                'per_page' => $paginator->perPage(),    //cuantos registros se muestran por pagina
+                'total' => $paginator->total(), //total de registros
+                'last_page' => $paginator->lastPage(), //ultima pagina
+                'from' => $paginator->firstItem(), //numero del primer registro de la pagina
+                'to' => $paginator->lastItem(), //numero del ultimo registro de la pagina
+            ],
         ];
     }
 }

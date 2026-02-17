@@ -58,13 +58,33 @@ class AvailableResourceService
         $paginator = AvailableResource::where('family_plan_id', $family_plan_id)
             ->with('resource')
             ->paginate(10);
+        
+        $items = $paginator->getCollection()->transform(function ($item) {
         return [
-            "error" => false,
-            "code" => 200,
-            "message" => $paginator->isEmpty()
-                ? "Este plan familiar no tiene recursos disponibles registrados"
-                : "Recursos disponibles del plan familiar obtenidos exitosamente",
-            "data" => $paginator,
+            'id' => $item->id,
+            'resource_name' => $item->resource->name,
+            'location' => $item->location,
+            'distance' => $item->distance,
+            'phone' => $item->phone,
+            'service' => $item->resource->service,
+        ];
+        });
+
+        return [
+            "error"   => false,
+            "code"    => 200,
+            "message" => $items->isEmpty()
+                ? "No hay recursos disponibles para este plan familiar"
+                : "Recursos disponibles obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(), //pagina actual
+                'per_page' => $paginator->perPage(),    //cuantos registros se muestran por pagina
+                'total' => $paginator->total(), //total de registros
+                'last_page' => $paginator->lastPage(), //ultima pagina
+                'from' => $paginator->firstItem(), //numero del primer registro de la pagina
+                'to' => $paginator->lastItem(), //numero del ultimo registro de la pagina
+            ],
         ];
     }
 

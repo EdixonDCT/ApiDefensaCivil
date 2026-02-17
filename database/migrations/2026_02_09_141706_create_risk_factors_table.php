@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('threat_type_id')->constrained('threat_types');
             $table->string('description', 255);
             $table->string('ubication', 255);
+            $table->unsignedInteger('distance');
             $table->foreignId('family_plan_id')->constrained('family_plans');
             $table->timestamps();
         });
