@@ -20,21 +20,21 @@ class UserSeeder extends Seeder
         $edixon->assignRole('Voluntario');
 
         $bruno = User::firstOrCreate(
-            ['email' => 'bruno@gmail.com'],
+            ['email' => 'sol@gmail.com'],
             [
                 'password' => 'Edixon10?',
                 'state_user_id' => 1
             ]
         );
-        $bruno->assignRole('Voluntario');
+        $bruno->assignRole('Supervisor');
 
         $dann = User::firstOrCreate(
-            ['email' => 'dann@gmail.com'],
+            ['email' => 'dylan@gmail.com'],
             [
                 'password' => 'Edixon10?',
                 'state_user_id' => 1
             ]
         );
-        $dann->assignRole('Supervisor');
+        $dann->assignRole('Administrador');
     }
 }
