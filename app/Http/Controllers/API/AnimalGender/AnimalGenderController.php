@@ -84,21 +84,6 @@ class AnimalGenderController extends Controller
     }
 
     /**
-     * Actualización parcial (PATCH).
-     */
-    public function partialUpdate(PartialUpdateAnimalGenderRequest $request, string $id)
-    {
-        $data = $request->validated();
-        $response = $this->service->partialUpdate($data, $id);
-
-        if ($response['error']) {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
-    }
-
-    /**
      * Elimina un registro.
      */
     public function destroy(string $id)

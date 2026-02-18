@@ -3,40 +3,23 @@
 namespace App\Services\HousingQuality;
 
 use App\Models\HousingQuality\HousingQuality;
-use Illuminate\support\Arr;
+use App\Models\Audit\Audit;
+use Illuminate\Support\Arr;
 
-/**
- * Servicio para gestionar los parámetros de calidad de la vivienda.
- */
 class HousingQualityService
 {
-    /**
-     * Obtiene todos los registros de calidad de vivienda.
-     */
     public static function getAll()
     {
         $housingQuality = HousingQuality::all();
 
-        if ($housingQuality->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay calidades de vivienda registradas",
-                "data" => $housingQuality,
-            ];
-        }
-
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Calidades de vivienda obtenidos exitosamente",
+            "message" => "Calidades de vivienda obtenidas exitosamente",
             "data" => $housingQuality,
         ];
     }
 
-    /**
-     * Obtiene un registro específico por ID.
-     */
     public function getById($id)
     {
         $housingQuality = HousingQuality::find($id);
@@ -57,24 +40,27 @@ class HousingQualityService
         ];
     }
 
-    /**
-     * Crea un nuevo parámetro de calidad de vivienda.
-     */
     public function create(array $data)
     {
         $housingQuality = HousingQuality::create($data);
 
+        $housingQuality->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => $housingQuality->is_active ? "Activo" : "Inactivo",
+        ]);
+
         return [
             "error" => false,
             "code" => 201,
-            "message" => "Calidad de vivienda creado exitosamente",
+            "message" => "Calidad de vivienda creada exitosamente",
             "data" => $housingQuality,
         ];
     }
 
-    /**
-     * Actualización total del registro.
-     */
     public function update(array $data, $id)
     {
         $housingQuality = HousingQuality::find($id);
@@ -87,7 +73,18 @@ class HousingQualityService
             ];
         }
 
+        $oldStatus = $housingQuality->is_active ? "Activo" : "Inactivo";
+
         $housingQuality->update($data);
+
+        $housingQuality->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $housingQuality->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -97,9 +94,6 @@ class HousingQualityService
         ];
     }
 
-    /**
-     * Actualización parcial del registro.
-     */
     public function partialUpdate(array $data, $id)
     {
         $housingQuality = HousingQuality::find($id);
@@ -112,7 +106,18 @@ class HousingQualityService
             ];
         }
 
+        $oldStatus = $housingQuality->is_active ? "Activo" : "Inactivo";
+
         $housingQuality->update($data);
+
+        $housingQuality->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $housingQuality->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -122,10 +127,7 @@ class HousingQualityService
         ];
     }
 
-    /**
-     * Activa o desactiva el parámetro de calidad.
-     */
-    public function changeState(array $data, $id)
+    public function changeStatus(array $data, $id)
     {
         $housingQuality = HousingQuality::find($id);
 
@@ -137,22 +139,29 @@ class HousingQualityService
             ];
         }
 
+        $oldStatus = $housingQuality->is_active ? "Activo" : "Inactivo";
+
         $housingQuality->update($data);
+
+        $housingQuality->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $housingQuality->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Cambio de estado de calidad de vivienda actualizado correctamente",
+            "message" => "Cambio de estado actualizado correctamente",
             "data" => $housingQuality,
         ];
     }
 
-    /**
-     * Elimina el registro si no está vinculado a planes familiares.
-     */
     public function delete($id)
     {
-        // Corrección: Usamos la variable correcta $housingQuality
         $housingQuality = HousingQuality::find($id);
 
         if (!$housingQuality){
@@ -162,22 +171,66 @@ class HousingQualityService
                 "message" => "Calidad de vivienda no encontrada",
             ];
         }
-        
-        // Validación de integridad referencial
+
         if ($housingQuality->familyPlan->count()) {
             return [
                 "error" => true,
                 "code" => 409,
-                "message" => "No se puede eliminar la calidad de vivienda porque tiene registros relacionados",
+                "message" => "No se puede eliminar porque tiene registros relacionados",
             ];
         }
 
+        $oldStatus = $housingQuality->is_active ? "Activo" : "Inactivo";
+
         $housingQuality->delete();
+
+        $housingQuality->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $oldStatus,
+            'status_new'     => null,
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Calidad de vivienda eliminada exitosamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $housingQuality = HousingQuality::find($id);
+
+        if (!$housingQuality) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Calidad de vivienda no encontrada",
+            ];
+        }
+
+        $history = $housingQuality->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

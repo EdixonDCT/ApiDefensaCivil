@@ -34,6 +34,7 @@ use Database\Seeders\ThreatType\ThreatTypeSeeder;
 use Database\Seeders\Vulnerability\VulnerabilitySeeder;
 use Database\Seeders\VulnerabilityGrade\VulnerabilityGradeSeeder;
 use Database\Seeders\ActionType\ActionTypeSeeder;
+use Database\Seeders\Resource\ResourceSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -70,6 +71,7 @@ class DatabaseSeeder extends Seeder
             VulnerabilitySeeder::class,
             VulnerabilityGradeSeeder::class,
             ActionTypeSeeder::class,
+            ResourceSeeder::class,
         ]);
     }
 }

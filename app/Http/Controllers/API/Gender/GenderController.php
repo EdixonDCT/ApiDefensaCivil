@@ -108,10 +108,10 @@ class GenderController extends Controller
      * Cambia el estado de activación del género (Habilitado/Deshabilitado).
      * Útil para retirar opciones sin eliminar datos históricos.
      */
-    public function ChangeState(ChangeStateGenderRequest $request, string $id)
+    public function changeStatus(ChangeStateGenderRequest $request, string $id)
     {
         $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
+        $response = $this->service->changeStatus($data, $id);
 
         if ($response['error'])
         {

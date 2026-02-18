@@ -22,7 +22,7 @@ class PartialUpdateResourceRequest extends FormRequest
         return [
             'name' => "sometimes|string|max:255|unique:resources,name,{$resourceId}",
             'service' => 'sometimes|string|max:255',
-            'active' => 'sometimes|boolean',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 
@@ -36,7 +36,7 @@ class PartialUpdateResourceRequest extends FormRequest
             'service.string' => 'El servicio debe ser un texto',
             'service.max'    => 'El servicio no puede exceder 255 caracteres',
 
-            'active.boolean' => 'El valor de activo debe ser verdadero o falso',
+            'is_active.boolean' => 'El valor de activo debe ser verdadero o falso',
         ];
     }
 

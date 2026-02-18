@@ -4,40 +4,28 @@ namespace App\Services\Organization;
 
 use App\Models\Organization\Organization;
 use App\Models\Sectional\Sectional;
-use Illuminate\support\Arr;
+use App\Models\Audit\Audit;
+use Illuminate\Support\Arr;
 
-/**
- * Servicio para la gestión de Organizaciones (Unidades locales/Grupos).
- * Vincula la estructura administrativa con los usuarios finales.
- */
 class OrganizationService
 {
     /**
-     * Obtiene el listado global de todas las organizaciones.
+     * Obtiene todas las organizaciones.
      */
     public static function getAll()
     {
         $organization = Organization::all();
 
-        if ($organization->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay organizaciones registradas",
-                "data" => $organization,
-            ];
-        }
-
         return [
             "error" => false,
             "code" => 200,
-            "message" => "organizaciones obtenidos exitosamente",
+            "message" => "Organizaciones obtenidas exitosamente",
             "data" => $organization,
         ];
     }
 
     /**
-     * Obtiene una organización específica por su ID.
+     * Obtener por ID
      */
     public function getById($id)
     {
@@ -47,35 +35,45 @@ class OrganizationService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Organizacion no encontrado",
+                "message" => "Organización no encontrada",
             ];
         }
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Organizacion obtenido exitosamente",
+            "message" => "Organización obtenida exitosamente",
             "data" => $organization,
         ];
     }
 
     /**
-     * Crea una nueva organización vinculada a una seccional.
+     * Crear organización
      */
     public function create(array $data)
     {
+
         $organization = Organization::create($data);
+
+        $organization->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => $organization->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 201,
-            "message" => "Organizacion creado exitosamente",
+            "message" => "Organización creada exitosamente",
             "data" => $organization,
         ];
     }
 
     /**
-     * Actualización total de los datos de la organización.
+     * Update total
      */
     public function update(array $data, $id)
     {
@@ -85,24 +83,35 @@ class OrganizationService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Organizacion no encontrado",
+                "message" => "Organización no encontrada",
             ];
         }
 
+        $oldStatus = $organization->is_active ? "Activo" : "Inactivo";
+
         $organization->update($data);
+
+        $organization->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $organization->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Organizacion actualizado exitosamente",
+            "message" => "Organización actualizada exitosamente",
             "data" => $organization,
         ];
     }
 
     /**
-     * Actualización parcial (solo campos enviados).
+     * Update parcial
      */
-    public function partialUpdate(array $data,$id)
+    public function partialUpdate(array $data, $id)
     {
         $organization = Organization::find($id);
 
@@ -110,24 +119,35 @@ class OrganizationService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Organizacion no encontrado",
+                "message" => "Organización no encontrada",
             ];
         }
 
+        $oldStatus = $organization->is_active ? "Activo" : "Inactivo";
+
         $organization->update($data);
+
+        $organization->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $organization->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Organizacion actualizado parcialmente exitosamente",
+            "message" => "Organización actualizada parcialmente exitosamente",
             "data" => $organization,
         ];
     }
 
     /**
-     * Cambia el estado (Activo/Inactivo) de la organización.
+     * Cambio de estado
      */
-    public function changeState(array $data,$id)
+    public function changeStatus(array $data, $id)
     {
         $organization = Organization::find($id);
 
@@ -135,22 +155,33 @@ class OrganizationService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Organizacion no encontrado",
+                "message" => "Organización no encontrada",
             ];
         }
 
+        $oldStatus = $organization->is_active ? "Activo" : "Inactivo";
+
         $organization->update($data);
+
+        $organization->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $organization->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Cambio de estado de organizacion actualizado correctamente",
+            "message" => "Cambio de estado actualizado correctamente",
             "data" => $organization,
         ];
     }
 
     /**
-     * Elimina la organización validando que no tenga usuarios (perfiles) asociados.
+     * Eliminación
      */
     public function delete($id)
     {
@@ -160,63 +191,72 @@ class OrganizationService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Organizacion no encontrado",
+                "message" => "Organización no encontrada",
             ];
         }
-        
-        // Bloqueo de eliminación si hay perfiles vinculados
+
         if ($organization->profile->count()) {
             return [
                 "error" => true,
                 "code" => 409,
-                "message" => "No se puede eliminar la organizacion porque tiene registros relacionados",
+                "message" => "No se puede eliminar porque tiene registros relacionados",
             ];
         }
 
+        $oldStatus = $organization->is_active ? "Activo" : "Inactivo";
+
         $organization->delete();
+
+        $organization->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $oldStatus,
+            'status_new'     => null,
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Organizacion eliminado exitosamente",
+            "message" => "Organización eliminada exitosamente",
         ];
     }
 
     /**
-     * Filtra y obtiene las organizaciones pertenecientes a una seccional específica.
-     * Útil para desplegables dependientes en el registro.
-     * @param int $id ID de la Seccional.
+     * Historial
      */
-    public static function getAllForSectional($id)
+    public function history($id)
     {
-        $sectional = Sectional::find($id);
+        $organization = Organization::find($id);
 
-        if (!$sectional){
+        if (!$organization) {
             return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No existe esta seccional",
-                "data" => null,
+                "error" => true,
+                "code" => 404,
+                "message" => "Organización no encontrada",
             ];
         }
-        
-        // Asumiendo relación hasMany en el modelo Sectional
-        $organization = $sectional->organization;
 
-        if (!$organization || $organization->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No existen organizaciones relacionadas a la seccional",
-                "data" => [],
-            ];
-        }
+        $history = $organization->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "organizaciones obtenidos exitosamente",
-            "data" => $organization,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

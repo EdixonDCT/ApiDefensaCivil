@@ -138,7 +138,7 @@ class FamilyPlanService
     /**
      * Actualiza el estado actual del plan familiar.
      */
-    public function changeState(array $data,$id)
+    public function changeStatus(array $data,$id)
     {
         $familyPlan = FamilyPlan::find($id);
 

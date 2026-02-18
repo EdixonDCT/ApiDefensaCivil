@@ -3,29 +3,14 @@
 namespace App\Services\DocumentType;
 
 use App\Models\DocumentType\DocumentType;
-use Illuminate\support\Arr;
+use App\Models\Audit\Audit;
+use Illuminate\Support\Arr;
 
-/**
- * Servicio para gestionar los tipos de documentos de identidad.
- */
 class DocumentTypeService
 {
-    /**
-     * Obtiene todos los tipos de documento registrados.
-     * @return array
-     */
     public static function getAll()
     {
         $documentType = DocumentType::all();
-
-        if ($documentType->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay tipos de documento registrados",
-                "data" => $documentType,
-            ];
-        }
 
         return [
             "error" => false,
@@ -35,11 +20,6 @@ class DocumentTypeService
         ];
     }
 
-    /**
-     * Obtiene un tipo de documento por su ID.
-     * @param int|string $id
-     * @return array
-     */
     public function getById($id)
     {
         $documentType = DocumentType::find($id);
@@ -60,14 +40,18 @@ class DocumentTypeService
         ];
     }
 
-    /**
-     * Crea un nuevo registro de tipo de documento.
-     * @param array $data
-     * @return array
-     */
     public function create(array $data)
     {
         $documentType = DocumentType::create($data);
+
+        $documentType->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => $documentType->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -77,9 +61,6 @@ class DocumentTypeService
         ];
     }
 
-    /**
-     * Actualización total de un tipo de documento.
-     */
     public function update(array $data, $id)
     {
         $documentType = DocumentType::find($id);
@@ -92,7 +73,18 @@ class DocumentTypeService
             ];
         }
 
+        $oldStatus = $documentType->is_active ? "Activo" : "Inactivo";
+
         $documentType->update($data);
+
+        $documentType->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $documentType->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -102,9 +94,6 @@ class DocumentTypeService
         ];
     }
 
-    /**
-     * Actualización parcial de campos específicos.
-     */
     public function partialUpdate(array $data,$id)
     {
         $documentType = DocumentType::find($id);
@@ -117,7 +106,18 @@ class DocumentTypeService
             ];
         }
 
+        $oldStatus = $documentType->is_active ? "Activo" : "Inactivo";
+
         $documentType->update($data);
+
+        $documentType->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $documentType->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -127,10 +127,7 @@ class DocumentTypeService
         ];
     }
 
-    /**
-     * Cambia el estado (activo/inactivo) del tipo de documento.
-     */
-    public function changeState(array $data,$id)
+    public function changeStatus(array $data,$id)
     {
         $documentType = DocumentType::find($id);
 
@@ -142,19 +139,27 @@ class DocumentTypeService
             ];
         }
 
+        $oldStatus = $documentType->is_active ? "Activo" : "Inactivo";
+
         $documentType->update($data);
+
+        $documentType->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $documentType->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Cambio de estado del Tipo de documento actualizado correctamente",
+            "message" => "Cambio de estado actualizado correctamente",
             "data" => $documentType,
         ];
     }
 
-    /**
-     * Elimina el registro, validando que no esté asignado a ningún perfil de usuario.
-     */
     public function delete($id)
     {
         $documentType = DocumentType::find($id);
@@ -166,22 +171,66 @@ class DocumentTypeService
                 "message" => "Tipo de documento no encontrado",
             ];
         }
-        
-        // Validación de integridad: No borrar si hay perfiles que usan este tipo de documento
+
         if ($documentType->profile->count()) {
             return [
                 "error" => true,
-                "code" => 409, // Conflicto por registros relacionados
-                "message" => "No se puede eliminar el Tipo de documento porque tiene registros relacionados",
+                "code" => 409,
+                "message" => "No se puede eliminar porque tiene registros relacionados",
             ];
         }
 
+        $oldStatus = $documentType->is_active ? "Activo" : "Inactivo";
+
         $documentType->delete();
+
+        $documentType->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $oldStatus,
+            'status_new'     => null,
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Tipo de documento eliminado exitosamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $documentType = DocumentType::find($id);
+
+        if (!$documentType) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Tipo de documento no encontrado",
+            ];
+        }
+
+        $history = $documentType->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

@@ -48,36 +48,37 @@ class RolePermissionSeeder extends Seeder
         | SUPERVISOR → REVISA, ACTUALIZA, CAMBIA ESTADOS
         |--------------------------------------------------------------------------
         */
-        $supervisor->syncPermissions([
+        $supervisor->syncPermissions(Permission::all());
+        // $supervisor->syncPermissions([
 
-            // Lecturas generales
-            'users.index', 'users.show',
-            'profiles.index', 'profiles.show',
-            'organizations.index', 'organizations.show',
-            'cities.index', 'cities.show',
-            'zones.index', 'zones.show',
-            'sectors.index', 'sectors.show',
-            'apartments.index', 'apartments.show',
+        //     // Lecturas generales
+        //     'users.index', 'users.show',
+        //     'profiles.index', 'profiles.show',
+        //     'organizations.index', 'organizations.show',
+        //     'cities.index', 'cities.show',
+        //     'zones.index', 'zones.show',
+        //     'sectors.index', 'sectors.show',
+        //     'apartments.index', 'apartments.show',
 
-            // Planes familiares
-            'family-plans.index',
-            'family-plans.show',
-            'family-plans.update',
-            'family-plans.partial-update',
-            'family-plans.change-state',
-            'family-plans.identify',
-            'family-plans.georeference',
+        //     // Planes familiares
+        //     'family-plans.index',
+        //     'family-plans.show',
+        //     'family-plans.update',
+        //     'family-plans.partial-update',
+        //     'family-plans.change-state',
+        //     'family-plans.identify',
+        //     'family-plans.georeference',
 
-            // Vivienda
-            'housing-info.index',
-            'housing-info.show',
+        //     // Vivienda
+        //     'housing-info.index',
+        //     'housing-info.show',
 
-            // Catálogos (gestión)
-            'genders.index', 'genders.update', 'genders.change-state',
-            'document-types.index', 'document-types.update', 'document-types.change-state',
-            'housing-qualities.index', 'housing-qualities.update', 'housing-qualities.change-state',
-            'status-plans.index', 'status-plans.update',
-        ]);
+        //     // Catálogos (gestión)
+        //     'genders.index', 'genders.update', 'genders.change-state',
+        //     'document-types.index', 'document-types.update', 'document-types.change-state',
+        //     'housing-qualities.index', 'housing-qualities.update', 'housing-qualities.change-state',
+        //     'status-plans.index', 'status-plans.update',
+        // ]);
 
         /*
         |--------------------------------------------------------------------------

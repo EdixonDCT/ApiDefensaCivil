@@ -114,15 +114,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/{gender_id}', [GenderController::class, 'partialUpdate']);
 
-        route::patch('/state/{gender_id}', [GenderController::class, 'changeState']);
+        route::patch('/status/{gender_id}', [GenderController::class, 'changeStatus']);
 
         route::delete('/{gender_id}', [GenderController::class, 'destroy']);
     });
 
+    route::prefix('documentTypes')->group(function () {
+        route::get('/', [DocumentTypeController::class, 'index']);
+        route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
+        route::get('/history/{documentType_id}', [DocumentTypeController::class, 'history']);
+        route::post('/', [DocumentTypeController::class, 'store']);
+        route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
+        route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
+        route::patch('/status/{documentType_id}', [DocumentTypeController::class, 'changeStatus']);
+        route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
+    });
     route::prefix('sectionals')->group(function () {
         route::get('/', [SectionalController::class, 'index']);
 
         route::get('/{sectional_id}', [SectionalController::class, 'show']);
+
+        route::get('/history/{sectional_id}', [SectionalController::class, 'history']);
 
         route::post('/', [SectionalController::class, 'store']);
 
@@ -130,7 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/{sectional_id}', [SectionalController::class, 'partialUpdate']);
 
-        route::patch('/state/{sectional_id}', [SectionalController::class, 'changeState']);
+        route::patch('/status/{sectional_id}', [SectionalController::class, 'changeStatus']);
 
         route::delete('/{sectional_id}', [SectionalController::class, 'destroy']);
     });
@@ -142,13 +154,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::get('/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
+        route::get('/history/{sectional_id}', [OrganizationController::class, 'history']);
+        
         route::post('/', [OrganizationController::class, 'store']);
 
         route::put('/{organization_id}', [OrganizationController::class, 'update']);
 
         route::patch('/{organization_id}', [OrganizationController::class, 'partialUpdate']);
 
-        route::patch('/state/{organization_id}', [OrganizationController::class, 'changeState']);
+        route::patch('/status/{organization_id}', [OrganizationController::class, 'changeStatus']);
 
         route::delete('/{organization_id}', [OrganizationController::class, 'destroy']);
     });
@@ -184,15 +198,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::get('/{housingQuality_id}', [HousingQualityController::class, 'show']);
 
+        route::get('/history/{housingQuality_id}', [HousingQualityController::class, 'history']);
+
         route::post('/', [HousingQualityController::class, 'store']);
 
         route::put('/{housingQuality_id}', [HousingQualityController::class, 'update']);
 
-        route::delete('/{housingQuality_id}', [HousingQualityController::class, 'destroy']);
-
         route::patch('/{housingQuality_id}', [HousingQualityController::class, 'partialUpdate']);
 
-        route::patch('/state/{housingQuality_id}', [HousingQualityController::class, 'changeState']);
+        route::patch('/status/{housingQuality_id}', [HousingQualityController::class, 'changeStatus']);
+
+        route::delete('/{housingQuality_id}', [HousingQualityController::class, 'destroy']);
     });
 
     route::prefix('sectors')->group(function () {
@@ -200,15 +216,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::get('/{sector_id}', [SectorController::class, 'show']);
 
+        route::get('/history/{sector_id}', [SectorController::class, 'history']);
+
         route::post('/', [SectorController::class, 'store']);
 
         route::put('/{sector_id}', [SectorController::class, 'update']);
 
-        route::delete('/{sector_id}', [SectorController::class, 'destroy']);
-
         route::patch('/{sector_id}', [SectorController::class, 'partialUpdate']);
 
-        route::patch('/state/{sector_id}', [SectorController::class, 'changeState']);
+        route::patch('/status/{sector_id}', [SectorController::class, 'changeStatus']);
+
+        route::delete('/{sector_id}', [SectorController::class, 'destroy']);
+
     });
 
     route::prefix('apartments')->group(function () {
@@ -224,7 +243,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/{apartment_id}', [ApartmentController::class, 'partialUpdate']);
 
-        route::patch('/state/{apartment_id}', [ApartmentController::class, 'changeState']);
     });
 
     route::prefix('cities')->group(function () {
@@ -239,8 +257,6 @@ Route::middleware('auth:sanctum')->group(function () {
         route::put('/{city_id}', [CityController::class, 'update']);
 
         route::patch('/{city_id}', [CityController::class, 'partialUpdate']);
-
-        route::patch('/state/{city_id}', [CityController::class, 'changeState']);
 
         route::delete('/{city_id}', [CityController::class, 'destroy']);
     });
@@ -258,7 +274,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/identify/{familyPlan_id}', [FamilyPlanController::class, 'identify'])->middleware('permission:family-plans.identify');
 
-        route::patch('/state/{familyPlan_id}', [FamilyPlanController::class, 'changeState']);
+        route::patch('/status/{familyPlan_id}', [FamilyPlanController::class, 'changeStatus']);
 
         route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
 
@@ -277,15 +293,6 @@ Route::middleware('auth:sanctum')->group(function () {
         route::delete('/{housingInfo_id}', [HousingInfoController::class, 'destroy'])->middleware('permission:housing-info.destroy');
     });
 
-    route::prefix('documentTypes')->group(function () {
-        route::get('/', [DocumentTypeController::class, 'index']);
-        route::get('/{documentType_id}', [DocumentTypeController::class, 'show']);
-        route::post('/', [DocumentTypeController::class, 'store']);
-        route::put('/{documentType_id}', [DocumentTypeController::class, 'update']);
-        route::patch('/{documentType_id}', [DocumentTypeController::class, 'partialUpdate']);
-        route::patch('/state/{documentType_id}', [DocumentTypeController::class, 'changeState']);
-        route::delete('/{documentType_id}', [DocumentTypeController::class, 'destroy']);
-    });
 
     route::prefix('vulnerableQuestions')->group(function () {
         route::get('/', [VulnerableQuestionController::class, 'index']);
@@ -294,13 +301,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::get('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'show']);
 
+        route::get('history/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'history']);
+
         route::post('/', [VulnerableQuestionController::class, 'store']);
 
         route::put('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'update']);
 
         route::patch('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'partialUpdate']);
 
-        route::patch('/state/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'changeState']);
+        route::patch('/status/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'changeStatus']);
 
         route::delete('/{vulnerableQuestion_id}', [VulnerableQuestionController::class, 'destroy']);
     });
@@ -381,6 +390,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // Obtener una nacionalidad por su ID
         Route::get('/{nationality_id}', [NationalityController::class, 'show']);
 
+        Route::get('/history/{nationality_id}', [NationalityController::class, 'history']);
+
         // Crear una nueva nacionalidad
         Route::post('/', [NationalityController::class, 'store']);
 
@@ -391,7 +402,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{nationality_id}', [NationalityController::class, 'partialUpdate']);
 
         // Cambiar el estado (activa / inactiva) de una nacionalidad
-        Route::patch('/state/{nationality_id}', [NationalityController::class, 'changeState']);
+        Route::patch('/status/{nationality_id}', [NationalityController::class, 'changeStatus']);
 
         // Eliminar una nacionalidad
         Route::delete('/{nationality_id}', [NationalityController::class, 'destroy']);
@@ -481,15 +492,19 @@ Route::middleware('auth:sanctum')->group(function () {
         // Obtener todas las especies
         Route::get('/', [SpeciesController::class, 'index']);
         // Obtener una especie por ID
-        Route::get('/{id}', [SpeciesController::class, 'show']);
+        Route::get('/{specie_id}', [SpeciesController::class, 'show']);
+
+        Route::get('/history/{specie_id}', [SpeciesController::class, 'history']);
         // Crear nueva especie
         Route::post('/', [SpeciesController::class, 'store']);
         // Actualización completa
-        Route::put('/{id}', [SpeciesController::class, 'update']);
+        Route::put('/{specie_id}', [SpeciesController::class, 'update']);
         // Actualización parcial
-        Route::patch('/{id}', [SpeciesController::class, 'partialUpdate']);
+        Route::patch('/{specie_id}', [SpeciesController::class, 'partialUpdate']);
+
+        Route::patch('/status/{specie_id}', [SpeciesController::class, 'changeStatus']);
         // Eliminar especie
-        Route::delete('/{id}', [SpeciesController::class, 'destroy']);
+        Route::delete('/{specie_id}', [SpeciesController::class, 'destroy']);
     });
 
     Route::prefix('animalGenders')->group(function () {
@@ -501,8 +516,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [AnimalGenderController::class, 'store']);
         // Actualización completa
         Route::put('/{id}', [AnimalGenderController::class, 'update']);
-        // Actualización parcial
-        Route::patch('/{id}', [AnimalGenderController::class, 'partialUpdate']);
         // Eliminar género de animal
         Route::delete('/{id}', [AnimalGenderController::class, 'destroy']);
     });
@@ -545,11 +558,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/{threatType_id}', [ThreatTypeController::class, 'show']);
 
+        Route::get('/history/{threatType_id}', [ThreatTypeController::class, 'history']);
+
         Route::post('/', [ThreatTypeController::class, 'store']);
 
         Route::put('/{threatType_id}', [ThreatTypeController::class, 'update']);
 
         Route::patch('/{threatType_id}', [ThreatTypeController::class, 'partialUpdate']);
+
+        Route::patch('/status/{threatType_id}', [ThreatTypeController::class, 'changeStatus']);
 
         Route::delete('/{threatType_id}', [ThreatTypeController::class, 'destroy']);
     });
@@ -599,8 +616,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::put('/{id}', [VulnerabilityGradeController::class, 'update']);
 
-        Route::patch('/{id}', [VulnerabilityGradeController::class, 'partialUpdate']);
-
         Route::delete('/{id}', [VulnerabilityGradeController::class, 'destroy']);
     }); 
 
@@ -608,32 +623,36 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/', [VulnerabilityController::class, 'index']);
 
-        Route::get('/{id}', [VulnerabilityController::class, 'show']);
+        Route::get('/{vulnerability_id}', [VulnerabilityController::class, 'show']);
+
+        Route::get('/history/{vulnerability_id}', [VulnerabilityController::class, 'history']);
 
         Route::post('/', [VulnerabilityController::class, 'store']);
 
-        Route::put('/{id}', [VulnerabilityController::class, 'update']);
+        Route::put('/{vulnerability_id}', [VulnerabilityController::class, 'update']);
 
-        Route::patch('/{id}', [VulnerabilityController::class, 'partialUpdate']);
+        Route::patch('/{vulnerability_id}', [VulnerabilityController::class, 'partialUpdate']);
 
-        Route::delete('/{id}', [VulnerabilityController::class, 'destroy']);
+        Route::patch('/status/{vulnerability_id}', [VulnerabilityController::class, 'changeStatus']);
+
+        Route::delete('/{vulnerability_id}', [VulnerabilityController::class, 'destroy']);
     });
 
     Route::prefix('vulnerabilityFactors')->group(function () {
 
         Route::get('/', [VulnerabilityFactorController::class, 'index']);
 
-        Route::get('/{id}', [VulnerabilityFactorController::class, 'show']);
+        Route::get('/{riskFactor_id}', [VulnerabilityFactorController::class, 'show']);
 
         Route::get('/riskFactor/{riskFactor_id}', [VulnerabilityFactorController::class, 'getByRiskFactor']);
 
         Route::post('/', [VulnerabilityFactorController::class, 'store']);
 
-        Route::put('/{id}', [VulnerabilityFactorController::class, 'update']);
+        Route::put('/{riskFactor_id}', [VulnerabilityFactorController::class, 'update']);
 
-        Route::patch('/{id}', [VulnerabilityFactorController::class, 'partialUpdate']);
+        Route::patch('/{riskFactor_id}', [VulnerabilityFactorController::class, 'partialUpdate']);
 
-        Route::delete('/{id}', [VulnerabilityFactorController::class, 'destroy']);
+        Route::delete('/{riskFactor_id}', [VulnerabilityFactorController::class, 'destroy']);
     });
 
 
@@ -641,15 +660,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/', [ResourceController::class, 'index']);
     
-        Route::get('/{id}', [ResourceController::class, 'show']);
+        Route::get('/{resource_id}', [ResourceController::class, 'show']);
+
+        Route::get('/history/{resource_id}', [ResourceController::class, 'history']);
 
         Route::post('/', [ResourceController::class, 'store']);
 
-        Route::put('/{id}', [ResourceController::class, 'update']);
+        Route::put('/{resource_id}', [ResourceController::class, 'update']);
 
-        Route::patch('/{id}', [ResourceController::class, 'partialUpdate']);
+        Route::patch('/{resource_id}', [ResourceController::class, 'partialUpdate']);
 
-        Route::delete('/{id}', [ResourceController::class, 'destroy']);
+        Route::patch('/status/{resource_id}', [ResourceController::class, 'changeStatus']);
+
+        Route::delete('/{resource_id}', [ResourceController::class, 'destroy']);
     });
 
     Route::prefix('availableResources')->group(function () {

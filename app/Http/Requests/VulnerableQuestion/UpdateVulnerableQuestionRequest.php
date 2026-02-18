@@ -29,7 +29,7 @@ class UpdateVulnerableQuestionRequest extends FormRequest
         /**
          * Capturamos el ID de la pregunta desde la ruta para la excepción 'unique'.
          */
-        $questionId = $this->route('vulnerable_question_id');
+        $questionId = $this->route('vulnerableQuestion_id');
 
         return [
             'description'      => "required|string|max:255|unique:vulnerable_questions,description,{$questionId}",

@@ -26,7 +26,7 @@ class UpdateResourceRequest extends FormRequest
              */
             'name'      => "required|string|max:255|unique:resources,name,{$resourceId}",
             'service'   => 'required|string|max:255',
-            'active'    => 'required|boolean',
+            'is_active'    => 'required|boolean',
         ];
     }
 
@@ -42,8 +42,8 @@ class UpdateResourceRequest extends FormRequest
             'service.string'   => 'El servicio debe ser texto',
             'service.max'      => 'El servicio no puede superar los 255 caracteres',
 
-            'active.required' => 'El estado es obligatorio',
-            'active.boolean'  => 'El estado debe ser verdadero o falso',
+            'is_active.required' => 'El estado es obligatorio',
+            'is_active.boolean'  => 'El estado debe ser verdadero o falso',
         ];
     }
 
@@ -52,7 +52,7 @@ class UpdateResourceRequest extends FormRequest
         return [
             'name'    => 'nombre del recurso',
             'service' => 'servicio',
-            'active'  => 'estado del recurso',
+            'is_active'  => 'estado del recurso',
         ];
     }
 }

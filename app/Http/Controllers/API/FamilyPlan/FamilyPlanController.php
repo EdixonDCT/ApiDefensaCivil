@@ -109,10 +109,10 @@ class FamilyPlanController extends Controller
     /**
      * Cambia el estado del plan (ej. 'En Proceso', 'Completado', 'Validado').
      */
-    public function changeState(ChangeStatusFamilyPlanRequest $request, string $id)
+    public function changeStatus(ChangeStatusFamilyPlanRequest $request, string $id)
     {
         $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
+        $response = $this->service->changeStatus($data, $id);
 
         if ($response['error'])
         {

@@ -3,6 +3,7 @@
 namespace App\Services\Resource;
 
 use App\Models\Resource\Resource;
+use App\Models\Audit\Audit;
 
 class ResourceService
 {
@@ -13,30 +14,21 @@ class ResourceService
 
     public static function getAll()
     {
-        $reasons = Resource::all();
-
-        if ($reasons->isEmpty()) {
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No se encontraron registros de recursos",
-                "data" => $reasons,
-            ];
-        }
+        $resources = Resource::all();
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Registros de recursos obtenidos correctamente",
-            "data" => $reasons,
+            "data" => $resources,
         ];
     }
 
     public function getById($id)
     {
-        $reason = Resource::find($id);
+        $resource = Resource::find($id);
 
-        if (!$reason) {
+        if (!$resource) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -48,42 +40,36 @@ class ResourceService
             "error" => false,
             "code" => 200,
             "message" => "Recurso obtenido correctamente",
-            "data" => $reason,
+            "data" => $resource,
         ];
     }
 
     public function create(array $data)
     {
-        $reason = Resource::create($data);
+        $resource = Resource::create($data);
+
+        $resource->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => 'Activo',
+        ]);
 
         return [
             "error" => false,
             "code" => 201,
             "message" => "Recurso creado correctamente",
-            "data" => $reason,
-        ];
-    }
-
-    public function getResourcesForPlan($plan_id)
-    {
-        $paginator = Resource::where('plan_id', $plan_id)
-            ->paginate(10);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => $paginator->isEmpty()
-                ? "No se encontraron recursos para este plan"
-                : "Recursos del plan obtenidos correctamente",
-            "data" => $paginator,
+            "data" => $resource,
         ];
     }
 
     public function update(array $data, $id)
     {
-        $reason = Resource::find($id);
+        $resource = Resource::find($id);
 
-        if (!$reason) {
+        if (!$resource) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -91,21 +77,31 @@ class ResourceService
             ];
         }
 
-        $reason->update($data);
+        $oldStatus = $resource->is_active ? "Activo" : "Inactivo";
+        $resource->update($data);
+
+        $resource->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $resource->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Recurso actualizado correctamente",
-            "data" => $reason,
+            "data" => $resource,
         ];
     }
 
     public function partialUpdate(array $data, $id)
     {
-        $reason = Resource::find($id);
+        $resource = Resource::find($id);
 
-        if (!$reason) {
+        if (!$resource) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -113,21 +109,31 @@ class ResourceService
             ];
         }
 
-        $reason->update($data);
+        $oldStatus = $resource->is_active ? "Activo" : "Inactivo";
+        $resource->update($data);
+
+        $resource->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $resource->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Recurso actualizado parcialmente correctamente",
-            "data" => $reason,
+            "data" => $resource,
         ];
     }
 
-    public function delete($id)
+    public function changeStatus(array $data, $id)
     {
-        $reason = Resource::find($id);
+        $resource = Resource::find($id);
 
-        if (!$reason) {
+        if (!$resource) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -135,12 +141,89 @@ class ResourceService
             ];
         }
 
-        $reason->delete();
+        $oldStatus = $resource->is_active ? "Activo" : "Inactivo";
+        $resource->update($data);
+        $newStatus = $resource->is_active ? "Activo" : "Inactivo";
+
+        $resource->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $newStatus,
+        ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Cambio de estado del recurso actualizado correctamente",
+            "data" => $resource,
+        ];
+    }
+
+    public function delete($id)
+    {
+        $resource = Resource::find($id);
+
+        if (!$resource) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Recurso no encontrado",
+            ];
+        }
+
+        $originalData = $resource->toArray();
+        $resource->delete();
+
+        $resource->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $originalData['is_active'] ? "Activo" : "Inactivo",
+            'status_new'     => null,
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Recurso eliminado correctamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $resource = Resource::find($id);
+
+        if (!$resource) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Recurso no encontrado",
+            ];
+        }
+
+        $history = $resource->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

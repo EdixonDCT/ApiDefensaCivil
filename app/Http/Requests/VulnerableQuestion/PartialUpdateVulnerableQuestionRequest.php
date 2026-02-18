@@ -3,17 +3,18 @@
 namespace App\Http\Requests\VulnerableQuestion;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * Clase PartialUpdateVulnerableQuestionRequest
- * * Valida actualizaciones parciales (PATCH) de las preguntas de vulnerabilidad.
- * Al usar 'sometimes', las reglas solo se ejecutan si el campo está presente en la solicitud.
+ * Valida la actualización parcial de una pregunta de vulnerabilidad.
+ * Incluye la excepción de ID en la descripción para evitar conflictos de unicidad.
  */
 class PartialUpdateVulnerableQuestionRequest extends FormRequest
 {
     /**
      * Determina si el usuario está autorizado para realizar esta solicitud.
-     * * @return bool
+     * @return bool
      */
     public function authorize(): bool
     {
@@ -22,12 +23,19 @@ class PartialUpdateVulnerableQuestionRequest extends FormRequest
 
     /**
      * Define las reglas de validación para la actualización parcial.
-     * * @return array
+     * @return array
      */
     public function rules(): array
     {
+        $questionId = $this->route('vulnerableQuestion_id');
+
         return [
-            'description'      => 'sometimes|string|max:255',
+            'description' => [
+                'sometimes',
+                'string',
+                'max:255',
+                Rule::unique('vulnerable_questions', 'description')->ignore($questionId),
+            ],
             'question_caution' => 'sometimes|boolean',
             'is_active'        => 'sometimes|boolean',
         ];
@@ -35,23 +43,23 @@ class PartialUpdateVulnerableQuestionRequest extends FormRequest
 
     /**
      * Mensajes de error personalizados con :attribute y sin puntos finales.
-     * * @return array
+     * @return array
      */
     public function messages(): array
     {
         return [
             'description.string'       => 'La :attribute debe ser una cadena de texto válida',
             'description.max'          => 'La :attribute no debe superar los :max caracteres',
+            'description.unique'       => 'Esa :attribute ya pertenece a otra pregunta',
 
-            'question_caution.boolean' => 'La :attribute debe ser verdadero o falso',
-
-            'is_active.boolean'        => 'El :attribute debe ser activo o inactivo',
+            'question_caution.boolean' => 'El :attribute debe ser verdadero o falso',
+            'is_active.boolean'        => 'El :attribute debe ser verdadero o falso',
         ];
     }
 
     /**
      * Define los nombres amigables de los atributos.
-     * * @return array
+     * @return array
      */
     public function attributes(): array
     {

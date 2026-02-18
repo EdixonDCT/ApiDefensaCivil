@@ -19,15 +19,6 @@ class GenderService
     {
         $gender = Gender::all();
 
-        if ($gender->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay generos registrados",
-                "data" => $gender,
-            ];
-        }
-
         return [
             "error" => false,
             "code" => 200,
@@ -167,7 +158,7 @@ class GenderService
     /**
      * Modifica el estado de habilitación del género.
      */
-    public function changeState(array $data, $id)
+    public function changeStatus(array $data, $id)
     {
         $gender = Gender::find($id);
 

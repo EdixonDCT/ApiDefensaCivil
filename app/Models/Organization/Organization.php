@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 use App\Models\Profile\Profile;
 use App\Models\Sectional\Sectional;
+use App\Models\Audit\Audit; // 🔹 IMPORTANTE
 
 /**
  * Clase Organization
- * * Este modelo representa las entidades, oficinas o fundaciones que operan 
+ *
+ * Este modelo representa las entidades, oficinas o fundaciones que operan 
  * dentro del sistema. Actúa como un contenedor de usuarios y está vinculada 
  * a una seccional específica para la segmentación de datos.
  */
@@ -27,32 +29,34 @@ class Organization extends Model
      */
     protected $fillable = [
         'id', 
-        'name',         // Nombre de la organización (ej: 'Fundación Central', 'Oficina Norte')
-        'is_active',    // Estado de operatividad de la organización
-        'sectional_id'  // ID de la seccional a la que pertenece administrativamente
+        'name',         
+        'is_active',    
+        'sectional_id'
     ];
 
     /**
      * --- RELACIONES HAS MANY (Uno a Muchos) ---
-     * * Una organización puede tener múltiples perfiles de usuario asociados.
-     * Esta relación es clave para el filtrado de datos basado en el origen del usuario.
-     * * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function profile()
     {
-        // Conecta la organización con todos los perfiles que pertenecen a ella
         return $this->hasMany(Profile::class, 'organization_id');
     }
 
     /**
-     * --- RELACIONES BELONGS TO (Muchos a Uno) ---
-     * * Cada organización pertenece a una única Seccional.
-     * Esto permite que el sistema sepa en qué zona geográfica opera esta entidad.
-     * * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * --- RELACIÓN BELONGS TO (Muchos a Uno) ---
      */
     public function sectional()
     {
-        // Retorna la seccional (padre) que supervisa a esta organización
         return $this->belongsTo(Sectional::class, 'sectional_id');
+    }
+
+    /**
+     * --- RELACIÓN POLIMÓRFICA PARA HISTORIAL (AUDIT) ---
+     * Permite que esta organización tenga múltiples registros
+     * en la tabla audits mediante la relación morphMany.
+     */
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'historiable');
     }
 }
