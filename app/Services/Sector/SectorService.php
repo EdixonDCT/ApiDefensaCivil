@@ -50,7 +50,7 @@ class SectorService
             'date_time'      => now(),
             'action_execute' => 'Creado',
             'status_old'     => null,
-            'status_new'     => $sector->is_active ? "Activo" : "Inactivo",
+            'status_new'     => "Activo",
         ]);
 
         return [
@@ -138,6 +138,19 @@ class SectorService
                 "message" => "Sector no encontrado",
             ];
         }
+
+        if ($data['is_active'] == 0) {
+            $activeCount = Sector::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $sector->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este sector, minimo un registro activo",
+                ];
+            }
+        }    
 
         $oldStatus = $sector->is_active ? "Activo" : "Inactivo";
 

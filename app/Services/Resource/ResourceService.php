@@ -141,6 +141,19 @@ class ResourceService
             ];
         }
 
+        if ($data['is_active'] == 0) {
+            $activeCount = Resource::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $resource->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este recurso, minimo un registro activo",
+                ];
+            }
+        }
+
         $oldStatus = $resource->is_active ? "Activo" : "Inactivo";
         $resource->update($data);
         $newStatus = $resource->is_active ? "Activo" : "Inactivo";

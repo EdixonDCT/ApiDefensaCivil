@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Requests\User\PartialUpdateUserRequest;
+use App\Http\Requests\User\ChangeStateUserRequest;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserService;
 
@@ -55,6 +56,17 @@ class UserController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    public function getRequests()
+    {
+        $response = $this->service->getRequests();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+    }
+
     /**
      * Registra un nuevo usuario en la plataforma.
      * Habitualmente gestiona el hashing de contraseñas y asignación inicial de roles.
@@ -102,6 +114,19 @@ class UserController extends Controller
             return ResponseFormatter::error($response['message'], $response['code']);
         }
         
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
+    public function ChangeStatus(ChangeStateUserRequest $request, string $id)
+    {
+        $data = $request->validated();
+        $response = $this->service->changeStatus($data, $id);
+
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 

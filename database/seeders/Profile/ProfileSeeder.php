@@ -23,8 +23,8 @@ class ProfileSeeder extends Seeder
 
         Profile::create([
             'user_id' => 2,
-            'names' => 'Bruno',
-            'last_names' => 'Diaz',
+            'names' => 'Sol',
+            'last_names' => 'Angy',
             'birth_date' => '1990-05-10',
             'document_type_id' => 1,
             'document_number' => '87654321',
@@ -35,8 +35,8 @@ class ProfileSeeder extends Seeder
 
         Profile::create([
             'user_id' => 3,
-            'names' => 'Dann',
-            'last_names' => 'Silva',
+            'names' => 'Dylan',
+            'last_names' => 'Vesga',
             'birth_date' => '1998-11-20',
             'document_type_id' => 1,
             'document_number' => '11223344',

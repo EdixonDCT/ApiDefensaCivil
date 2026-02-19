@@ -9,44 +9,29 @@ class ResourceSeeder extends Seeder
 {
     public function run(): void
     {
-        Resource::create([
-            'name' => 'Puesto de Salud - Clinica u Hospital',
-            'service' => 'Atención médica y servicios de salud'
-        ]);
+        $resources = [
+            ['name' => 'Puesto de Salud - Clinica u Hospital', 'service' => 'Atención médica y servicios de salud'],
+            ['name' => 'Estación de Bomberos', 'service' => 'Atención de incendios y emergencias'],
+            ['name' => 'Estacion de Policia - CAI', 'service' => 'Seguridad ciudadana y atención policial'],
+            ['name' => 'Defensa Civil', 'service' => 'Gestión de riesgo y atención de desastres'],
+            ['name' => 'Cruz Roja', 'service' => 'Atención humanitaria y primeros auxilios'],
+            ['name' => 'Ejercito Nacional', 'service' => 'Seguridad y apoyo en emergencias nacionales'],
+            ['name' => 'Enfermeria', 'service' => 'Atención básica en salud y primeros auxilios'],
+            ['name' => 'Extintores', 'service' => 'Control y prevención de incendios'],
+        ];
 
-        Resource::create([
-            'name' => 'Estación de Bomberos',
-            'service' => 'Atención de incendios y emergencias'
-        ]);
+        foreach ($resources as $data) {
+            $resource = Resource::create($data);
 
-        Resource::create([
-            'name' => 'Estacion de Policia - CAI',
-            'service' => 'Seguridad ciudadana y atención policial'
-        ]);
-
-        Resource::create([
-            'name' => 'Defensa Civil',
-            'service' => 'Gestión de riesgo y atención de desastres'
-        ]);
-
-        Resource::create([
-            'name' => 'Cruz Roja',
-            'service' => 'Atención humanitaria y primeros auxilios'
-        ]);
-
-        Resource::create([
-            'name' => 'Ejercito Nacional',
-            'service' => 'Seguridad y apoyo en emergencias nacionales'
-        ]);
-
-        Resource::create([
-            'name' => 'Enfermeria',
-            'service' => 'Atención básica en salud y primeros auxilios'
-        ]);
-
-        Resource::create([
-            'name' => 'Extintores',
-            'service' => 'Control y prevención de incendios'
-        ]);
+            // Crear auditoría simulando que lo hizo el sistema
+            $resource->audits()->create([
+                'user_name'      => "Sistema",
+                'rol_name'       => "Sistema",
+                'date_time'      => now(),
+                'action_execute' => 'Creado',
+                'status_old'     => null,
+                'status_new'     => "Activo",
+            ]);
+        }
     }
 }

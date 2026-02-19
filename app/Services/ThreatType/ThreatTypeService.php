@@ -141,6 +141,19 @@ class ThreatTypeService
             ];
         }
 
+        if ($data['is_active'] == 0) {
+            $activeCount = ThreatType::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $threatType->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este tipo de amenaza, minimo un registro activo",
+                ];
+            }
+        } 
+
         $oldStatus = $threatType->is_active ? "Activo" : "Inactivo";
         $threatType->update($data);
         $newStatus = $threatType->is_active ? "Activo" : "Inactivo";

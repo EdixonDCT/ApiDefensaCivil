@@ -40,9 +40,15 @@ class UserService
      */
     public function getById($id)
     {
-        $user = User::find($id);
+        $user = User::with([
+                        'profile.gender',
+                        'profile.documentType',
+                        'profile.organization.sectional'
+                    ])
+                    ->where('id', $id)
+                    ->first();
 
-        if (!$user){
+        if (!$user) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -55,6 +61,41 @@ class UserService
             "code" => 200,
             "message" => "Usuario obtenido exitosamente",
             "data" => $user,
+        ];
+    }
+
+
+    public function getRequests()
+    {
+        $paginator = User::with(['profile.organization', 'profile.organization.sectional', 'profile.documentType'])
+                    ->where('state_user_id', 3)->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names.' '.$item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+            ];
+        });
+        
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay peticiones de usuarios para acceder al sistema"
+                : "Peticiones de usuarios para acceder al sistema obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
         ];
     }
 
@@ -124,6 +165,37 @@ class UserService
         ];
     }
 
+    public function changeStatus(array $data,$id)
+    {
+        $user = User::with(['stateUser'])->find($id);
+
+        if (!$user){
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Usuario no encontrado",
+            ];
+        }
+        
+        $oldStatus = $user->stateUser->name;
+        $user->update($data);
+        $user->refresh()->load('stateUser');
+        $newStatus = $user->stateUser->name;    
+
+        $user->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => $oldStatus == 'Peticion' ? 'Aprobacion Peticion' : 'Cambio de Estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $user->stateUser->name,
+        ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Aprobacion de usuario realizada exitosamente",        ];
+    }
     /**
      * Elimina el usuario validando que no tenga un perfil asociado.
      * Si el perfil existe, se recomienda eliminar primero el perfil o usar soft deletes.
@@ -136,25 +208,36 @@ class UserService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Usuario no encontrado",
+                "message" => "Peticion no encontrada",
             ];
         }
-
-        // Validación de integridad: Un usuario no puede ser borrado si tiene un perfil humano activo
-        if ($user->profile()->exists()) {
+        if ($user->state_user_id !== 3)
+        {
             return [
                 "error" => true,
-                "code" => 409,
-                "message" => "No se puede eliminar el usuario porque tiene un perfil relacionado",
+                "code" => 404,
+                "message" => "El usuario ya fue aprobado no se puede eliminar",
             ];
         }
+        // Validación de integridad: Un usuario no puede ser borrado si tiene un perfil humano activo
+        $profile = $user->profile;
+        
+        $profile->delete();
 
         $user->delete();
+        $user->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Rechazar Peticion',
+            'status_old'     => 'Peticion',
+            'status_new'     => 'Rechazado y Eliminado',
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Usuario eliminado exitosamente",
+            "message" => "Peticion eliminada exitosamente",
         ];
     }
 }

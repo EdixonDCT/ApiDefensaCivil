@@ -50,7 +50,7 @@ class DocumentTypeService
             'date_time'      => now(),
             'action_execute' => 'Creado',
             'status_old'     => null,
-            'status_new'     => $documentType->is_active ? "Activo" : "Inactivo",
+            'status_new'     => "Activo",
         ]);
 
         return [
@@ -137,6 +137,19 @@ class DocumentTypeService
                 "code" => 404,
                 "message" => "Tipo de documento no encontrado",
             ];
+        }
+
+        if ($data['is_active'] == 0) {
+            $activeCount = DocumentType::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $documentType->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este tipo de documento, minimo un registro activo",
+                ];
+            }
         }
 
         $oldStatus = $documentType->is_active ? "Activo" : "Inactivo";

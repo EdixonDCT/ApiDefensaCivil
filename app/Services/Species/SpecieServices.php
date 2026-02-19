@@ -150,6 +150,19 @@ class SpecieServices
             ];
         }
 
+        if ($data['is_active'] == 0) {
+            $activeCount = Species::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $species->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar esta especie, minimo un registro activo",
+                ];
+            }
+        }
+
         $oldStatus = $species->is_active ? "Activo" : "Inactivo";
         $species->update($data);
         $newStatus = $species->is_active ? "Activo" : "Inactivo";

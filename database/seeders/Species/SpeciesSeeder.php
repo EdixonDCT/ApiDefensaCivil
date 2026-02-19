@@ -2,7 +2,6 @@
 
 namespace Database\Seeders\Species;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Species\Species;
 
@@ -13,14 +12,30 @@ class SpeciesSeeder extends Seeder
      */
     public function run(): void
     {
-        Species::create(['name' => 'Perro']);
-        Species::create(['name' => 'Gato']);
-        Species::create(['name' => 'Conejo']);
-        Species::create(['name' => 'Ruedor']);
-        Species::create(['name' => 'Ave']);
-        Species::create(['name' => 'Insecto']);
-        Species::create(['name' => 'Pez']);
-        Species::create(['name' => 'Rana']);    
-        Species::create(['name' => 'Serpiente']);   
+        $speciesList = [
+            'Perro',
+            'Gato',
+            'Conejo',
+            'Ruedor',
+            'Ave',
+            'Insecto',
+            'Pez',
+            'Rana',
+            'Serpiente',
+        ];
+
+        foreach ($speciesList as $name) {
+            $species = Species::create(['name' => $name]);
+
+            // Crear auditoría simulando que lo hizo el sistema
+            $species->audits()->create([
+                'user_name'      => "Sistema",
+                'rol_name'       => "Sistema",
+                'date_time'      => now(),
+                'action_execute' => 'Creado',
+                'status_old'     => null,
+                'status_new'     => "Activo",
+            ]);
+        }
     }
 }

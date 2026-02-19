@@ -2,47 +2,38 @@
 
 namespace Database\Seeders\Nationality;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Nationality\Nationality;
 
 class NationalitySeeder extends Seeder
 {
-public function run(): void
-{
-    // América del Sur
-    Nationality::create(['name' => 'Colombiana']);
-    Nationality::create(['name' => 'Venezolana']);
-    Nationality::create(['name' => 'Peruana']);
-    Nationality::create(['name' => 'Argentina']);
-    Nationality::create(['name' => 'Chilena']);
-    Nationality::create(['name' => 'Ecuatoriana']);
-    Nationality::create(['name' => 'Boliviana']);
-    Nationality::create(['name' => 'Uruguaya']);
-    Nationality::create(['name' => 'Paraguaya']);
-    Nationality::create(['name' => 'Brasileña']);
+    public function run(): void
+    {
+        $nationalities = [
+            // América del Sur
+            'Colombiana','Venezolana','Peruana','Argentina','Chilena','Ecuatoriana','Boliviana','Uruguaya','Paraguaya','Brasileña',
+            // América Central
+            'Panameña','Costarricense','Nicaragüense','Hondureña','Salvadoreña','Guatemalteca',
+            // Caribe
+            'Cubana','Dominicana','Puertorriqueña',
+            // América del Norte
+            'Mexicana','Estadounidense','Canadiense',
+            // Resto del mundo
+            'Europea','Asiática','Africana',
+        ];
 
-    // América Central
-    Nationality::create(['name' => 'Panameña']);
-    Nationality::create(['name' => 'Costarricense']);
-    Nationality::create(['name' => 'Nicaragüense']);
-    Nationality::create(['name' => 'Hondureña']);
-    Nationality::create(['name' => 'Salvadoreña']);
-    Nationality::create(['name' => 'Guatemalteca']);
+        foreach ($nationalities as $name) {
+            $nationality = Nationality::create(['name' => $name]);
 
-    // Caribe
-    Nationality::create(['name' => 'Cubana']);
-    Nationality::create(['name' => 'Dominicana']);
-    Nationality::create(['name' => 'Puertorriqueña']);
-
-    // América del Norte
-    Nationality::create(['name' => 'Mexicana']);
-    Nationality::create(['name' => 'Estadounidense']);
-    Nationality::create(['name' => 'Canadiense']);
-    
-    //resto del mundo sin especificar
-    Nationality::create(['name' => 'Europea']);
-    Nationality::create(['name' => 'Asiática']);
-    Nationality::create(['name' => 'Africana']);
-    }   
+            // Crear auditoría simulando que lo hizo el sistema
+            $nationality->audits()->create([
+                'user_name'      => "Sistema",
+                'rol_name'       => "Sistema",
+                'date_time'      => now(),
+                'action_execute' => 'Creado',
+                'status_old'     => null,
+                'status_new'     => "Activo",
+            ]);
+        }
+    }
 }

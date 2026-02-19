@@ -14,13 +14,13 @@ class OrganizationService
      */
     public static function getAll()
     {
-        $organization = Organization::all();
+        $organizations = Organization::with('sectional')->get();
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Organizaciones obtenidas exitosamente",
-            "data" => $organization,
+            "data" => $organizations,
         ];
     }
 
@@ -29,7 +29,7 @@ class OrganizationService
      */
     public function getById($id)
     {
-        $organization = Organization::find($id);
+        $organization = Organization::with('sectional')->find($id);
 
         if (!$organization){
             return [
@@ -46,7 +46,39 @@ class OrganizationService
             "data" => $organization,
         ];
     }
+    
+    public static function getAllForSectional($id)
+    {
+        $sectional = Sectional::find($id);
 
+        if (!$sectional){
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No existe esta seccional",
+                "data" => null,
+            ];
+        }
+        
+        // Asumiendo relación hasMany en el modelo Sectional
+        $organization = $sectional->organization;
+
+        if (!$organization || $organization->isEmpty()){
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No existen organizaciones relacionadas a la seccional",
+                "data" => [],
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "organizaciones obtenidos exitosamente",
+            "data" => $organization,
+        ];
+    }
     /**
      * Crear organización
      */
@@ -61,7 +93,7 @@ class OrganizationService
             'date_time'      => now(),
             'action_execute' => 'Creado',
             'status_old'     => null,
-            'status_new'     => $organization->is_active ? "Activo" : "Inactivo",
+            'status_new'     => "Activo",
         ]);
 
         return [
@@ -158,6 +190,23 @@ class OrganizationService
                 "message" => "Organización no encontrada",
             ];
         }
+        
+        // Validación: si están intentando desactivar
+    if ($data['is_active'] == 0) {
+
+        $activeCount = Organization::where('is_active', 1)
+            ->where('sectional_id', $organization->sectional_id)
+            ->count();
+
+        // Si solo hay 1 activa en esa misma seccional y es esta, no se puede desactivar
+        if ($activeCount <= 1 && $organization->is_active == 1) {
+            return [
+                "error" => true,
+                "code" => 422,
+                "message" => "No se puede desactivar esta organización, debe existir mínimo un registro activo en esta seccional",
+            ];
+        }
+    }
 
         $oldStatus = $organization->is_active ? "Activo" : "Inactivo";
 

@@ -56,7 +56,6 @@ Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
 Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
 
-
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
@@ -90,6 +89,8 @@ Route::middleware('auth:sanctum')->group(function () {
     route::prefix('users')->group(function () {
         route::get('/', [UserController::class, 'index']);
 
+        route::get('/requests', [UserController::class, 'getRequests']);
+
         route::get('/{user_id}', [UserController::class, 'show']);
 
         route::post('/', [UserController::class, 'store']);
@@ -97,6 +98,8 @@ Route::middleware('auth:sanctum')->group(function () {
         route::put('/{user_id}', [UserController::class, 'update']);
 
         route::patch('/{user_id}', [UserController::class, 'partialUpdate']);
+
+        route::patch('/status/{user_id}', [UserController::class, 'changeStatus']);
 
         route::delete('/{user_id}', [UserController::class, 'destroy']);
     });

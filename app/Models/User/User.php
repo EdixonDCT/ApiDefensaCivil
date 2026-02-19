@@ -5,6 +5,7 @@ namespace App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Audit\Audit;
 
 /**
  * Importación de modelos para relaciones y Traits de paquetes externos.
@@ -77,5 +78,10 @@ class User extends Authenticatable
     public function history()
     {
         return $this->hasMany(History::class, 'user_id');
+    }
+
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'historiable');
     }
 }

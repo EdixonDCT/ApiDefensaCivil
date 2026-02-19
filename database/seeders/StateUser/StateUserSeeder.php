@@ -19,8 +19,5 @@ class StateUserSeeder extends Seeder
         StateUser::create([
             'name' => 'Peticion'
         ]);
-        StateUser::create([
-            'name' => 'Rechazado'
-        ]);
     }
 }

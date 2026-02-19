@@ -45,11 +45,7 @@ class MemberService
     public function getMembersForPlan($family_plan_id)
     {
         $paginator = FamilyMember::where('family_plan_id', $family_plan_id)
-            ->with([
-                'member.bloodGroup',
-                'member.documentType',
-                'member.kinship'
-            ])
+            ->with(['member.bloodGroup','member.documentType','member.kinship'])
             ->paginate(10);
 
         // Transformar aunque esté vacío (no rompe)

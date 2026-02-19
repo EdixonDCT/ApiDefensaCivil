@@ -140,6 +140,19 @@ class NationalityService
             ];
         }
 
+        if ($data['is_active'] == 0) {
+            $activeCount = Nationality::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $nationality->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar esta nacionalidad, minimo un registro activo",
+                ];
+            }
+        }  
+
         $oldStatus = $nationality->is_active ? "Activo" : "Inactivo";
         $nationality->update($data);
         $newStatus = $nationality->is_active ? "Activo" : "Inactivo";

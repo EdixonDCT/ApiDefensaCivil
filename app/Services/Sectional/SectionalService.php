@@ -155,6 +155,20 @@ class SectionalService
             ];
         }
 
+        // Validación: si están intentando desactivar
+        if ($data['is_active'] == 0) {
+            $activeCount = Sectional::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $sectional->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar esta seccional, minimo un registro activo",
+                ];
+            }
+        }
+
         $oldStatus = $sectional->is_active ? "Activo" : "Inactivo";
 
         $sectional->update($data);

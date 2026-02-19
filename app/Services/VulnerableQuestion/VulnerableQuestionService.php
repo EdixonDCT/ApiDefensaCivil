@@ -49,7 +49,7 @@ class VulnerableQuestionService
             'date_time'      => now(),
             'action_execute' => 'Creado',
             'status_old'     => null,
-            'status_new'     => $question->is_active ? "Activo" : "Inactivo",
+            'status_new'     => "Activo",
         ]);
 
         return [
@@ -137,6 +137,19 @@ class VulnerableQuestionService
                 "message" => "Pregunta vulnerable no encontrada",
             ];
         }
+
+        if ($data['is_active'] == 0) {
+            $activeCount = VulnerableQuestion::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $question->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este pregunta de vulnerabilidad, minimo un registro activo",
+                ];
+            }
+        }    
 
         $oldStatus = $question->is_active ? "Activo" : "Inactivo";
 
