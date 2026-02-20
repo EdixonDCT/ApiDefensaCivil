@@ -43,10 +43,11 @@ class UserService
         $user = User::with([
                         'profile.gender',
                         'profile.documentType',
-                        'profile.organization.sectional'
+                        'profile.organization.sectional',
+                        'roles',
+                        'stateUser'
                     ])
-                    ->where('id', $id)
-                    ->first();
+                    ->find($id);
 
         if (!$user) {
             return [
@@ -60,7 +61,19 @@ class UserService
             "error" => false,
             "code" => 200,
             "message" => "Usuario obtenido exitosamente",
-            "data" => $user,
+            "data" => [
+                "id" => $user->id,
+                "email" => $user->email,
+                "status" => [
+                    "id" => $user->stateUser->id,
+                    "name" => $user->stateUser->name
+                ],
+                "profile" => $user->profile,
+                "rol" => [
+                    "id" => $user->roles->first()?->id,
+                    "name" => $user->roles->first()?->name,
+                ]
+            ],
         ];
     }
 
@@ -78,6 +91,53 @@ class UserService
                 "organization" => $item->profile->organization->name,
                 "sectional" => $item->profile->organization->sectional->name,
                 "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+            ];
+        });
+        
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay peticiones de usuarios para acceder al sistema"
+                : "Peticiones de usuarios para acceder al sistema obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
+
+    public function getUserForAdmins()
+    {
+        $paginator = User::with([
+            'profile.organization',
+            'profile.organization.sectional',
+            'profile.documentType',
+            'stateUser'
+        ])
+        ->where('state_user_id','!=', 3)
+        ->whereDoesntHave('roles', function ($q) {
+            $q->where('id', 1);
+        })
+        ->orderBy('users.created_at', 'desc')
+        ->paginate(10);
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names.' '.$item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+                "state_user" => $item->stateUser->name,
+                "state_user_id" => $item->state_user_id,
+                "rol" => $item->getRoleNames()->first(),
+                "rol_id" => $item->roles->first()->id,
             ];
         });
         
@@ -200,6 +260,42 @@ class UserService
      * Elimina el usuario validando que no tenga un perfil asociado.
      * Si el perfil existe, se recomienda eliminar primero el perfil o usar soft deletes.
      */
+
+    public function changeRole(array $data, $id)
+    {
+        $user = User::with(['roles'])->find($id);
+
+        if (!$user) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Usuario no encontrado",
+            ];
+        }
+
+        $oldRole = $user->roles->first()?->name;
+
+        $user->syncRoles([$data['role']]);
+
+        $user->refresh()->load('roles');
+
+        $newRole = $user->roles->first()?->name;
+
+        $user->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de Rol',
+            'status_old'     => $oldRole,
+            'status_new'     => $newRole,
+        ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Cambio de rol realizado exitosamente",
+        ];
+    }
     public function delete($id)
     {
         $user = User::find($id);
@@ -238,6 +334,38 @@ class UserService
             "error" => false,
             "code" => 200,
             "message" => "Peticion eliminada exitosamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Usuario no encontrado",
+            ];
+        }
+
+        $history = $user->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(fn($audit) => [
+                'date_time'      => $audit->date_time,
+                'user_name'      => $audit->user_name,
+                'rol'            => $audit->rol_name,
+                'action_execute' => $audit->action_execute,
+                'status_old'     => $audit->status_old,
+                'status_new'     => $audit->status_new,
+            ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

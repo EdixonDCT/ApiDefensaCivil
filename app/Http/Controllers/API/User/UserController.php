@@ -7,6 +7,7 @@ use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Requests\User\PartialUpdateUserRequest;
 use App\Http\Requests\User\ChangeStateUserRequest;
+use App\Http\Requests\User\ChangeRoleUserRequest;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserService;
 
@@ -59,6 +60,17 @@ class UserController extends Controller
     public function getRequests()
     {
         $response = $this->service->getRequests();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+    }
+
+    public function getUserForAdmins()
+    {
+        $response = $this->service->getUserForAdmins();
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
@@ -130,6 +142,19 @@ class UserController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
 
+    public function ChangeRole(ChangeRoleUserRequest $request, string $id)
+    {
+        $data = $request->validated();
+        $response = $this->service->changeRole($data, $id);
+
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
     /**
      * Elimina una cuenta de usuario.
      * Nota: Se recomienda implementar "Soft Deletes" para mantener integridad referencial en el historial.
@@ -140,6 +165,17 @@ class UserController extends Controller
 
         if ($response['error'])
         {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
+    public function history(string $id)
+    {
+        $response = $this->service->history($id);
+
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 

@@ -91,6 +91,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::get('/requests', [UserController::class, 'getRequests']);
 
+        route::get('/userForAdmin', [UserController::class, 'getUserForAdmins']);
+
+        route::get('/history/{user_id}', [UserController::class, 'history']);
+
         route::get('/{user_id}', [UserController::class, 'show']);
 
         route::post('/', [UserController::class, 'store']);
@@ -98,6 +102,8 @@ Route::middleware('auth:sanctum')->group(function () {
         route::put('/{user_id}', [UserController::class, 'update']);
 
         route::patch('/{user_id}', [UserController::class, 'partialUpdate']);
+
+        route::patch('/role/{user_id}', [UserController::class, 'changeRole']);
 
         route::patch('/status/{user_id}', [UserController::class, 'changeStatus']);
 
