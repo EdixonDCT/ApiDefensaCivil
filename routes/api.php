@@ -45,6 +45,7 @@ use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
 use App\Http\Controllers\API\VulnerabilityGrade\VulnerabilityGradeController;
 use App\Http\Controllers\API\Vulnerability\VulnerabilityController;
 use App\Http\Controllers\Api\Resource\ResourceController;
+use App\Http\Controllers\Api\Audit\AuditController;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -742,5 +743,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [ActionPlanActionController::class, 'update']);
 
         Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
+    });
+
+    Route::prefix('audits')->group(function () {
+        Route::get('/dashBoardAdmin', [AuditController::class, 'dashBoardAdmin']);
     });
 });
