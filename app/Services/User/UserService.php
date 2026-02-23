@@ -78,7 +78,7 @@ class UserService
     }
 
 
-    public function getRequests()
+    public function getRequestsAdmins()
     {
         $paginator = User::with(['profile.organization', 'profile.organization.sectional', 'profile.documentType'])
                     ->where('state_user_id', 3)->paginate(10);
@@ -112,6 +112,51 @@ class UserService
         ];
     }
 
+    public function getRequestsSupervisors()
+    {
+        $authUser = auth()->user();
+
+        // Obtener la sectional del usuario autenticado
+        $authSectionalId = $authUser->profile->organization->sectional_id;
+
+        $paginator = User::with([
+                            'profile.organization.sectional',
+                            'profile.documentType'
+                        ])
+                        ->where('state_user_id', 3)
+                        ->whereHas('profile.organization', function ($query) use ($authSectionalId) {
+                            $query->where('sectional_id', $authSectionalId);
+                        })
+                        ->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names . ' ' . $item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number . ' ' . $item->profile->documentType->acronym,
+            ];
+        });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay peticiones de usuarios para acceder al sistema"
+                : "Peticiones de usuarios para acceder al sistema obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
     public function getUserForAdmins()
     {
         $paginator = User::with([
@@ -159,6 +204,64 @@ class UserService
         ];
     }
 
+    public function getUserForSupervisors()
+    {
+        $authUser = auth()->user();
+
+        // Obtener la sectional del usuario autenticado
+        $authSectionalId = $authUser->profile->organization->sectional_id;
+
+        $paginator = User::with([
+                'profile.organization.sectional',
+                'profile.documentType',
+                'stateUser',
+                'roles'
+            ])
+            ->where('state_user_id','!=', 3)
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('id', 1);
+            })
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('id', 2);
+            })
+            ->whereHas('profile.organization', function ($query) use ($authSectionalId) {
+                $query->where('sectional_id', $authSectionalId);
+            })
+            ->orderBy('users.created_at', 'desc')
+            ->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names.' '.$item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+                "state_user" => $item->stateUser->name,
+                "state_user_id" => $item->state_user_id,
+                "rol" => $item->getRoleNames()->first(),
+                "rol_id" => optional($item->roles->first())->id,
+            ];
+        });
+        
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay usuarios disponibles"
+                : "Usuarios obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
     /**
      * Crea un nuevo usuario.
      * Importante: Los datos deben incluir email, password (hasheado) y state_user_id.

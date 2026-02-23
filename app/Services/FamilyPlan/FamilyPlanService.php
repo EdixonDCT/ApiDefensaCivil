@@ -67,15 +67,7 @@ class FamilyPlanService
      */
     public function create(array $data)
     {
-        // 1. Crear el registro del Plan Familiar
         $familyPlan = FamilyPlan::create($data);
-
-        // 2. Registrar la auditoría en la tabla History
-        History::create([
-            'user_id' => auth()->id(), // Usuario que realiza la acción
-            'family_plan_id' => $familyPlan->id,
-            'action_id' => 1, // ID representativo del estado "Creado"
-        ]);
 
         return [
             "error" => false,
@@ -149,9 +141,23 @@ class FamilyPlanService
                 "message" => "Plan familiar no encontrado",
             ];
         }
-
+        $oldStatus = $familyPlan->status_plan_id;
         $familyPlan->update($data);
+    // 🔹 Estado nuevo
+        $familyPlan->refresh()->load('statusPlan');
+        $newStatus = $familyPlan->status_plan_id;
 
+        // 🔹 Validación
+        if ($newStatus != 1 && $newStatus != 2 && $newStatus != 3) { // aquí pones el estado que quieras validar
+            $familyPlan->audits()->create([
+                'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+                'rol_name'       => auth()->user()->getRoleNames()->first(),
+                'date_time'      => now(),
+                'action_execute' => 'Cambio de estado del plan familiar',
+                'status_old'     => $oldStatus,
+                'status_new'     => $newStatus,
+            ]);
+        }
         return [
             "error" => false,
             "code" => 200,
@@ -237,39 +243,181 @@ class FamilyPlanService
 
     public function checkAccess(string $planId): array
     {
-    $user = auth()->user();
-    $access = false;
+        $user = auth()->user();
+        $access = false;
 
-    if ($user) {
+        if (!$user) {
+            return [
+                "error" => true,
+                "code" => 401,
+                "message" => "Usuario no autenticado",
+                "data" => [
+                    "access_check" => $access
+                ]
+            ];
+        }
+
         $plan = FamilyPlan::find($planId);
 
-        if ($plan) {
+        if (!$plan) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Plan familiar no encontrado",
+                "data" => [
+                "access_check" => $access
+            ]
+            ];
+        }
 
-            $role = $user->roles->first()?->name ?? null;
+        $roleId = $user->roles->first()?->id ?? null;
 
-            // 🔹 Voluntario
-            if ($role === 'Voluntario') {
-                $access = History::where('user_id', $user->id)
-                    ->where('family_plan_id', $planId)
-                    ->exists();
-            }
+        // 🔴 Si NO es 2 ni 3 → sin acceso
+        if ($roleId != 2 && $roleId != 3) {
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "Verificación de acceso realizada",
+                "data" => [
+                "access_check" => $access
+            ]
+            ];
+        }
 
-            // 🔹 Supervisor
-            if ($role === 'Supervisor') {
-                $access = $user->profile &&
-                          $user->profile->organization &&
-                          $user->profile->organization->sectional_id === $plan->sectional_id;
+        // 🟢 Rol 3 → Voluntario
+        if ($roleId == 3) {
+
+            // No puede acceder si el estado es 4 o 6
+            if (!in_array($plan->status_plan_id, [1,2,4,6])) {
+                $access = $plan->user_id == $user->id;
             }
         }
+
+        // 🔵 Rol 2 → Supervisor
+        if ($roleId == 2) {
+
+            if (
+                $user->profile &&
+                $user->profile->organization &&
+                $user->profile->organization->sectional_id === $plan->sectional_id &&
+                $plan->status_plan_id == 4
+            ) {
+                $access = true;
+            }
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Verificación de acceso realizada",
+            "data" => [
+                "access_check" => $access
+            ]
+        ];
     }
 
-    return [
-        "error" => false,
-        "code" => 200,
-        "message" => "Verificación de acceso realizada",
-        "data" => [
-            "access_check" => $access
-        ]
-    ];
+    public function getFamilyPlanByUser()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return [
+                "error" => true,
+                "code" => 401,
+                "message" => "Usuario no autenticado",
+            ];
+        }
+
+        $roleId = $user->roles->first()?->id ?? null;
+
+        if ($roleId != 2 && $roleId != 3) {
+            return [
+                "error" => true,
+                "code" => 403,
+                "message" => "Este rol no tiene acceso a los planes familiares",
+            ];
+        }
+
+        // 🟢 Rol 3 → Voluntario
+        if ($roleId == 3) {
+
+            $plans = FamilyPlan::where('user_id', $user->id)
+                ->whereNotIn('status_plan_id', [4 ])
+                ->with('statusPlan','city','city.apartment')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => $plans->isEmpty()
+                    ? "No hay planes familiares disponibles"
+                    : "Planes familiares obtenidos exitosamente",
+                "data" => $plans->getCollection()->transform(function ($plan) {
+                    return [
+                        "id" => $plan->id,
+                        "last_names" => $plan->last_names,
+                        "city" => $plan->city->name,
+                        "department" => $plan->city->apartment->name,
+                        "status" => $plan->statusPlan->name,
+                        "date_create" => $plan->created_at->format('d/m/Y'),
+                    ];
+                }),
+                "paginate" => [
+                    'current_page' => $plans->currentPage(),
+                    'per_page' => $plans->perPage(),
+                    'total' => $plans->total(),
+                    'last_page' => $plans->lastPage(),
+                    'from' => $plans->firstItem(),
+                    'to' => $plans->lastItem(),
+                ],
+            ];
+        }
+
+        // 🔵 Rol 2 → Supervisor
+        if ($roleId == 2) {
+
+            if (!$user->profile || !$user->profile->organization) {
+                return [
+                    "error" => true,
+                    "code" => 404,
+                    "message" => "Perfil u organización no encontrada",
+                ];
+            }
+
+            $sectionalId = $user->profile->organization->sectional_id;
+
+            $plans = FamilyPlan::where('sectional_id', $sectionalId)
+                ->where('status_plan_id', 4)
+                ->with('statusPlan','city','city.apartment')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => $plans->isEmpty()
+                    ? "No hay planes familiares disponibles"
+                    : "Planes familiares obtenidos exitosamente",
+                "data" => $plans->getCollection()->transform(function ($plan) {
+                    return [
+                        "id" => $plan->id,
+                        "last_names" => $plan->last_names,
+                        "city" => $plan->city->name,
+                        "department" => $plan->city->apartment->name,
+                        "status" => $plan->statusPlan->name,
+                        "date_create" => $plan->created_at->format('d/m/Y'),
+                    ];
+                }),
+                "paginate" => [
+                    'current_page' => $plans->currentPage(),
+                    'per_page' => $plans->perPage(),
+                    'total' => $plans->total(),
+                    'last_page' => $plans->lastPage(),
+                    'from' => $plans->firstItem(),
+                    'to' => $plans->lastItem(),
+                ],
+            ];
+        }
     }
 }

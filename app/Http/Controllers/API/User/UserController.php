@@ -56,29 +56,6 @@ class UserController extends Controller
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
-
-    public function getRequests()
-    {
-        $response = $this->service->getRequests();
-
-        if ($response['error']) {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
-    }
-
-    public function getUserForAdmins()
-    {
-        $response = $this->service->getUserForAdmins();
-
-        if ($response['error']) {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
-    }
-
     /**
      * Registra un nuevo usuario en la plataforma.
      * Habitualmente gestiona el hashing de contraseñas y asignación inicial de roles.
@@ -181,4 +158,49 @@ class UserController extends Controller
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
+
+    public function getRequestsAdmins()
+    {
+        $response = $this->service->getRequestsAdmins();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+    }
+
+    public function getRequestsSupervisors()
+    {
+        $response = $this->service->getRequestsSupervisors();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+    }
+
+    public function getUserForAdmins()
+    {
+        $response = $this->service->getUserForAdmins();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+    }
+
+    public function getUserForSupervisors()
+    {
+        $response = $this->service->getUserForSupervisors();
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+    }
+
 }

@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
                 'password' => $data['password'], // el modelo la hashea
                 'state_user_id' => $data['state_user_id'],
             ]);
-
+            
             // Asignar rol
             $user->assignRole($data['role']);
 

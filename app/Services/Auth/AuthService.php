@@ -154,6 +154,7 @@ class AuthService
         "data" => [
             'id' => $user->id,
             'full_name' => "$profile->names $profile->last_names",
+            'gender' => "$profile->gender_id",
             'role_id' => $roleUser->id,
             'permissions' => $permissions->pluck('name'),
             'cookieToken' => $cookieToken,

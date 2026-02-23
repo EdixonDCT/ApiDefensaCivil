@@ -90,13 +90,17 @@ Route::middleware('auth:sanctum')->group(function () {
     route::prefix('users')->group(function () {
         route::get('/', [UserController::class, 'index']);
 
-        route::get('/requests', [UserController::class, 'getRequests']);
-
+        route::get('/requestsAdmins', [UserController::class, 'getRequestsAdmins']);
+        
         route::get('/userForAdmin', [UserController::class, 'getUserForAdmins']);
 
-        route::get('/history/{user_id}', [UserController::class, 'history']);
+        route::get('/requestsSupervisors', [UserController::class, 'getRequestsSupervisors']);
+
+        route::get('/userForSupervisor', [UserController::class, 'getUserForSupervisors']);
 
         route::get('/{user_id}', [UserController::class, 'show']);
+
+        route::get('/history/{user_id}', [UserController::class, 'history']);
 
         route::post('/', [UserController::class, 'store']);
 
@@ -274,6 +278,8 @@ Route::middleware('auth:sanctum')->group(function () {
     route::prefix('familyPlans')->group(function () {
         route::get('/', [FamilyPlanController::class, 'index']);
 
+        route::get('/byUser', [FamilyPlanController::class, 'getFamilyPlanByUser']);
+
         route::get('/{familyPlan_id}', [FamilyPlanController::class, 'show'])->middleware('permission:family-plans.show');
 
         route::post('/', [FamilyPlanController::class, 'store'])->middleware('permission:family-plans.store');
@@ -344,32 +350,6 @@ Route::middleware('auth:sanctum')->group(function () {
         route::put('/{action_id}', [ActionController::class, 'update']);
 
         route::delete('/{action_id}', [ActionController::class, 'destroy']);
-    });
-
-    Route::prefix('histories')->group(function () {
-        // Histories de voluntario
-        Route::get('/voluntario', [HistoryController::class, 'actionsByVoluntario']);
-
-        // Histories de supervisor
-        Route::get('/supervisor', [HistoryController::class, 'actionsBySupervisor']);
-
-        // Traer todos los histories
-        Route::get('/', [HistoryController::class, 'index']);
-
-        // Traer un history por id
-        Route::get('/{history_id}', [HistoryController::class, 'show']);
-
-        // Crear history
-        Route::post('/', [HistoryController::class, 'store']);
-
-        // Actualizar history completo
-        Route::put('/{history_id}', [HistoryController::class, 'update']);
-
-        // Actualización parcial
-        Route::patch('/{history_id}', [HistoryController::class, 'partialUpdate']);
-
-        // Eliminar history
-        Route::delete('/{history_id}', [HistoryController::class, 'destroy']);
     });
 
     // Rutas para el catálogo de grupos sanguíneos

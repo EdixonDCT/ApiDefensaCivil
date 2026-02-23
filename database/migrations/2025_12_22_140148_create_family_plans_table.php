@@ -50,7 +50,9 @@ return new class extends Migration
             $table->foreignId('housing_quality_id')->nullable()->constrained();
 
             // Campo de texto largo para coordenadas o datos de GPS
-            $table->text('georeference')->nullable();   
+            $table->text('georeference')->nullable();
+            $table->foreignId('user_id')->constrained();
+            $table->text('comentary')->nullable();
 
             // Auditoría
             $table->timestamps();
