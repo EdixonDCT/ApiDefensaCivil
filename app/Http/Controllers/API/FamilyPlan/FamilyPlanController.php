@@ -192,4 +192,9 @@ class FamilyPlanController extends Controller
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
     }
+
+    public function downloadPdf($id)
+    {
+        return $this->service->generatePdf($id);
+    }
 }

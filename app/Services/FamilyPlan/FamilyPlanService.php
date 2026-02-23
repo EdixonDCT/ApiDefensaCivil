@@ -5,6 +5,7 @@ namespace App\Services\FamilyPlan;
 use App\Models\FamilyPlan\FamilyPlan;
 use App\Models\History\History;
 use Illuminate\support\Arr;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * Servicio para la gestión de Planes Familiares.
@@ -141,11 +142,11 @@ class FamilyPlanService
                 "message" => "Plan familiar no encontrado",
             ];
         }
-        $oldStatus = $familyPlan->status_plan_id;
+        $oldStatus = $familyPlan->statusPlan->name;
         $familyPlan->update($data);
     // 🔹 Estado nuevo
         $familyPlan->refresh()->load('statusPlan');
-        $newStatus = $familyPlan->status_plan_id;
+        $newStatus = $familyPlan->statusPlan->name;
 
         // 🔹 Validación
         if ($newStatus != 1 && $newStatus != 2 && $newStatus != 3) { // aquí pones el estado que quieras validar
@@ -342,7 +343,7 @@ class FamilyPlanService
         if ($roleId == 3) {
 
             $plans = FamilyPlan::where('user_id', $user->id)
-                ->whereNotIn('status_plan_id', [4 ])
+                ->whereNotIn('status_plan_id', [4])
                 ->with('statusPlan','city','city.apartment')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
@@ -360,6 +361,7 @@ class FamilyPlanService
                         "city" => $plan->city->name,
                         "department" => $plan->city->apartment->name,
                         "status" => $plan->statusPlan->name,
+                        "status_id" => $plan->statusPlan->id,
                         "date_create" => $plan->created_at->format('d/m/Y'),
                     ];
                 }),
@@ -406,6 +408,7 @@ class FamilyPlanService
                         "city" => $plan->city->name,
                         "department" => $plan->city->apartment->name,
                         "status" => $plan->statusPlan->name,
+                        "status_id" => $plan->statusPlan->id,
                         "date_create" => $plan->created_at->format('d/m/Y'),
                     ];
                 }),
@@ -419,5 +422,26 @@ class FamilyPlanService
                 ],
             ];
         }
+    }
+
+    public function generatePdf($id)
+    {
+        $plan = FamilyPlan::findOrFail($id);
+
+        // 🔹 Crear HTML directo
+        $html = '
+            <h1>Plan Familiar #' . $plan->id . '</h1>
+            <p><strong>Nombre:</strong> ' . $plan->last_names . '</p>
+            <p><strong>Fecha:</strong> ' . $plan->created_at . '</p>
+            <ul>
+        ';
+
+        $html .= '</ul>';
+
+        $pdf = Pdf::loadHTML($html);
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="plan_'.$plan->id.'.pdf"');
     }
 }

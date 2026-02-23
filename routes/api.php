@@ -298,6 +298,8 @@ Route::middleware('auth:sanctum')->group(function () {
         route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
 
         route::get('/checkAccess/{familyPlan_id}', [FamilyPlanController::class, 'checkAccess']);
+
+        Route::get('/pdf/{id}', [FamilyPlanController::class, 'downloadPdf']);
     });
 
     route::prefix('housingInfo')->group(function () {
@@ -728,5 +730,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('audits')->group(function () {
         Route::get('/dashBoardAdmin', [AuditController::class, 'dashBoardAdmin']);
+
+        Route::get('/dashBoardSupervisor', [AuditController::class, 'dashBoardSupervisor']);
     });
 });

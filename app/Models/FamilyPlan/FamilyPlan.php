@@ -86,23 +86,23 @@ class FamilyPlan extends Model
     }
 
     // Relación con el Sector (Nótese el nombre en mayúscula según tu código original)
-    public function Sector()
+    public function sector()
     {
         return $this->belongsTo(Sector::class, 'sector_id');
     }
 
     // Relación con el Estado del Plan
-    public function StatusPlan()
+    public function statusPlan()
     {
         return $this->belongsTo(StatusPlan::class, 'status_plan_id');
     }
 
     // Relación con la Seccional administrativa
-    public function Sectional()
+    public function sectional()
     {
         return $this->belongsTo(Sectional::class, 'sectional_id');
     }
-    public function User()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

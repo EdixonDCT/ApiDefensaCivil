@@ -14,7 +14,7 @@ class StatusPlanSeeder extends Seeder
             'name' => 'Registro'
         ]);
         StatusPlan::create([
-            'name' => 'noPuntaje'
+            'name' => 'No Puntaje'   
         ]);
         StatusPlan::create([
             'name' => 'Creado'
@@ -27,6 +27,9 @@ class StatusPlanSeeder extends Seeder
         ]);
         StatusPlan::create([
             'name' => 'Rechazado Definitivo'
+        ]);
+        StatusPlan::create([
+            'name' => 'Aprobado'
         ]);
     }
 }

@@ -13,12 +13,15 @@
         public function DashBoardAdmin()
         {
             // 🔹 1. RESUMEN USUARIOS
-            $summaryData = User::selectRaw("
-                    SUM(CASE WHEN state_user_id = 1 THEN 1 ELSE 0 END) as active,
-                    SUM(CASE WHEN state_user_id = 2 THEN 1 ELSE 0 END) as inactive,
-                    SUM(CASE WHEN state_user_id = 3 THEN 1 ELSE 0 END) as request
-                ")
-                ->first();
+            $summaryData = User::whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Administrador');
+            })
+            ->selectRaw("
+                SUM(CASE WHEN state_user_id = 1 THEN 1 ELSE 0 END) as active,
+                SUM(CASE WHEN state_user_id = 2 THEN 1 ELSE 0 END) as inactive,
+                SUM(CASE WHEN state_user_id = 3 THEN 1 ELSE 0 END) as request
+            ")
+            ->first();
 
             $summary = [
                 "active"   => (int) ($summaryData->active ?? 0),
@@ -30,14 +33,12 @@
             $rolesData = DB::table('model_has_roles')
                 ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
                 ->selectRaw("
-                    SUM(CASE WHEN roles.name = 'Administrador' THEN 1 ELSE 0 END) as admin,
                     SUM(CASE WHEN roles.name = 'Supervisor' THEN 1 ELSE 0 END) as supervisor,
                     SUM(CASE WHEN roles.name = 'Voluntario' THEN 1 ELSE 0 END) as volunteer
                 ")
                 ->first();
 
             $rols = [
-                "admin"      => (int) ($rolesData->admin ?? 0),
                 "supervisor" => (int) ($rolesData->supervisor ?? 0),
                 "volunteer"  => (int) ($rolesData->volunteer ?? 0),
             ];
@@ -120,6 +121,108 @@
                                     ?? $audit->historiable->profile->names.' '.$audit->historiable->profile->last_names
             ];
         }
-    }
+
+        public function dashBoardSupervisor()
+        {
+            $user = auth()->user();
+
+            if (!$user) {
+                return [
+                    "error" => true,
+                    "code" => 401,
+                    "message" => "No autenticado"
+                ];
+            }
+
+            // 🔹 1. Obtener seccional desde profile
+            $sectionalId = $user->profile->organization->sectional->id ?? null;
+
+            if (!$sectionalId) {
+                return [
+                    "error" => true,
+                    "code" => 404,
+                    "message" => "Supervisor sin seccional asignada"
+                ];
+            }
+
+            // 🔹 2. Contadores de planes
+            $pending = FamilyPlan::where('sectional_id', $sectionalId)
+                ->where('status_plan_id', 4)
+                ->count();
+
+            $approved = FamilyPlan::where('sectional_id', $sectionalId)
+                ->where('status_plan_id', 7)
+                ->count();
+
+            $rejected = FamilyPlan::where('sectional_id', $sectionalId)
+                ->whereIn('status_plan_id', [5, 6])
+                ->count();
+
+            // 🔹 3. Tiempo promedio de validación
+
+            $audits = Audit::where('historiable_type', FamilyPlan::class)
+                ->whereIn('status_new', [
+                    'Enviado',
+                    'Aprobado',
+                    'Rechazado Cambios',
+                    'Rechazado Definitivo',
+                ])
+                ->orderBy('date_time')
+                ->get()
+                ->groupBy('historiable_id');
+
+            $totalMinutes = 0;
+            $totalValidations = 0;
+
+            foreach ($audits as $familyPlanId => $records) {
+
+                $sent = null;
+
+                foreach ($records as $audit) {
+
+                    // Cuando encuentra "Enviado"
+                    if ($audit->status_new === 'Enviado') {
+                        $sent = Carbon::parse($audit->date_time);
+                    }
+
+                    // Si ya hubo enviado y luego viene resultado
+                    if ($sent && in_array($audit->status_new, [
+                        'Aprobado',
+                        'Rechazado Cambios',
+                        'Rechazado Definitivo'
+                    ])) {
+
+                        $validated = Carbon::parse($audit->date_time);
+
+                        $minutes = $sent->diffInMinutes($validated);
+
+                        $totalMinutes += $minutes;
+                        $totalValidations++;
+
+                        // Reinicia para siguientes ciclos
+                        $sent = null;
+                    }
+                }
+            }
+
+            $averageValidationTime = $totalValidations > 0
+                ? round($totalMinutes / $totalValidations)
+                : 0;
+
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "Dashboard planes familiares obtenido correctamente",
+                "data" => [
+                    "pending_plans" => $pending,
+                    "approved_plans" => $approved,
+                    "rejected_plans" => $rejected,
+                    "time_validation" => $averageValidationTime,
+                ]
+            ];
+        }
+}
+
+    
 
 
