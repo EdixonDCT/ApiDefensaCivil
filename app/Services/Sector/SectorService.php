@@ -3,29 +3,14 @@
 namespace App\Services\Sector;
 
 use App\Models\Sector\Sector;
-use Illuminate\support\Arr;
+use App\Models\Audit\Audit;
+use Illuminate\Support\Arr;
 
-/**
- * Servicio para la gestión de Sectores.
- * Los sectores permiten categorizar la ubicación o el área de influencia de los planes familiares.
- */
 class SectorService
 {
-    /**
-     * Obtiene todos los sectores registrados.
-     */
     public static function getAll()
     {
         $sector = Sector::all();
-
-        if ($sector->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay sectores registrados",
-                "data" => $sector,
-            ];
-        }
 
         return [
             "error" => false,
@@ -35,9 +20,6 @@ class SectorService
         ];
     }
 
-    /**
-     * Obtiene un sector específico por su ID.
-     */
     public function getById($id)
     {
         $sector = Sector::find($id);
@@ -58,12 +40,18 @@ class SectorService
         ];
     }
 
-    /**
-     * Crea un nuevo sector.
-     */
     public function create(array $data)
     {
         $sector = Sector::create($data);
+
+        $sector->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => "Activo",
+        ]);
 
         return [
             "error" => false,
@@ -73,9 +61,6 @@ class SectorService
         ];
     }
 
-    /**
-     * Actualización completa de un sector.
-     */
     public function update(array $data, $id)
     {
         $sector = Sector::find($id);
@@ -88,7 +73,18 @@ class SectorService
             ];
         }
 
+        $oldStatus = $sector->is_active ? "Activo" : "Inactivo";
+
         $sector->update($data);
+
+        $sector->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $sector->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -98,9 +94,6 @@ class SectorService
         ];
     }
 
-    /**
-     * Actualización parcial de los datos del sector.
-     */
     public function partialUpdate(array $data,$id)
     {
         $sector = Sector::find($id);
@@ -113,7 +106,18 @@ class SectorService
             ];
         }
 
+        $oldStatus = $sector->is_active ? "Activo" : "Inactivo";
+
         $sector->update($data);
+
+        $sector->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $sector->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -123,10 +127,7 @@ class SectorService
         ];
     }
 
-    /**
-     * Modifica el estado de activación del sector.
-     */
-    public function changeState(array $data,$id)
+    public function changeStatus(array $data,$id)
     {
         $sector = Sector::find($id);
 
@@ -138,19 +139,40 @@ class SectorService
             ];
         }
 
+        if ($data['is_active'] == 0) {
+            $activeCount = Sector::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $sector->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este sector, minimo un registro activo",
+                ];
+            }
+        }    
+
+        $oldStatus = $sector->is_active ? "Activo" : "Inactivo";
+
         $sector->update($data);
+
+        $sector->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $sector->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Cambio de estado de sector actualizado correctamente",
+            "message" => "Cambio de estado actualizado correctamente",
             "data" => $sector,
         ];
     }
 
-    /**
-     * Elimina un sector si no tiene Planes Familiares vinculados.
-     */
     public function delete($id)
     {
         $sector = Sector::find($id);
@@ -162,22 +184,66 @@ class SectorService
                 "message" => "Sector no encontrado",
             ];
         }
-        
-        // Validación de integridad para evitar errores en cascada
+
         if ($sector->familyPlan->count()) {
             return [
                 "error" => true,
                 "code" => 409,
-                "message" => "No se puede eliminar el sector porque tiene registros relacionados",
+                "message" => "No se puede eliminar porque tiene registros relacionados",
             ];
         }
 
+        $oldStatus = $sector->is_active ? "Activo" : "Inactivo";
+
         $sector->delete();
+
+        $sector->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $oldStatus,
+            'status_new'     => null,
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Sector eliminado exitosamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $sector = Sector::find($id);
+
+        if (!$sector) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Sector no encontrado",
+            ];
+        }
+
+        $history = $sector->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

@@ -3,28 +3,13 @@
 namespace App\Services\VulnerableQuestion;
 
 use App\Models\VulnerableQuestion\VulnerableQuestion;
+use App\Models\Audit\Audit;
 
-/**
- * Servicio para la gestión del banco de preguntas de vulnerabilidad.
- * Estas preguntas son la base para el diagnóstico de los Planes Familiares.
- */
 class VulnerableQuestionService
 {
-    /**
-     * Obtiene el listado completo de preguntas (histórico total).
-     */
     public static function getAll()
     {
         $questions = VulnerableQuestion::all();
-
-        if ($questions->isEmpty()) {
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay preguntas vulnerables registradas",
-                "data" => $questions,
-            ];
-        }
 
         return [
             "error" => false,
@@ -34,9 +19,6 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Obtiene una pregunta específica por su ID.
-     */
     public function getById($id)
     {
         $question = VulnerableQuestion::find($id);
@@ -57,12 +39,18 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Crea una nueva pregunta para el diagnóstico.
-     */
     public function create(array $data)
     {
         $question = VulnerableQuestion::create($data);
+
+        $question->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => "Activo",
+        ]);
 
         return [
             "error" => false,
@@ -72,9 +60,6 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Actualización total de la pregunta.
-     */
     public function update(array $data, $id)
     {
         $question = VulnerableQuestion::find($id);
@@ -87,7 +72,18 @@ class VulnerableQuestionService
             ];
         }
 
+        $oldStatus = $question->is_active ? "Activo" : "Inactivo";
+
         $question->update($data);
+
+        $question->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $question->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -97,9 +93,6 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Actualización parcial (ej. corregir un error tipográfico).
-     */
     public function partialUpdate(array $data, $id)
     {
         $question = VulnerableQuestion::find($id);
@@ -112,7 +105,18 @@ class VulnerableQuestionService
             ];
         }
 
+        $oldStatus = $question->is_active ? "Activo" : "Inactivo";
+
         $question->update($data);
+
+        $question->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $question->is_active ? "Activo" : "Inactivo",
+        ]);
 
         return [
             "error" => false,
@@ -122,11 +126,7 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Activa o desactiva una pregunta.
-     * Útil para retirar preguntas sin borrarlas físicamente y perder el histórico.
-     */
-    public function changeState(array $data, $id)
+    public function changeStatus(array $data, $id)
     {
         $question = VulnerableQuestion::find($id);
 
@@ -138,8 +138,32 @@ class VulnerableQuestionService
             ];
         }
 
+        if ($data['is_active'] == 0) {
+            $activeCount = VulnerableQuestion::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $question->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar este pregunta de vulnerabilidad, minimo un registro activo",
+                ];
+            }
+        }    
+
+        $oldStatus = $question->is_active ? "Activo" : "Inactivo";
+
         $question->update([
             'is_active' => $data['is_active']
+        ]);
+
+        $question->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $question->is_active ? "Activo" : "Inactivo",
         ]);
 
         return [
@@ -150,9 +174,6 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Elimina una pregunta.
-     */
     public function delete($id)
     {
         $question = VulnerableQuestion::find($id);
@@ -165,7 +186,18 @@ class VulnerableQuestionService
             ];
         }
 
+        $oldStatus = $question->is_active ? "Activo" : "Inactivo";
+
         $question->delete();
+
+        $question->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $oldStatus,
+            'status_new'     => null,
+        ]);
 
         return [
             "error" => false,
@@ -174,10 +206,40 @@ class VulnerableQuestionService
         ];
     }
 
-    /**
-     * Obtiene preguntas activas de forma paginada para la interfaz del voluntario.
-     * Ideal para mostrar el cuestionario paso a paso (ej. 3 preguntas por pantalla).
-     */
+    public function history($id)
+    {
+        $question = VulnerableQuestion::find($id);
+
+        if (!$question) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Pregunta vulnerable no encontrada",
+            ];
+        }
+
+        $history = $question->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
+        ];
+    }
+
     public function paginate()
     {
         $paginator = VulnerableQuestion::where('is_active', true)->paginate(3);
@@ -198,12 +260,12 @@ class VulnerableQuestionService
                 : "Preguntas vulnerables obtenidas exitosamente",
             "data"    => $items,
             'paginate' => [
-                'current_page' => $paginator->currentPage(), //pagina actual
-                'per_page' => $paginator->perPage(),    //cuantos registros se muestran por pagina
-                'total' => $paginator->total(), //total de registros
-                'last_page' => $paginator->lastPage(), //ultima pagina
-                'from' => $paginator->firstItem(), //numero del primer registro de la pagina
-                'to' => $paginator->lastItem(), //numero del ultimo registro de la pagina
+                'current_page' => $paginator->currentPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'last_page'    => $paginator->lastPage(),
+                'from'         => $paginator->firstItem(),
+                'to'           => $paginator->lastItem(),
             ],
         ];
     }

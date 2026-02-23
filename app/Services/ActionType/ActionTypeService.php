@@ -86,28 +86,6 @@ class ActionTypeService
         ];
     }
 
-    public function partialUpdate(array $data, $id)
-    {
-        $actionType = ActionType::find($id);
-
-        if (!$actionType) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Tipo de acción no encontrado",
-            ];
-        }
-
-        $actionType->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Tipo de acción actualizado parcialmente exitosamente",
-            "data" => $actionType,
-        ];
-    }
-
     public function delete($id)
     {
         $actionType = ActionType::find($id);

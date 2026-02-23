@@ -52,6 +52,39 @@ class ActionPlanActionService
         ];
     }
 
+    public function getActionForActionPlan($id)
+    {
+        $paginator = ActionPlanAction::where('action_plan_id', $id)
+            ->with(['actionPlan','member','actionType'])->paginate(10);
+
+        // Transformar aunque esté vacío (no rompe)
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->member->id,
+                'description' => $item->description,
+                'member_name' => $item->member->names.' '.$item->member->last_names,
+                'action_type_name' => $item->actionType->name,
+            ];
+        });
+
+        return [
+            "error"   => false,
+            "code"    => 200,
+            "message" => $items->isEmpty()
+                ? "Este plan de accion no tiene acciones registrados"
+                : "Acciones del plan de accion obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
+
     public function create(array $data)
     {
         $action = ActionPlanAction::create($data);

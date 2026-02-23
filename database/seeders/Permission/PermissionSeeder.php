@@ -12,6 +12,8 @@ class PermissionSeeder extends Seeder
         $permissions = [
             // STATE USERS
             ['home-frontend.voluntario','Vista home del voluntario'],
+            ['home-frontend.supervisor','Vista home del supervisor'],
+            ['home-frontend.administrador','Vista home del administrador'],
             ['state-users.index', 'Listar estados de usuario'],
             ['state-users.show', 'Ver estado de usuario'],
             ['state-users.store', 'Crear estado de usuario'],

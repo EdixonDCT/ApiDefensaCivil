@@ -32,6 +32,7 @@ class StoreFamilyPlanRequest extends FormRequest
             'zone_id'      => 'required|exists:zones,id',
             'city_id'      => 'required|exists:cities,id',
             'sectional_id' => 'required|exists:sectionals,id',
+            'user_id'      => 'required|exists:users,id',
         ];
     }
 
@@ -55,6 +56,9 @@ class StoreFamilyPlanRequest extends FormRequest
 
             'sectional_id.required'   => 'Debe seleccionar una :attribute',
             'sectional_id.exists'     => 'La :attribute seleccionada no es válida',
+
+            'user_id.required'        => 'Debe asignar un :attribute responsable',
+            'user_id.exists'          => 'El :attribute seleccionado no es válido',
         ];
     }
 
@@ -69,6 +73,7 @@ class StoreFamilyPlanRequest extends FormRequest
             'zone_id'      => 'zona',
             'city_id'      => 'ciudad',
             'sectional_id' => 'seccional',
+            'user_id'      => 'usuario responsable',
         ];
     }
 }

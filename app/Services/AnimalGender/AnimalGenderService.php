@@ -86,28 +86,6 @@ class AnimalGenderService
         ];
     }
 
-    public function partialUpdate(array $data, $id)
-    {
-        $gender = AnimalGender::find($id);
-
-        if (!$gender) {
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Género de animal no encontrado",
-            ];
-        }
-
-        $gender->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Género de animal actualizado parcialmente exitosamente",
-            "data" => $gender,
-        ];
-    }
-
     public function delete($id)
     {
         $gender = AnimalGender::find($id);

@@ -15,6 +15,7 @@ use App\Models\Gender\Gender;
 use App\Models\Kinship\Kinship;
 use App\Models\FamilyMember\FamilyMember;
 use App\Models\ConditionMember\ConditionMember;
+use App\Models\ActionPlan\ActionPlan;
 
 /**
  * Clase Member
@@ -99,5 +100,10 @@ class Member extends Model
     public function conditionMember()
     {
         return $this->hasMany(ConditionMember::class, 'member_id');
+    }
+
+    public function actionPlan()
+    {
+        return $this->hasMany(ActionPlan::class, 'member_id');
     }
 }

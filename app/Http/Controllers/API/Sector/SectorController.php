@@ -108,10 +108,10 @@ class SectorController extends Controller
     /**
      * Activa o desactiva un sector para la asignación de nuevos planes.
      */
-    public function ChangeState(ChangeStateSectorRequest $request, string $id)
+    public function ChangeStatus(ChangeStateSectorRequest $request, string $id)
     {
         $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
+        $response = $this->service->changeStatus($data, $id);
 
         if ($response['error'])
         {
@@ -131,6 +131,17 @@ class SectorController extends Controller
 
         if ($response['error'])
         {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
+    public function history(string $id)
+    {
+        $response = $this->service->history($id);
+
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 

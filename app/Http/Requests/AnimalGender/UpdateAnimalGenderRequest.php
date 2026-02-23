@@ -16,8 +16,7 @@ class UpdateAnimalGenderRequest extends FormRequest
         $id = $this->route('id');
 
         return [
-            'name'      => "required|string|max:50|unique:animal_genders,name,{$id}",
-            'is_active' => 'required|boolean',
+            'name'      => "required|string|max:50|unique:animal_genders,name,{$id}"
         ];
     }
 
@@ -27,18 +26,14 @@ class UpdateAnimalGenderRequest extends FormRequest
             'name.required'    => 'El :attribute es obligatorio',
             'name.string'      => 'El :attribute debe ser texto válido',
             'name.max'         => 'El :attribute no puede superar los 50 caracteres',
-            'name.unique'      => 'Este :attribute ya existe',
-
-            'is_active.required' => 'El :attribute es obligatorio',
-            'is_active.boolean'  => 'El :attribute debe ser verdadero o falso',
+            'name.unique'      => 'Este :attribute ya existe'
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name'      => 'nombre',
-            'is_active' => 'estado del genero animal',
+            'name'      => 'nombre'
         ];
     }
 }

@@ -4,7 +4,9 @@ namespace App\Models\DocumentType;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use App\Models\Profile\Profile;
+use App\Models\Audit\Audit; // 🔹 IMPORTANTE
 
 /**
  * Modelo DocumentType
@@ -20,19 +22,27 @@ class DocumentType extends Model
      */
     protected $fillable = [
         'id', 
-        'name',      // Nombre completo (ej: 'Cédula de Ciudadanía')
-        'acronym',   // Abreviatura (ej: 'CC')
-        'is_active'  // Estado lógico del registro
+        'name',
+        'acronym',
+        'is_active'
     ];
 
     /**
-     * Relación de Uno a Muchos (One-to-Many).
-     * Un tipo de documento puede ser utilizado por muchos perfiles de usuario.
-     * * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * --- RELACIÓN HAS MANY ---
+     * Un tipo de documento puede ser utilizado por muchos perfiles.
      */
     public function profile()
     {
-        // Conecta este tipo de documento con todos los perfiles que lo posean
         return $this->hasMany(Profile::class, 'document_type_id');
+    }
+
+    /**
+     * --- RELACIÓN POLIMÓRFICA PARA HISTORIAL (AUDIT) ---
+     * Permite registrar creación, edición, activación,
+     * desactivación o eliminación del tipo de documento.
+     */
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'historiable');
     }
 }

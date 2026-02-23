@@ -14,13 +14,14 @@ class StoreActionTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:action_types,name',
+            'name' => 'required|string|alpha|max:255|unique:action_types,name',
         ];
     }
 
     public function messages(): array
     {
         return [
+            'name.alpha' => 'El nombre debe contener solo letras',
             'name.required' => 'El nombre es obligatorio.',
             'name.string' => 'El nombre debe ser un texto válido.',
             'name.max' => 'El nombre no puede superar los 255 caracteres.',

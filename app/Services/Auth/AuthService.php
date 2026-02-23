@@ -23,7 +23,7 @@ class AuthService
             $user = User::create([
                 'email'    => $data['email'],
                 'password' => Hash::make($data['password']),
-                'state_user_id' => 1
+                'state_user_id' => 3
             ]);
 
             if (!$user) {
@@ -60,6 +60,15 @@ class AuthService
 
             DB::commit();
 
+            $user->audits()->create([
+            'user_name'      => $data['names']." ".$data['last_names'],
+            'rol_name'       => 'Solicitante',
+            'date_time'      => now(),
+            'action_execute' => 'Enviar Peticion',
+            'status_old'     => null,
+            'status_new'     => 'Peticion',
+            ]);
+            
             return [
                 "error" => false,
                 "code" => 201,
@@ -145,6 +154,7 @@ class AuthService
         "data" => [
             'id' => $user->id,
             'full_name' => "$profile->names $profile->last_names",
+            'gender' => "$profile->gender_id",
             'role_id' => $roleUser->id,
             'permissions' => $permissions->pluck('name'),
             'cookieToken' => $cookieToken,

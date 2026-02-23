@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * Importación del modelo Profile para establecer la relación de integridad.
  */
 use App\Models\Profile\Profile;
-
+use App\Models\Audit\Audit;  
 /**
  * Clase Gender
  * * Este modelo gestiona el catálogo de géneros (ej. Masculino, Femenino, No Binario)
@@ -43,4 +43,9 @@ class Gender extends Model
          */
         return $this->hasMany(Profile::class, 'gender_id');
     }
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'historiable');
+    }
+
 }

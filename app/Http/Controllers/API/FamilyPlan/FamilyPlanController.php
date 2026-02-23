@@ -109,10 +109,10 @@ class FamilyPlanController extends Controller
     /**
      * Cambia el estado del plan (ej. 'En Proceso', 'Completado', 'Validado').
      */
-    public function changeState(ChangeStatusFamilyPlanRequest $request, string $id)
+    public function changeStatus(ChangeStatusFamilyPlanRequest $request, string $id)
     {
         $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
+        $response = $this->service->changeStatus($data, $id);
 
         if ($response['error'])
         {
@@ -179,5 +179,17 @@ class FamilyPlanController extends Controller
         }
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
+    public function getFamilyPlanByUser()
+    {
+        $response = $this->service->getFamilyPlanByUser();
+
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
     }
 }

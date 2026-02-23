@@ -19,7 +19,7 @@ class PartialUpdateSpeciesRequest extends FormRequest
      */
     public function rules(): array
     {
-        $speciesId = $this->route('id');
+        $speciesId = $this->route('specie_id');
 
         return [
             'name'   => "sometimes|string|max:50|unique:species,name,{$speciesId}",

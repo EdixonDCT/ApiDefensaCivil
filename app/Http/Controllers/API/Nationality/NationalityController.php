@@ -126,10 +126,10 @@ class NationalityController extends Controller
     /**
      * Cambia el estado de activación de la nacionalidad (Activa/Inactiva).
      */
-    public function changeState(ChangeStateNationalityRequest $request, string $id)
+    public function changeStatus(ChangeStateNationalityRequest $request, string $id)
     {
         $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
+        $response = $this->service->changeStatus($data, $id);
 
         if ($response['error'])
         {
@@ -161,5 +161,16 @@ class NationalityController extends Controller
             $response['code'],
             $response['data'] ?? []
         );
+    }
+
+    public function history(string $id)
+    {
+        $response = $this->service->history($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);    
     }
 }

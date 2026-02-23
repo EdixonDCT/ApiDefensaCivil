@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * Importación del modelo FamilyPlan para establecer la relación de integridad.
  */
 use App\Models\FamilyPlan\FamilyPlan;
+use App\Models\Audit\Audit; // 🔹 IMPORTANTE
 
 /**
  * Clase HousingQuality
- * * Este modelo gestiona el catálogo de calidades de vivienda. Permite clasificar
- * técnicamente el estado habitacional de las familias para análisis socioeconómicos.
+ *
+ * Este modelo gestiona el catálogo de calidades de vivienda.
  */
 class HousingQuality extends Model
 {
@@ -25,21 +26,26 @@ class HousingQuality extends Model
      */
     protected $fillable = [
         'id', 
-        'name',      // Nombre del estado (ej: 'Óptima', 'Requiere mejoras', 'Crítica')
-        'is_active'  // Control de estado lógico para habilitar/deshabilitar la opción
+        'name',
+        'is_active'
     ];
 
     /**
-     * --- RELACIONES HAS MANY (Uno a Muchos) ---
-     * * Una categoría de calidad de vivienda puede ser asignada a múltiples Planes Familiares.
-     * Esta relación es vital para generar reportes de priorización.
-     * * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * --- RELACIÓN HAS MANY ---
+     * Una categoría puede estar asociada a múltiples planes familiares.
      */
     public function familyPlan()
     {
-        /**
-         * Retorna la colección de planes familiares que comparten este nivel de calidad.
-         */
         return $this->hasMany(FamilyPlan::class, 'housing_quality_id');
+    }
+
+    /**
+     * --- RELACIÓN POLIMÓRFICA PARA HISTORIAL (AUDIT) ---
+     * Permite registrar creación, edición,
+     * activación, desactivación o eliminación.
+     */
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'historiable');
     }
 }

@@ -125,10 +125,10 @@ class VulnerableQuestionController extends Controller
      * Cambia el estado (Activa/Inactiva) de una pregunta.
      * Útil para retirar preguntas de las encuestas sin eliminar el histórico.
      */
-    public function changeState(ChangeStateVulnerableQuestionRequest $request, string $id)
+    public function changeStatus(ChangeStateVulnerableQuestionRequest $request, string $id)
     {
         $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
+        $response = $this->service->changeStatus($data, $id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
@@ -175,5 +175,16 @@ class VulnerableQuestionController extends Controller
             $response['message'],
             $response['code'],
             $response['data'] ?? [],$response['paginate']);
+    }
+
+    public function history(string $id)
+    {
+        $response = $this->service->history($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 }

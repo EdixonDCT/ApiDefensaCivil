@@ -83,6 +83,26 @@ class RiskFactorController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [], $response['paginate']);
     }
 
+    
+    public function getRiskFactorSelect(string $plan_id)
+    {
+        // Validación de acceso al plan
+        if (!(new AccessPlanPolicy())->access($plan_id)) {
+            return ResponseFormatter::error(
+                'Usted no tiene autorización para acceder a este plan',
+                403
+            );
+        }
+
+        $response = $this->service->getRiskFactorSelect($plan_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
     /**
      * Crea un nuevo factor de riesgo
      */

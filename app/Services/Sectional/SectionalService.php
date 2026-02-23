@@ -3,28 +3,15 @@
 namespace App\Services\Sectional;
 
 use App\Models\Sectional\Sectional;
-use Illuminate\support\Arr;
 
-/**
- * Servicio para gestionar las Seccionales.
- * Representa la unidad regional principal de la organización.
- */
 class SectionalService
 {
     /**
-     * Obtiene el listado de todas las seccionales registradas.
+     * Obtener todas
      */
     public static function getAll()
     {
         $sectional = Sectional::all();
-        if ($sectional->isEmpty()){
-            return [
-                "error" => false,
-                "code" => 200,
-                "message" => "No hay seccionales registradas",
-                "data" => $sectional,
-            ];
-        }
 
         return [
             "error" => false,
@@ -35,13 +22,13 @@ class SectionalService
     }
 
     /**
-     * Obtiene una seccional por su ID.
+     * Obtener por ID
      */
     public function getById($id)
     {
         $sectional = Sectional::find($id);
 
-        if (!$sectional){
+        if (!$sectional) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -58,11 +45,20 @@ class SectionalService
     }
 
     /**
-     * Registra una nueva seccional.
+     * Crear
      */
     public function create(array $data)
     {
         $sectional = Sectional::create($data);
+
+        $sectional->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Creado',
+            'status_old'     => null,
+            'status_new'     => 'Activo',
+        ]);
 
         return [
             "error" => false,
@@ -73,13 +69,13 @@ class SectionalService
     }
 
     /**
-     * Actualiza todos los campos de una seccional.
+     * Update completo
      */
     public function update(array $data, $id)
     {
         $sectional = Sectional::find($id);
 
-        if (!$sectional){
+        if (!$sectional) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -87,7 +83,19 @@ class SectionalService
             ];
         }
 
+        $oldStatus = $sectional->is_active ? "Activo" : "Inactivo";
+
         $sectional->update($data);
+
+        $sectional->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $sectional->is_active ? "Activo" : "Inactivo",
+        ]);
+
         return [
             "error" => false,
             "code" => 200,
@@ -97,13 +105,13 @@ class SectionalService
     }
 
     /**
-     * Actualización parcial de datos de la seccional.
+     * Update parcial
      */
-    public function partialUpdate(array $data,$id)
+    public function partialUpdate(array $data, $id)
     {
         $sectional = Sectional::find($id);
 
-        if (!$sectional){
+        if (!$sectional) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -111,23 +119,35 @@ class SectionalService
             ];
         }
 
+        $oldStatus = $sectional->is_active ? "Activo" : "Inactivo";
+
         $sectional->update($data);
+
+        $sectional->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Actualizado parcialmente',
+            'status_old'     => $oldStatus,
+            'status_new'     => $sectional->is_active ? "Activo" : "Inactivo",
+        ]);
+
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Seccional actualizado parcialmente exitosamente",
+            "message" => "Seccional actualizada parcialmente exitosamente",
             "data" => $sectional,
         ];
     }
 
     /**
-     * Cambia el estado (habilitado/deshabilitado) de la seccional.
+     * Cambio de estado
      */
-    public function changeState(array $data,$id)
+    public function changeStatus(array $data, $id)
     {
         $sectional = Sectional::find($id);
 
-        if (!$sectional){
+        if (!$sectional) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -135,24 +155,51 @@ class SectionalService
             ];
         }
 
+        // Validación: si están intentando desactivar
+        if ($data['is_active'] == 0) {
+            $activeCount = Sectional::where('is_active', 1)->count();
+
+            // Si solo queda 1 activa y es esta, no se puede desactivar
+            if ($activeCount <= 1 && $sectional->is_active == 1) {
+                return [
+                    "error" => true,
+                    "code" => 422,
+                    "message" => "No se puede desactivar esta seccional, minimo un registro activo",
+                ];
+            }
+        }
+
+        $oldStatus = $sectional->is_active ? "Activo" : "Inactivo";
+
         $sectional->update($data);
+
+        $newStatus = $sectional->is_active ? "Activo" : "Inactivo";
+
+        $sectional->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $newStatus,
+        ]);
+
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Cambio de estado de seccional actualizado correctamente",
+            "message" => "Cambio de estado actualizado correctamente",
             "data" => $sectional,
         ];
     }
 
     /**
-     * Elimina una seccional validando que no tenga organizaciones dependientes.
-     * Esta validación previene errores de clave foránea y pérdida de integridad.
+     * Eliminar
      */
     public function delete($id)
     {
         $sectional = Sectional::find($id);
 
-        if (!$sectional){
+        if (!$sectional) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -160,21 +207,69 @@ class SectionalService
             ];
         }
 
-        // Verifica si hay organizaciones vinculadas (relación hasMany)
-        if ($sectional->organization->count()) {
+        if ($sectional->organization()->count()) {
             return [
                 "error" => true,
                 "code" => 409,
-                "message" => "No se puede eliminar la seccional porque tiene registros relacionados",
+                "message" => "No se puede eliminar porque tiene organizaciones relacionadas",
             ];
         }
+
+        $originalData = $sectional->toArray();
+
+        // Guardamos auditoría antes de eliminar
+        $sectional->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Eliminado',
+            'status_old'     => $originalData['is_active'] ? "Activo" : "Inactivo",
+            'status_new'     => null,
+        ]);
 
         $sectional->delete();
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Seccional eliminado exitosamente",
+            "message" => "Seccional eliminada exitosamente",
+        ];
+    }
+
+    /**
+     * Historial
+     */
+    public function history($id)
+    {
+        $sectional = Sectional::find($id);
+
+        if (!$sectional) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Seccional no encontrada",
+            ];
+        }
+
+        $history = $sectional->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(function ($audit) {
+                return [
+                    'date_time'      => $audit->date_time,
+                    'user_name'      => $audit->user_name,
+                    'rol'            => $audit->rol_name,
+                    'action_execute' => $audit->action_execute,
+                    'status_old'     => $audit->status_old,
+                    'status_new'     => $audit->status_new,
+                ];
+            });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }

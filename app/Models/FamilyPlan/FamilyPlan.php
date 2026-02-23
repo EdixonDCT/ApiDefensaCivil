@@ -4,6 +4,7 @@ namespace App\Models\FamilyPlan;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Audit\Audit; // 🔹 Importar Audit para la relación
 
 /** * Importación de modelos relacionados para definir las relaciones Eloquent 
  */
@@ -14,7 +15,6 @@ use App\Models\Sector\Sector;
 use App\Models\StatusPlan\StatusPlan;
 use App\Models\Sectional\Sectional;
 use App\Models\VulnerableTest\VulnerableTest;
-use App\Models\History\History;
 use App\Models\FamilyMember\FamilyMember;
 use App\Models\Pet\Pet;
 
@@ -47,6 +47,8 @@ class FamilyPlan extends Model
         'sector_name',        // Nombre del sector (en caso de ser manual)
         'status_plan_id',     // Estado actual del plan (ej. Activo, Cerrado)
         'sectional_id',       // Seccional a la que pertenece el registro
+        'user_id',            // Usuario responsable o creador del plan
+        'comentary',          // Comentarios adicionales o notas del plan
         'authorization'       // Consentimiento o autorización (booleano)
     ];
 
@@ -57,27 +59,8 @@ class FamilyPlan extends Model
      * * @var array
      */
     protected $attributes = [
-        'status_plan_id' => 5,
+        'status_plan_id' => 1, // Valor predeterminado para "Registrado pero solo para que el voluntario lo vea"
     ];
-
-    /**
-     * El método "booted" se ejecuta automáticamente por Laravel al iniciar el modelo.
-     * Se utiliza para registrar observadores o eventos de ciclo de vida.
-     */
-    protected static function booted()
-    {
-        /**
-         * Evento "creating": Se ejecuta justo antes de guardar un nuevo registro en la BD.
-         * * Lógica: Si hay un usuario autenticado y este tiene un perfil con organización,
-         * el plan hereda automáticamente la 'sectional_id' de dicha organización.
-         * Esto garantiza la segmentación territorial de los datos sin intervención del usuario.
-         */
-        static::creating(function ($plan) {
-            if (auth()->check() && isset(auth()->user()->profile->organization)) {
-                $plan->sectional_id = auth()->user()->profile->organization->sectional_id;
-            }
-        });
-    }
 
     /**
      * --- RELACIONES BELONGS TO (Muchos a Uno) ---
@@ -119,7 +102,10 @@ class FamilyPlan extends Model
     {
         return $this->belongsTo(Sectional::class, 'sectional_id');
     }
-
+    public function User()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     /**
      * --- RELACIONES HAS MANY (Uno a Muchos) ---
      * Un Plan Familiar puede tener múltiples registros asociados en las siguientes tablas:
@@ -136,11 +122,6 @@ class FamilyPlan extends Model
     /**
      * Obtiene el historial completo de acciones y movimientos realizados sobre este plan.
      */
-    public function history()
-    {
-        return $this->hasMany(History::class, 'family_plan_id');
-    }
-
     public function familyMembers()
     {
         return $this->hasMany(FamilyMember::class, 'family_plan_id');
@@ -149,5 +130,13 @@ class FamilyPlan extends Model
     public function pets()
     {
         return $this->hasMany(Pet::class, 'family_plan_id');
+    }
+    public function riskFactors()
+    {
+        return $this->hasMany(RiskFactor::class, 'family_plan_id');
+    }
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'historiable');
     }
 }

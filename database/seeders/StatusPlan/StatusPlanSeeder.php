@@ -11,19 +11,22 @@ class StatusPlanSeeder extends Seeder
     public function run(): void
     {
         StatusPlan::create([
-            'name' => 'Aprobado'
+            'name' => 'Registro'
         ]);
         StatusPlan::create([
-            'name' => 'Proceso'
+            'name' => 'noPuntaje'
+        ]);
+        StatusPlan::create([
+            'name' => 'Creado'
+        ]);
+        StatusPlan::create([
+            'name' => 'Enviado'
         ]);
         StatusPlan::create([
             'name' => 'Rechazado Cambios'
         ]);
         StatusPlan::create([
-            'name' => 'Rechazado Total'
-        ]);
-        StatusPlan::create([
-            'name' => 'Incompleto'
+            'name' => 'Rechazado Definitivo'
         ]);
     }
 }

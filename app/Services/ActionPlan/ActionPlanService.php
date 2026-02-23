@@ -3,6 +3,7 @@
 namespace App\Services\ActionPlan;
 
 use App\Models\ActionPlan\ActionPlan;
+use App\Models\FamilyPlan\FamilyPlan;
 
 class ActionPlanService
 {
@@ -34,7 +35,7 @@ class ActionPlanService
 
     public function getById($id)
     {
-        $actionPlan = ActionPlan::with(['actionType'])->find($id);
+        $actionPlan = ActionPlan::find($id);
 
         if (!$actionPlan) {
             return [
@@ -51,6 +52,40 @@ class ActionPlanService
             "data" => $actionPlan,
         ];
     }
+
+    public function getByPlan($familyPlanId)
+    {
+        $actionPlan = ActionPlan::whereHas('riskFactor', function ($query) use ($familyPlanId) {
+            $query->where('family_plan_id', $familyPlanId);
+        })->first();
+
+        if (!$actionPlan) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "No existe un plan de acción para este plan familiar",
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Plan de acción obtenido exitosamente",
+            "data" => $actionPlan,
+        ];
+    }
+
+    public function getByPlanBoolean($familyPlanId)
+    {
+        $actionPlan = ActionPlan::whereHas('riskFactor', function ($query) use ($familyPlanId) {
+            $query->where('family_plan_id', $familyPlanId);
+        })->first();
+
+        if (!$actionPlan) return false;
+
+        return true;
+    }
+
 
     public function create(array $data)
     {

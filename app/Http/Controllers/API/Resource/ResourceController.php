@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Resource\StoreResourceRequest;
 use App\Http\Requests\Resource\UpdateResourceRequest;
 use App\Http\Requests\Resource\PartialUpdateResourceRequest;
+use App\Http\Requests\Resource\ChangeStateResourceRequest;
 use App\Models\Resource\Resource;
 use App\Services\Resource\ResourceService;
 
@@ -94,6 +95,19 @@ class ResourceController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    public function changeStatus(ChangeStateResourceRequest $request, string $id)
+    {
+        $data = $request->validated();
+        $response = $this->service->changeStatus($data, $id);
+
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
     public function destroy(string $id)
     {
         $resource = Resource::find($id);
@@ -103,6 +117,17 @@ class ResourceController extends Controller
         }
 
         $response = $this->service->delete($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+    
+    public function history(string $id)
+    {
+        $response = $this->service->history($id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);

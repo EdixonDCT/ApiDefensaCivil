@@ -35,7 +35,7 @@ class RiskReductionActionService
 
     public function getById($id)
     {
-        $action = RiskReductionAction::find($id);
+        $action = RiskReductionAction::with('member')->find($id);
 
         if (!$action) {
             return [

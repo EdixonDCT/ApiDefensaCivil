@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Species\PartialUpdateSpeciesRequest;
 use App\Http\Requests\Species\StoreSpeciesRequest;
 use App\Http\Requests\Species\UpdateSpeciesRequest;
+use App\Http\Requests\Species\ChangeStateSpeciesRequest;
 use App\Models\Species\Species;
 use App\Services\Species\SpecieServices;
 use Illuminate\Http\Request;
@@ -90,6 +91,19 @@ class SpeciesController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
+    public function changeStatus(ChangeStateSpeciesRequest $request, string $id)
+    {
+        $data = $request->validated();
+        $response = $this->service->changeStatus($data, $id);
+
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+    }
+
     public function destroy(string $id)
     {
         $species = Species::find($id);
@@ -98,6 +112,17 @@ class SpeciesController extends Controller
         }
 
         $response = $this->service->delete($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
+    public function history(string $id)
+    {
+        $response = $this->service->history($id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);

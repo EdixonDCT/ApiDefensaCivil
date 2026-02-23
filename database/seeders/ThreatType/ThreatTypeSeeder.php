@@ -9,32 +9,30 @@ class ThreatTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        ThreatType::create([
-            'name' => 'Inundación'
-        ]);
-        ThreatType::create([
-            'name' => 'Deslizamiento'
-        ]);
-        ThreatType::create([
-            'name' => 'Creciente Súbita'
-        ]);
-        ThreatType::create([
-            'name' => 'Caída Colapso Estructural'
-        ]);
-        ThreatType::create([
-            'name' => 'Contaminación Plagas'
-        ]);
-        ThreatType::create([
-            'name' => 'Caída de árboles rocas'
-        ]);
-        ThreatType::create([
-            'name' => 'Colapso Estructural Traumas Quemaduras'
-        ]);
-        ThreatType::create([
-            'name' => 'Riesgo de Accidentes'
-        ]);
-        ThreatType::create([
-            'name' => 'Otro'
-        ]);
+        $threats = [
+            'Inundación',
+            'Deslizamiento',
+            'Creciente Súbita',
+            'Caída Colapso Estructural',
+            'Contaminación Plagas',
+            'Caída de árboles rocas',
+            'Colapso Estructural Traumas Quemaduras',
+            'Riesgo de Accidentes',
+            'Otro',
+        ];
+
+        foreach ($threats as $name) {
+            $threat = ThreatType::create(['name' => $name]);
+
+            // Crear auditoría simulando que lo hizo el sistema
+            $threat->audits()->create([
+                'user_name'      => "Sistema",
+                'rol_name'       => "Sistema",
+                'date_time'      => now(),
+                'action_execute' => 'Creado',
+                'status_old'     => null,
+                'status_new'     => "Activo",
+            ]);
+        }
     }
 }

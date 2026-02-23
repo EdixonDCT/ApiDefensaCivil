@@ -40,9 +40,16 @@ class UserService
      */
     public function getById($id)
     {
-        $user = User::find($id);
+        $user = User::with([
+                        'profile.gender',
+                        'profile.documentType',
+                        'profile.organization.sectional',
+                        'roles',
+                        'stateUser'
+                    ])
+                    ->find($id);
 
-        if (!$user){
+        if (!$user) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -54,10 +61,207 @@ class UserService
             "error" => false,
             "code" => 200,
             "message" => "Usuario obtenido exitosamente",
-            "data" => $user,
+            "data" => [
+                "id" => $user->id,
+                "email" => $user->email,
+                "status" => [
+                    "id" => $user->stateUser->id,
+                    "name" => $user->stateUser->name
+                ],
+                "profile" => $user->profile,
+                "rol" => [
+                    "id" => $user->roles->first()?->id,
+                    "name" => $user->roles->first()?->name,
+                ]
+            ],
         ];
     }
 
+
+    public function getRequestsAdmins()
+    {
+        $paginator = User::with(['profile.organization', 'profile.organization.sectional', 'profile.documentType'])
+                    ->where('state_user_id', 3)->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names.' '.$item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+            ];
+        });
+        
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay peticiones de usuarios para acceder al sistema"
+                : "Peticiones de usuarios para acceder al sistema obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
+
+    public function getRequestsSupervisors()
+    {
+        $authUser = auth()->user();
+
+        // Obtener la sectional del usuario autenticado
+        $authSectionalId = $authUser->profile->organization->sectional_id;
+
+        $paginator = User::with([
+                            'profile.organization.sectional',
+                            'profile.documentType'
+                        ])
+                        ->where('state_user_id', 3)
+                        ->whereHas('profile.organization', function ($query) use ($authSectionalId) {
+                            $query->where('sectional_id', $authSectionalId);
+                        })
+                        ->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names . ' ' . $item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number . ' ' . $item->profile->documentType->acronym,
+            ];
+        });
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay peticiones de usuarios para acceder al sistema"
+                : "Peticiones de usuarios para acceder al sistema obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
+    public function getUserForAdmins()
+    {
+        $paginator = User::with([
+            'profile.organization',
+            'profile.organization.sectional',
+            'profile.documentType',
+            'stateUser'
+        ])
+        ->where('state_user_id','!=', 3)
+        ->whereDoesntHave('roles', function ($q) {
+            $q->where('id', 1);
+        })
+        ->orderBy('users.created_at', 'desc')
+        ->paginate(10);
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names.' '.$item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+                "state_user" => $item->stateUser->name,
+                "state_user_id" => $item->state_user_id,
+                "rol" => $item->getRoleNames()->first(),
+                "rol_id" => $item->roles->first()->id,
+            ];
+        });
+        
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay peticiones de usuarios para acceder al sistema"
+                : "Peticiones de usuarios para acceder al sistema obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
+
+    public function getUserForSupervisors()
+    {
+        $authUser = auth()->user();
+
+        // Obtener la sectional del usuario autenticado
+        $authSectionalId = $authUser->profile->organization->sectional_id;
+
+        $paginator = User::with([
+                'profile.organization.sectional',
+                'profile.documentType',
+                'stateUser',
+                'roles'
+            ])
+            ->where('state_user_id','!=', 3)
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('id', 1);
+            })
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('id', 2);
+            })
+            ->whereHas('profile.organization', function ($query) use ($authSectionalId) {
+                $query->where('sectional_id', $authSectionalId);
+            })
+            ->orderBy('users.created_at', 'desc')
+            ->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                "id" => $item->id,
+                "full_name" => $item->profile->names.' '.$item->profile->last_names,
+                "email" => $item->email,
+                "organization" => $item->profile->organization->name,
+                "sectional" => $item->profile->organization->sectional->name,
+                "document_number" => $item->profile->document_number.' '.$item->profile->documentType->acronym,
+                "state_user" => $item->stateUser->name,
+                "state_user_id" => $item->state_user_id,
+                "rol" => $item->getRoleNames()->first(),
+                "rol_id" => optional($item->roles->first())->id,
+            ];
+        });
+        
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => $items->isEmpty()
+                ? "No hay usuarios disponibles"
+                : "Usuarios obtenidos exitosamente",
+            "data"    => $items,
+            'paginate' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
     /**
      * Crea un nuevo usuario.
      * Importante: Los datos deben incluir email, password (hasheado) y state_user_id.
@@ -124,13 +328,9 @@ class UserService
         ];
     }
 
-    /**
-     * Elimina el usuario validando que no tenga un perfil asociado.
-     * Si el perfil existe, se recomienda eliminar primero el perfil o usar soft deletes.
-     */
-    public function delete($id)
+    public function changeStatus(array $data,$id)
     {
-        $user = User::find($id);
+        $user = User::with(['stateUser'])->find($id);
 
         if (!$user){
             return [
@@ -139,22 +339,136 @@ class UserService
                 "message" => "Usuario no encontrado",
             ];
         }
+        
+        $oldStatus = $user->stateUser->name;
+        $user->update($data);
+        $user->refresh()->load('stateUser');
+        $newStatus = $user->stateUser->name;    
 
-        // Validación de integridad: Un usuario no puede ser borrado si tiene un perfil humano activo
-        if ($user->profile()->exists()) {
-            return [
-                "error" => true,
-                "code" => 409,
-                "message" => "No se puede eliminar el usuario porque tiene un perfil relacionado",
-            ];
-        }
-
-        $user->delete();
+        $user->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => $oldStatus == 'Peticion' ? 'Aprobacion Peticion' : 'Cambio de Estado',
+            'status_old'     => $oldStatus,
+            'status_new'     => $user->stateUser->name,
+        ]);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Usuario eliminado exitosamente",
+            "message" => "Aprobacion de usuario realizada exitosamente",        ];
+    }
+    /**
+     * Elimina el usuario validando que no tenga un perfil asociado.
+     * Si el perfil existe, se recomienda eliminar primero el perfil o usar soft deletes.
+     */
+
+    public function changeRole(array $data, $id)
+    {
+        $user = User::with(['roles'])->find($id);
+
+        if (!$user) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Usuario no encontrado",
+            ];
+        }
+
+        $oldRole = $user->roles->first()?->name;
+
+        $user->syncRoles([$data['role']]);
+
+        $user->refresh()->load('roles');
+
+        $newRole = $user->roles->first()?->name;
+
+        $user->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Cambio de Rol',
+            'status_old'     => $oldRole,
+            'status_new'     => $newRole,
+        ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Cambio de rol realizado exitosamente",
+        ];
+    }
+    public function delete($id)
+    {
+        $user = User::find($id);
+
+        if (!$user){
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Peticion no encontrada",
+            ];
+        }
+        if ($user->state_user_id !== 3)
+        {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "El usuario ya fue aprobado no se puede eliminar",
+            ];
+        }
+        // Validación de integridad: Un usuario no puede ser borrado si tiene un perfil humano activo
+        $profile = $user->profile;
+        
+        $profile->delete();
+
+        $user->delete();
+        $user->audits()->create([
+            'user_name'      => auth()->user()->profile->names . " " . auth()->user()->profile->last_names,
+            'rol_name'       => auth()->user()->getRoleNames()->first(),
+            'date_time'      => now(),
+            'action_execute' => 'Rechazar Peticion',
+            'status_old'     => 'Peticion',
+            'status_new'     => 'Rechazado y Eliminado',
+        ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Peticion eliminada exitosamente",
+        ];
+    }
+
+    public function history($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return [
+                "error" => true,
+                "code" => 404,
+                "message" => "Usuario no encontrado",
+            ];
+        }
+
+        $history = $user->audits()
+            ->orderBy('date_time', 'desc')
+            ->get()
+            ->map(fn($audit) => [
+                'date_time'      => $audit->date_time,
+                'user_name'      => $audit->user_name,
+                'rol'            => $audit->rol_name,
+                'action_execute' => $audit->action_execute,
+                'status_old'     => $audit->status_old,
+                'status_new'     => $audit->status_new,
+            ]);
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Historial de auditoría obtenido exitosamente",
+            "data" => $history,
         ];
     }
 }
