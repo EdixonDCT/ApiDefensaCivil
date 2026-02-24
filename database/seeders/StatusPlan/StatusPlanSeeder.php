@@ -11,10 +11,10 @@ class StatusPlanSeeder extends Seeder
     public function run(): void
     {
         StatusPlan::create([
-            'name' => 'Registro'
+            'name' => 'Pendiente'
         ]);
         StatusPlan::create([
-            'name' => 'No Puntaje'   
+            'name' => 'No aplica'   
         ]);
         StatusPlan::create([
             'name' => 'Creado'

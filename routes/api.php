@@ -293,8 +293,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::patch('/status/{familyPlan_id}', [FamilyPlanController::class, 'changeStatus']);
 
-        route::patch('/geore/{familyPlan_id}', [FamilyPlanController::class, 'georeferencing']);
-
         route::delete('/{familyPlan_id}', [FamilyPlanController::class, 'destroy']);
 
         route::get('/checkAccess/{familyPlan_id}', [FamilyPlanController::class, 'checkAccess']);

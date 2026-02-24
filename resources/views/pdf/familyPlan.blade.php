@@ -13,7 +13,7 @@
 <h1>Plan Familiar #{{ $plan->id }}</h1>
 
 <p><strong>Nombre:</strong> {{ $plan->last_names }}</p>
-<p><strong>Fecha:</strong> {{ $plan->created_at }}</p>
+<p><strong>Fechaa:</strong> {{ $plan->created_at }}</p>
 
 </body>
 </html>

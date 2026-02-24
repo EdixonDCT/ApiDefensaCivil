@@ -121,23 +121,6 @@ class FamilyPlanController extends Controller
 
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
     }
-
-    /**
-     * Registra las coordenadas y datos geográficos del hogar.
-     */
-    public function georeferencing(GeoreFamilyPlanRequest $request, string $id)
-    {
-        $data = $request->validated();
-        $response = $this->service->georeferencing($data, $id);
-
-        if ($response['error'])
-        {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
-    }
-
     /**
      * Registra los datos de identificación oficial del núcleo familiar dentro del plan.
      */

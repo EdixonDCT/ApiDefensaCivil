@@ -43,7 +43,7 @@ class FamilyPlanService
      */
     public function getById($id)
     {
-        $familyPlan = FamilyPlan::find($id);
+        $familyPlan = FamilyPlan::with('city.apartment')->find($id);
 
         if (!$familyPlan){
             return [
@@ -53,11 +53,17 @@ class FamilyPlanService
             ];
         }
 
+        // Convertimos a array para poder modificarlo
+        $data = $familyPlan->toArray();
+
+        // Creamos apartment_id manualmente
+        $data['apartment_id'] = $familyPlan->city->apartment->id ?? null;
+
         return [
             "error" => false,
             "code" => 200,
             "message" => "Plan familiar obtenido exitosamente",
-            "data" => $familyPlan,
+            "data" => $data,
         ];
     }
 
@@ -166,32 +172,6 @@ class FamilyPlanService
             "data" => $familyPlan,
         ];
     }
-
-    /**
-     * Actualiza la información de coordenadas y georreferenciación.
-     */
-    public function georeferencing(array $data,$id)
-    {
-        $familyPlan = FamilyPlan::find($id);
-
-        if (!$familyPlan){
-            return [
-                "error" => true,
-                "code" => 404,
-                "message" => "Plan familiar no encontrado",
-            ];
-        }
-
-        $familyPlan->update($data);
-
-        return [
-            "error" => false,
-            "code" => 200,
-            "message" => "Georreferenciacion del plan familiar actualizado correctamente",
-            "data" => $familyPlan,
-        ];
-    }
-
     /**
      * Actualiza los datos de identificación específicos del plan.
      */
@@ -249,7 +229,7 @@ class FamilyPlanService
 
         if (!$user) {
             return [
-                "error" => true,
+                "error" => false,
                 "code" => 401,
                 "message" => "Usuario no autenticado",
                 "data" => [
@@ -262,7 +242,7 @@ class FamilyPlanService
 
         if (!$plan) {
             return [
-                "error" => true,
+                "error" => false,
                 "code" => 404,
                 "message" => "Plan familiar no encontrado",
                 "data" => [
@@ -289,7 +269,7 @@ class FamilyPlanService
         if ($roleId == 3) {
 
             // No puede acceder si el estado es 4 o 6
-            if (!in_array($plan->status_plan_id, [1,2,4,6])) {
+            if (!in_array($plan->status_plan_id, [1,2,4,6,7])) {
                 $access = $plan->user_id == $user->id;
             }
         }
@@ -301,7 +281,7 @@ class FamilyPlanService
                 $user->profile &&
                 $user->profile->organization &&
                 $user->profile->organization->sectional_id === $plan->sectional_id &&
-                $plan->status_plan_id == 4
+                in_array($plan->status_plan_id, [4,7])
             ) {
                 $access = true;
             }
@@ -390,7 +370,7 @@ class FamilyPlanService
             $sectionalId = $user->profile->organization->sectional_id;
 
             $plans = FamilyPlan::where('sectional_id', $sectionalId)
-                ->where('status_plan_id', 4)
+                ->whereIn('status_plan_id', [4,7])
                 ->with('statusPlan','city','city.apartment')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
