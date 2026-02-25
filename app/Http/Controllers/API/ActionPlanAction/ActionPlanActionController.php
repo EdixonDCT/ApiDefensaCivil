@@ -82,7 +82,9 @@ class ActionPlanActionController extends Controller
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [], $response['paginate']);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []
+        // , $response['paginate']
+        );
     }
 
     public function store(StoreActionPlanActionRequest $request)
@@ -151,7 +153,7 @@ class ActionPlanActionController extends Controller
             return ResponseFormatter::error('Registro no encontrado', 404);
         }
 
-        if (!(new AccessActionPolicy())->access($actionPlanAction->actionPlan)) {
+        if (!(new AccessActionPlanPolicy())->access($actionPlanAction->actionPlan)) {
             return ResponseFormatter::error(
                 'Usted no tiene autorización para modificar este registro',
                 403

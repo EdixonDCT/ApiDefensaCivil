@@ -34,7 +34,7 @@ class ActionPlanActionService
 
     public function getById($id)
     {
-        $action = ActionPlanAction::find($id);
+        $action = ActionPlanAction::with('member')->find($id);
 
         if (!$action) {
             return [
@@ -54,19 +54,25 @@ class ActionPlanActionService
 
     public function getActionForActionPlan($id)
     {
-        $paginator = ActionPlanAction::where('action_plan_id', $id)
-            ->with(['actionPlan','member','actionType'])->paginate(10);
+        $actionPlanQuery  = ActionPlanAction::where('action_plan_id', $id)
+            ->with(['actionPlan','member','actionType'])
+            // ->paginate(10)
+            ;
 
         // Transformar aunque esté vacío (no rompe)
-        $items = $paginator->getCollection()->transform(function ($item) {
+        $items = $actionPlanQuery
+        // getCollection()
+        ->get()
+        ->transform(function ($item) {
             return [
-                'id' => $item->member->id,
+                'id' => $item->id,
                 'description' => $item->description,
                 'member_name' => $item->member->names.' '.$item->member->last_names,
                 'action_type_name' => $item->actionType->name,
+                'action_type_id' => $item->actionType->id,
             ];
         });
-
+        
         return [
             "error"   => false,
             "code"    => 200,
@@ -74,14 +80,14 @@ class ActionPlanActionService
                 ? "Este plan de accion no tiene acciones registrados"
                 : "Acciones del plan de accion obtenidos exitosamente",
             "data"    => $items,
-            'paginate' => [
-                'current_page' => $paginator->currentPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-                'last_page' => $paginator->lastPage(),
-                'from' => $paginator->firstItem(),
-                'to' => $paginator->lastItem(),
-            ],
+            // 'paginate' => [
+            //     'current_page' => $paginator->currentPage(),
+            //     'per_page' => $paginator->perPage(),
+            //     'total' => $paginator->total(),
+            //     'last_page' => $paginator->lastPage(),
+            //     'from' => $paginator->firstItem(),
+            //     'to' => $paginator->lastItem(),
+            // ],
         ];
     }
 

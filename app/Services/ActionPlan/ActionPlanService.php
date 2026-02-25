@@ -81,11 +81,24 @@ class ActionPlanService
             $query->where('family_plan_id', $familyPlanId);
         })->first();
 
+        return [
+        "error" => false,
+        "code" => 200,
+        "message" => "Plan de acción obtenido exitosamente",
+        "data" => ["boolean" => (bool)$actionPlan]
+        ];
+    }
+
+    public function getByPlanBooleanBackend($familyPlanId)
+    {
+        $actionPlan = ActionPlan::whereHas('riskFactor', function ($query) use ($familyPlanId) {
+            $query->where('family_plan_id', $familyPlanId);
+        })->first();
+
         if (!$actionPlan) return false;
 
         return true;
     }
-
 
     public function create(array $data)
     {

@@ -92,6 +92,31 @@ class ActionPlanController extends Controller
         );
     }
 
+    public function getByPlanBoolean(string $id)
+    {
+        $familyPlan = FamilyPlan::find($id);
+
+        if (!$familyPlan) {
+            return ResponseFormatter::error("Plan familiar no encontrado", 404);
+        }
+
+        if (!(new AccessPlanPolicy())->access($id)) {
+            return ResponseFormatter::error('Usted no tiene autorización acceder al plan de accion de este plan familiar',403);
+        }
+
+        $response = $this->service->getByPlanBoolean($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
+    }
+
     public function store(StoreActionPlanRequest $request)
     {
         $member = Member::find($request->member_id);
@@ -137,9 +162,9 @@ class ActionPlanController extends Controller
             );
         }
 
-        $responseRepeat = $this->service->getByPlanBoolean($memberPlan->id);
+        $responseRepeat = $this->service->getByPlanBooleanBackend($memberPlan->id);
         if ($responseRepeat) {
-            return ResponseFormatter::error("Este plan familiar ya posee un plan de accion",409);
+            return ResponseFormatter::error($responseRepeat,409);
         }
         $data = $request->validated();
 

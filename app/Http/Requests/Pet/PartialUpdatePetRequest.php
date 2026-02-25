@@ -16,7 +16,7 @@ class PartialUpdatePetRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:50',
             'breed' => 'sometimes|string|max:50',
-            'age' => 'sometimes|integer|min:0',
+            'age' => 'required|integer|min:0|max:50',
             'animal_gender_id' => 'sometimes|exists:animal_genders,id',
             'species_id' => 'sometimes|exists:species,id',
             'family_plan_id' => 'sometimes|exists:family_plans,id',
@@ -34,6 +34,7 @@ class PartialUpdatePetRequest extends FormRequest
 
             'age.integer' => 'La edad debe ser un número entero.',
             'age.min' => 'La edad no puede ser menor a 0.',
+            'age.max' => 'La edad no puede ser mayor de 50.',
 
             'animal_gender_id.exists' => 'El género seleccionado no existe.',
             'species_id.exists' => 'La especie seleccionada no existe.',

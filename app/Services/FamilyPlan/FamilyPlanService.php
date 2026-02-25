@@ -276,7 +276,6 @@ class FamilyPlanService
 
         // 🔵 Rol 2 → Supervisor
         if ($roleId == 2) {
-
             if (
                 $user->profile &&
                 $user->profile->organization &&

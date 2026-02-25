@@ -22,6 +22,7 @@ class SpeciesSeeder extends Seeder
             'Pez',
             'Rana',
             'Serpiente',
+            'Tortuga'
         ];
 
         foreach ($speciesList as $name) {

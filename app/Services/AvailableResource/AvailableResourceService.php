@@ -3,6 +3,7 @@
 namespace App\Services\AvailableResource;
 
 use App\Models\AvailableResource\AvailableResource;
+use App\Models\Resource\Resource;
 
 class AvailableResourceService
 {
@@ -44,6 +45,11 @@ class AvailableResourceService
             ];
         }
 
+        $serviceResource = Resource::find($resource->resource_id);
+
+        $resource->resource_service = $serviceResource->service;
+        $resource->resource_name = $serviceResource->name;
+
         return [
             "error" => false,
             "code" => 200,
@@ -67,6 +73,7 @@ class AvailableResourceService
             'distance' => $item->distance,
             'phone' => $item->phone,
             'service' => $item->resource->service,
+            'description' => $item->description,
         ];
         });
 

@@ -704,6 +704,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/familyPlan/{id}',[ActionPlanController::class, 'getByPlan']);
 
+    Route::get('/familyPlan/boolean/{id}',[ActionPlanController::class, 'getByPlanBoolean']);
+
     Route::post('/', [ActionPlanController::class, 'store']);
 
     Route::put('/{id}', [ActionPlanController::class, 'update']);
@@ -722,6 +724,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [ActionPlanActionController::class, 'store']);
 
         Route::put('/{id}', [ActionPlanActionController::class, 'update']);
+
+        Route::patch('/{id}', [ActionPlanActionController::class, 'partialUpdate']);
 
         Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
     });

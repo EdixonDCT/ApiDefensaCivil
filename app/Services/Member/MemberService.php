@@ -6,6 +6,7 @@ use App\Models\Member\Member;
 use App\Models\FamilyMember\FamilyMember;
 use App\Models\ConditionMember\ConditionMember;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class MemberService
 {
@@ -108,7 +109,7 @@ class MemberService
         try {
             // Validar cabeza de familia
             $existingHeads = FamilyMember::where('family_plan_id', $plan_id)
-                ->whereHas('member', fn($q) => $q->where('kinship_id', 1)) // 1 = cabeza de familia
+                ->whereHas('member', fn($q) => $q->where('kinship_id', 1))
                 ->count();
 
             if ($existingHeads === 0 && ($data['kinship_id'] ?? 0) != 1) {
@@ -127,6 +128,30 @@ class MemberService
                     "code" => 400,
                     "message" => "Ya existe un miembro con rol cabeza de familia, no se puede duplicar",
                 ];
+            }
+
+            // 🔥 Validar que el cabeza de familia sea mayor de edad
+            if (($data['kinship_id'] ?? 0) == 1) {
+
+                if (empty($data['birth_date'])) {
+                    DB::rollBack();
+                    return [
+                        "error" => true,
+                        "code" => 400,
+                        "message" => "La fecha de nacimiento es obligatoria para el cabeza de familia",
+                    ];
+                }
+
+                $age = Carbon::parse($data['birth_date'])->age;
+
+                if ($age < 18) {
+                    DB::rollBack();
+                    return [
+                        "error" => true,
+                        "code" => 400,
+                        "message" => "El cabeza de familia debe ser mayor de edad",
+                    ];
+                }
             }
 
             $member = Member::create($data);
@@ -158,7 +183,7 @@ class MemberService
 
     public function update(array $data, $id)
     {
-        // 1️⃣ Buscar la relación FamilyMember del miembro
+        // 1️⃣ Buscar relación del plan familiar
         $familyMember = FamilyMember::where('member_id', $id)->first();
 
         if (!$familyMember) {
@@ -171,6 +196,7 @@ class MemberService
 
         // 2️⃣ Buscar miembro
         $member = Member::find($id);
+
         if (!$member) {
             return [
                 "error" => true,
@@ -179,8 +205,35 @@ class MemberService
             ];
         }
 
-        // 3️⃣ Validar cambio de cabeza de familia
-        if (isset($data['kinship_id']) && $data['kinship_id'] == 1) {
+        // Obtener valores nuevos o actuales
+        $newKinship   = $data['kinship_id'] ?? $member->kinship_id;
+        $newBirthDate = $data['birth_date'] ?? $member->birth_date;
+
+        // 🔥 Validar mayoría de edad si será cabeza de familia
+        if ($newKinship == 1) {
+
+            if (empty($newBirthDate)) {
+                return [
+                    "error" => true,
+                    "code" => 400,
+                    "message" => "La fecha de nacimiento es obligatoria para el cabeza de familia"
+                ];
+            }
+
+            $age = Carbon::parse($newBirthDate)->age;
+
+            if ($age < 18) {
+                return [
+                    "error" => true,
+                    "code" => 400,
+                    "message" => "El cabeza de familia debe ser mayor de edad"
+                ];
+            }
+        }
+
+        // 🔥 Si se intenta asignar como cabeza, modificar al anterior
+        if ($newKinship == 1 && $member->kinship_id != 1) {
+
             $existingHead = FamilyMember::where('family_plan_id', $familyMember->family_plan_id)
                 ->whereHas('member', fn($q) => $q->where('kinship_id', 1))
                 ->where('member_id', '!=', $id)
@@ -188,17 +241,30 @@ class MemberService
 
             if ($existingHead) {
                 $prevHead = Member::find($existingHead->member_id);
-                $prevHead->update(['kinship_id' => 17]); // el rol anterior pasa a 17
+                $prevHead->update(['kinship_id' => 17]);
             }
         }
 
-        // 4️⃣ Actualizar datos del miembro
+        // 🔥 Evitar quitar cabeza sin reasignar
+        if (
+            $member->kinship_id == 1 &&
+            isset($data['kinship_id']) &&
+            $data['kinship_id'] != 1
+        ) {
+            return [
+                "error" => true,
+                "code" => 400,
+                "message" => "No se puede quitar el rol de cabeza sin asignarlo a otro miembro"
+            ];
+        }
+
+        // 4️⃣ Actualizar
         $member->update($data);
 
         return [
             "error" => false,
             "code" => 200,
-            "message" => "Miembro actualizado exitosamente, pero el anterior cabeza de familia fue modificado",
+            "message" => "Miembro actualizado exitosamente",
             "data" => $member,
         ];
     }

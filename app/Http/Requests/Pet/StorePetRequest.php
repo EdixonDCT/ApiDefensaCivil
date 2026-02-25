@@ -16,7 +16,7 @@ class StorePetRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'breed' => 'required|string|max:50',
-            'age' => 'required|integer|min:0',
+            'age' => 'required|integer|min:0|max:50',
             'animal_gender_id' => 'required|exists:animal_genders,id',
             'species_id' => 'required|exists:species,id',
             'family_plan_id' => 'required|exists:family_plans,id',
@@ -36,6 +36,7 @@ class StorePetRequest extends FormRequest
             'age.required' => 'La edad es obligatoria.',
             'age.integer' => 'La edad debe ser un número entero.',
             'age.min' => 'La edad no puede ser menor a 0.',
+            'age.max' => 'La edad no puede ser mayor de 50.',
 
             'animal_gender_id.required' => 'El género del animal es obligatorio.',
             'animal_gender_id.exists' => 'El género seleccionado no existe.',
