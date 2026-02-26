@@ -34,19 +34,20 @@ use App\Http\Controllers\API\Member\MemberController;
 use App\Http\Controllers\API\FamilyMember\FamilyMemberController;
 use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
-use App\Http\Controllers\Api\Species\SpeciesController;
+use App\Http\Controllers\API\Species\SpeciesController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
 use App\Http\Controllers\API\Notification\NotificationController;
-use App\Http\Controllers\Api\Pet\PetController;
-use App\Http\Controllers\Api\PetVaccine\PetVaccineController;
+use App\Http\Controllers\API\Pet\PetController;
+use App\Http\Controllers\API\PetVaccine\PetVaccineController;
 use App\Http\Controllers\API\RiskFactor\RiskFactorController;
 use App\Http\Controllers\API\RiskReductionAction\RiskReductionActionController;
 use App\Http\Controllers\API\ThreatType\ThreatTypeController;
 use App\Http\Controllers\API\VulnerabilityFactor\VulnerabilityFactorController;
 use App\Http\Controllers\API\VulnerabilityGrade\VulnerabilityGradeController;
 use App\Http\Controllers\API\Vulnerability\VulnerabilityController;
-use App\Http\Controllers\Api\Resource\ResourceController;
-use App\Http\Controllers\Api\Audit\AuditController;
+use App\Http\Controllers\API\Resource\ResourceController;
+use App\Http\Controllers\API\Audit\AuditController;
+use App\Http\Controllers\API\HousingGraphic\HousingGraphic;
 use App\Http\Middleware\DecodeBearerToken;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -729,6 +730,21 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
     });
+
+    // Route::prefix('housingGraphics')->group(function () {
+
+    //     Route::get('/', [ActionPlanActionController::class, 'index']);
+
+    //     Route::get('/{id}', [ActionPlanActionController::class, 'show']);
+
+    //     Route::get('familyPlan/{id}',[ActionPlanActionController::class, 'getActionForActionPlan']);
+
+    //     Route::post('/', [ActionPlanActionController::class, 'store']);
+
+    //     Route::patch('/{id}', [ActionPlanActionController::class, 'partialUpdate']);
+
+    //     Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
+    // });
 
     Route::prefix('audits')->group(function () {
         Route::get('/dashBoardAdmin', [AuditController::class, 'dashBoardAdmin']);

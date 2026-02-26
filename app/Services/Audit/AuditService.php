@@ -117,8 +117,10 @@
                 'status_new'     => $audit->status_new,
                 // 'historiable_id' => $audit->historiable_id,
                 // 'tabla'          => class_basename($audit->historiable_type),
-                'name_model'  => $audit->historiable->name 
-                                    ?? $audit->historiable->profile->names.' '.$audit->historiable->profile->last_names
+                'name_model' => 
+                    $audit->historiable?->name
+                    ?? $audit->historiable?->description
+                    ?? $audit->historiable?->profile?->names . ' ' . $audit->historiable?->profile?->last_names
             ];
         }
 

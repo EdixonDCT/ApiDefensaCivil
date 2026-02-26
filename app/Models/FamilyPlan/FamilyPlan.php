@@ -14,6 +14,8 @@ use App\Models\HousingQuality\HousingQuality;
 use App\Models\Sector\Sector;
 use App\Models\StatusPlan\StatusPlan;
 use App\Models\Sectional\Sectional;
+use App\Models\HousingInfo\HousingInfo;
+use App\Models\HousingGraphic\HousingGraphic;
 use App\Models\VulnerableTest\VulnerableTest;
 use App\Models\FamilyMember\FamilyMember;
 use App\Models\Pet\Pet;
@@ -118,10 +120,14 @@ class FamilyPlan extends Model
     {
         return $this->hasMany(VulnerableTest::class, 'family_plan_id');
     }
-
-    /**
-     * Obtiene el historial completo de acciones y movimientos realizados sobre este plan.
-     */
+    public function housingInfo()
+    {
+        return $this->hasOne(HousingInfo::class, 'family_plan_id');
+    }
+        public function housingGraphic()
+    {
+        return $this->hasMany(housingGraphic::class, 'family_plan_id');
+    }
     public function familyMembers()
     {
         return $this->hasMany(FamilyMember::class, 'family_plan_id');
