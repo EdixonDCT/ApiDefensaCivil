@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('description');
 
             /** * Indica si la pregunta representa una señal de alerta o precaución.
-             * boolean: 1 (Sí / Alerta), 0 (No / Normal)
+             * boolean: 1 (Sí / Precaucion), 0 (No / Normal)
              */
             $table->boolean('question_caution');
 
