@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\ThreatType;
+namespace App\Http\Controllers\API\ThreatType;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;

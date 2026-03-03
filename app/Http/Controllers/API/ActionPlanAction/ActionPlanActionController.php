@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\ActionPlanAction;
+namespace App\Http\Controllers\API\ActionPlanAction;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;

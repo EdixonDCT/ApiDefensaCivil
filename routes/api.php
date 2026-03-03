@@ -1,11 +1,8 @@
 <?php
 
 use App\Enums\TokenAbility;
-use App\Http\Controllers\Api\ActionPlan\ActionPlanController;
-use App\Http\Controllers\Api\ActionPlanAction\ActionPlanActionController;
-use App\Http\Controllers\Api\ActionType\ActionTypeController;
-use App\Http\Controllers\Api\AvailableResource\AvailableResourceController;
 use Illuminate\Http\Request;
+use App\Http\Middleware\DecodeBearerToken;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\StateUser\StateUserController;
 use App\Http\Controllers\API\User\UserController;
@@ -26,7 +23,6 @@ use App\Http\Controllers\API\HousingInfo\HousingInfoController;
 use App\Http\Controllers\API\VulnerableQuestion\VulnerableQuestionController;
 use App\Http\Controllers\API\VulnerableTest\VulnerableTestController;
 use App\Http\Controllers\API\Action\ActionController;
-use App\Http\Controllers\API\History\HistoryController;
 use App\Http\Controllers\API\BloodGroup\BloodGroupController;
 use App\Http\Controllers\API\Nationality\NationalityController;
 use App\Http\Controllers\API\Kinship\KinshipController;
@@ -36,7 +32,6 @@ use App\Http\Controllers\API\ConditionType\ConditionTypeController;
 use App\Http\Controllers\API\ConditionMember\ConditionMemberController;
 use App\Http\Controllers\API\Species\SpeciesController;
 use App\Http\Controllers\API\AnimalGender\AnimalGenderController;
-use App\Http\Controllers\API\Notification\NotificationController;
 use App\Http\Controllers\API\Pet\PetController;
 use App\Http\Controllers\API\PetVaccine\PetVaccineController;
 use App\Http\Controllers\API\RiskFactor\RiskFactorController;
@@ -47,8 +42,11 @@ use App\Http\Controllers\API\VulnerabilityGrade\VulnerabilityGradeController;
 use App\Http\Controllers\API\Vulnerability\VulnerabilityController;
 use App\Http\Controllers\API\Resource\ResourceController;
 use App\Http\Controllers\API\Audit\AuditController;
-use App\Http\Controllers\API\HousingGraphic\HousingGraphic;
-use App\Http\Middleware\DecodeBearerToken;
+use App\Http\Controllers\API\HousingGraphic\HousingGraphicController;
+use App\Http\Controllers\API\ActionPlan\ActionPlanController;
+use App\Http\Controllers\API\ActionPlanAction\ActionPlanActionController;
+use App\Http\Controllers\API\ActionType\ActionTypeController;
+use App\Http\Controllers\API\AvailableResource\AvailableResourceController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -731,20 +729,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
     });
 
-    // Route::prefix('housingGraphics')->group(function () {
+    Route::prefix('housingGraphics')->group(function () {
 
-    //     Route::get('/', [ActionPlanActionController::class, 'index']);
+        Route::get('/', [HousingGraphicController::class, 'index']);
 
-    //     Route::get('/{id}', [ActionPlanActionController::class, 'show']);
+        Route::get('/{id}', [HousingGraphicController::class, 'show']);
 
-    //     Route::get('familyPlan/{id}',[ActionPlanActionController::class, 'getActionForActionPlan']);
+        Route::get('familyPlan/{id}',[HousingGraphicController::class, 'getByFamilyPlan']);
 
-    //     Route::post('/', [ActionPlanActionController::class, 'store']);
+        Route::post('/', [HousingGraphicController::class, 'store']);
 
-    //     Route::patch('/{id}', [ActionPlanActionController::class, 'partialUpdate']);
+        Route::patch('/{id}', [HousingGraphicController::class, 'partialUpdate']);
 
-    //     Route::delete('/{id}', [ActionPlanActionController::class, 'destroy']);
-    // });
+        Route::delete('/{id}', [HousingGraphicController::class, 'destroy']);
+    });
 
     Route::prefix('audits')->group(function () {
         Route::get('/dashBoardAdmin', [AuditController::class, 'dashBoardAdmin']);

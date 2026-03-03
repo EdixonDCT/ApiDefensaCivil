@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\AvailableResource;
+namespace App\Http\Controllers\API\AvailableResource;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
