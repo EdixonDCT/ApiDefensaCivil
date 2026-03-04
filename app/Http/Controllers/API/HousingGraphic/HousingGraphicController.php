@@ -54,9 +54,9 @@ class HousingGraphicController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function getForPlan(string $plan_id)
+    public function getByFamilyPlan(string $plan_id)
     {
-        $response = $this->service->getForPlan($plan_id);
+        $response = $this->service->getByFamilyPlan($plan_id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
@@ -69,7 +69,7 @@ class HousingGraphicController extends Controller
      * Registra la información técnica de una vivienda.
      * Habitualmente vincula datos como tipo de piso, techo y acceso a servicios.
      */
-    public function store(StoreHousingInfoRequest $request)
+    public function store(StoreHousingGraphicRequest $request)
     {
         $data = $request->validated();
         $response = $this->service->create($data);
@@ -82,11 +82,11 @@ class HousingGraphicController extends Controller
         return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
-    public function updateDescription(UpdateHousingGraphicDescriptionRequest $request)
+    public function updateDescription(UpdateHousingGraphicDescriptionRequest $request,string $id)
     {
         $data = $request->validated();
 
-        $response = $this->service->partialUpdate($data);
+        $response = $this->service->partialUpdate($data,$id);
 
         if ($response['error'])
         {    
