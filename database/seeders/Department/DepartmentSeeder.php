@@ -1,22 +1,22 @@
 <?php
 
-namespace Database\Seeders\Apartment;
+namespace Database\Seeders\Department;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Apartment\Apartment;
+use App\Models\Department\Department;
 
-class ApartmentSeeder extends Seeder
+class DepartmentSeeder extends Seeder
 {
     public function run(): void
     {
-        Apartment::create([
+        Department::create([
             'name' => 'Santander'
         ]);
-        Apartment::create([
+        Department::create([
             'name' => 'Bogota'
         ]);
-        Apartment::create([
+        Department::create([
             'name' => 'Medellin'
         ]);
     }

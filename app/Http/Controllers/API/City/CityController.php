@@ -105,22 +105,6 @@ class CityController extends Controller
     }
 
     /**
-     * Cambia el estado de activación (habilitado/deshabilitado) de la ciudad.
-     */
-    public function ChangeState(ChangeStateCityRequest $request, string $id)
-    {
-        $data = $request->validated();
-        $response = $this->service->changeState($data, $id);
-
-        if ($response['error'])
-        {
-            return ResponseFormatter::error($response['message'], $response['code']);
-        }
-
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
-    }
-
-    /**
      * Elimina una ciudad si no tiene dependencias activas.
      */
     public function destroy(string $id)
@@ -136,12 +120,12 @@ class CityController extends Controller
     }
 
     /**
-     * Obtiene todos los apartamentos vinculados a una ciudad específica.
+     * Obtiene todos los departamentos vinculados a una ciudad específica.
      * Útil para filtrar propiedades o planes por ubicación geográfica.
      */
-    public function getApartment(string $id)
+    public function getByDepartment(string $department_id)
     {
-        $response = $this->service->getAllForApartments($id);
+        $response = $this->service->getAllByDepartment($department_id);
 
         if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);

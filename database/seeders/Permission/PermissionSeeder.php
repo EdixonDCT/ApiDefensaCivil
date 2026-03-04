@@ -102,14 +102,14 @@ class PermissionSeeder extends Seeder
             ['status-plans.update', 'Actualizar estado de plan'],
             ['status-plans.destroy', 'Eliminar estado de plan'],
 
-            // APARTMENTS
-            ['apartments.index', 'Listar apartamentos'],
-            ['apartments.show', 'Ver apartamento'],
-            ['apartments.store', 'Crear apartamento'],
-            ['apartments.update', 'Actualizar apartamento'],
-            ['apartments.partial-update', 'Actualizar parcialmente apartamento'],
-            ['apartments.change-state', 'Cambiar estado de apartamento'],
-            ['apartments.destroy', 'Eliminar apartamento'],
+            // DEPARTMENTS
+            ['departments.index', 'Listar departamentos'],
+            ['departments.show', 'Ver departamento'],
+            ['departments.store', 'Crear departamento'],
+            ['departments.update', 'Actualizar departamento'],
+            ['departments.partial-update', 'Actualizar parcialmente departamento'],
+            ['departments.change-state', 'Cambiar estado de departamento'],
+            ['departments.destroy', 'Eliminar departamento'],
 
             // CITIES
             ['cities.index', 'Listar ciudades'],
@@ -119,7 +119,7 @@ class PermissionSeeder extends Seeder
             ['cities.partial-update', 'Actualizar parcialmente ciudad'],
             ['cities.change-state', 'Cambiar estado de ciudad'],
             ['cities.destroy', 'Eliminar ciudad'],
-            ['cities.apartments', 'Ver apartamentos por ciudad'],
+            ['cities.departments', 'Ver departamentos por ciudad'],
 
             // FAMILY PLANS
             ['family-plans.index', 'Listar planes familiares'],

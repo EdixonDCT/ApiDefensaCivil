@@ -35,7 +35,7 @@ class UpdateCityRequest extends FormRequest
 
         return [
             'name'         => "required|string|max:50|unique:cities,name,{$cityId}",
-            'apartment_id' => 'required|exists:apartments,id'
+            'department_id' => 'required|exists:departments,id'
         ];
     }
 
@@ -50,8 +50,8 @@ class UpdateCityRequest extends FormRequest
             'name.string'           => 'El :attribute debe contener solo caracteres de texto',
             'name.max'              => 'El :attribute tiene un máximo de 50 caracteres',
             'name.unique'           => 'El :attribute ya se encuentra registrado',
-            'apartment_id.required' => 'El :attribute es obligatorio',
-            'apartment_id.exists'   => 'El :attribute seleccionado no existe'
+            'department_id.required' => 'El :attribute es obligatorio',
+            'department_id.exists'   => 'El :attribute seleccionado no existe'
         ];
     }
 
@@ -63,7 +63,7 @@ class UpdateCityRequest extends FormRequest
     {
         return [
             'name'         => 'nombre de la ciudad',
-            'apartment_id' => 'identificador del apartamento' 
+            'department_id' => 'departamento' 
         ];
     }
 }

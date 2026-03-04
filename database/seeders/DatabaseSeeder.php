@@ -15,7 +15,7 @@ use Database\Seeders\Zone\ZoneSeeder;
 use Database\Seeders\HousingQuality\HousingQualitySeeder;   
 use Database\Seeders\Sector\SectorSeeder;
 use Database\Seeders\StatusPlan\StatusPlanSeeder;
-use Database\Seeders\Apartment\ApartmentSeeder;
+use Database\Seeders\Department\DepartmentSeeder;
 use Database\Seeders\City\CitySeeder;
 use Database\Seeders\Role\RoleSeeder;
 use Database\Seeders\Permission\PermissionSeeder;
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
             HousingQualitySeeder::class,
             SectorSeeder::class,
             StatusPlanSeeder::class,
-            ApartmentSeeder::class,
+            DepartmentSeeder::class,
             CitySeeder::class,
             VulnerableQuestionSeeder::class,    
             ActionSeeder::class,
