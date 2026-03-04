@@ -43,7 +43,7 @@ class FamilyPlanService
      */
     public function getById($id)
     {
-        $familyPlan = FamilyPlan::with('city.apartment')->find($id);
+        $familyPlan = FamilyPlan::with('city.department')->find($id);
 
         if (!$familyPlan){
             return [
@@ -56,8 +56,8 @@ class FamilyPlanService
         // Convertimos a array para poder modificarlo
         $data = $familyPlan->toArray();
 
-        // Creamos apartment_id manualmente
-        $data['apartment_id'] = $familyPlan->city->apartment->id ?? null;
+        // Creamos department_id manualmente
+        $data['department_id'] = $familyPlan->city->department->id ?? null;
 
         return [
             "error" => false,
