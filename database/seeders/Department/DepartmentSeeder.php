@@ -10,14 +10,43 @@ class DepartmentSeeder extends Seeder
 {
     public function run(): void
     {
-        Department::create([
-            'name' => 'Santander'
-        ]);
-        Department::create([
-            'name' => 'Bogota'
-        ]);
-        Department::create([
-            'name' => 'Medellin'
-        ]);
+        $departments = [
+            'Amazonas',
+            'Antioquia',
+            'Arauca',
+            'Atlántico',
+            'Bolívar',
+            'Boyacá',
+            'Caldas',
+            'Caquetá',
+            'Casanare',
+            'Cauca',
+            'Cesar',
+            'Chocó',
+            'Córdoba',
+            'Cundinamarca',
+            'Guainía',
+            'Guaviare',
+            'Huila',
+            'La Guajira',
+            'Magdalena',
+            'Meta',
+            'Nariño',
+            'Norte de Santander',
+            'Putumayo',
+            'Quindío',
+            'Risaralda',
+            'San Andrés y Providencia',
+            'Santander',
+            'Sucre',
+            'Tolima',
+            'Valle del Cauca',
+            'Vaupés',
+            'Vichada'
+        ];
+
+        foreach ($departments as $name) {
+            Department::create(['name' => $name]);
+        }
     }
 }
