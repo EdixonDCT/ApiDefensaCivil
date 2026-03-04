@@ -12,7 +12,6 @@ use App\Models\Audit\Audit;
  */
 use App\Models\StateUser\StateUser;
 use App\Models\Profile\Profile;
-use App\Models\History\History;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -75,10 +74,6 @@ class User extends Authenticatable
      * Relación de Uno a Muchos (HasMany) con Historial.
      * Permite auditar todas las acciones realizadas por este usuario en el sistema.
      */
-    public function history()
-    {
-        return $this->hasMany(History::class, 'user_id');
-    }
 
     public function audits()
     {
