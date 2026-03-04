@@ -53,6 +53,7 @@ class HousingGraphicService
      */
     public function create(array $data)
     {
+         /** @var UploadedFile $file */
         $file = $data['path'];
 
         // Almacena el archivo en 'storage/app/public/imagenes'
@@ -88,13 +89,13 @@ class HousingGraphicService
             ];
         }
 
-        $Pet->update($data);
+        $housingGraphic->update($data);
 
         return [
             "error" => false,
             "code" => 200,
             "message" => "Grafico de vivienda descripcion actualizada exitosamente",
-            "data" => $Pet,
+            "data" => $housingGraphic,
         ];
     }
 
