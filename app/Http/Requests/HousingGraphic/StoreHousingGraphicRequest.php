@@ -28,7 +28,7 @@ class StoreHousingGraphicRequest extends FormRequest
             /**
              * Se asegura que el plan familiar exista y que no tenga ya un gráfico registrado.
              */
-            'family_plan_id' => 'required|exists:family_plans,id|unique:housing_graphics,family_plan_id',
+            'family_plan_id' => 'required|exists:family_plans,id',
 
             /**
              * Descripción obligatoria entre 10 y 255 caracteres.
@@ -50,8 +50,7 @@ class StoreHousingGraphicRequest extends FormRequest
         return [
             'family_plan_id.required' => 'El :attribute es obligatorio',
             'family_plan_id.exists'   => 'El :attribute seleccionado no es válido',
-            'family_plan_id.unique'   => 'El :attribute ya cuenta con una imagen registrada',
-
+            
             'description.required' => 'La :attribute es obligatoria',
             'description.min'      => 'La :attribute debe tener al menos 10 caracteres',
             'description.max'      => 'La :attribute no debe superar los 255 caracteres',

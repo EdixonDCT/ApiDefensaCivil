@@ -739,7 +739,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/', [HousingGraphicController::class, 'store']);
 
-        Route::patch('/{id}', [HousingGraphicController::class, 'partialUpdate']);
+        Route::patch('description/{id}', [HousingGraphicController::class, 'updateDescription']);
 
         Route::delete('/{id}', [HousingGraphicController::class, 'destroy']);
     });
