@@ -323,7 +323,7 @@ class FamilyPlanService
 
             $plans = FamilyPlan::where('user_id', $user->id)
                 ->whereNotIn('status_plan_id', [4])
-                ->with('statusPlan','city','city.apartment')
+                ->with('statusPlan','city','city.department')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
@@ -338,7 +338,7 @@ class FamilyPlanService
                         "id" => $plan->id,
                         "last_names" => $plan->last_names,
                         "city" => $plan->city->name,
-                        "department" => $plan->city->apartment->name,
+                        "department" => $plan->city->department->name,
                         "status" => $plan->statusPlan->name,
                         "status_id" => $plan->statusPlan->id,
                         "date_create" => $plan->created_at->format('d/m/Y'),
@@ -370,7 +370,7 @@ class FamilyPlanService
 
             $plans = FamilyPlan::where('sectional_id', $sectionalId)
                 ->whereIn('status_plan_id', [4,7])
-                ->with('statusPlan','city','city.apartment')
+                ->with('statusPlan','city','city.department')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
@@ -385,7 +385,7 @@ class FamilyPlanService
                         "id" => $plan->id,
                         "last_names" => $plan->last_names,
                         "city" => $plan->city->name,
-                        "department" => $plan->city->apartment->name,
+                        "department" => $plan->city->department->name,
                         "status" => $plan->statusPlan->name,
                         "status_id" => $plan->statusPlan->id,
                         "date_create" => $plan->created_at->format('d/m/Y'),
