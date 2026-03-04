@@ -369,7 +369,7 @@ class FamilyPlanService
             $sectionalId = $user->profile->organization->sectional_id;
 
             $plans = FamilyPlan::where('sectional_id', $sectionalId)
-                ->whereIn('status_plan_id', [4,7])
+                ->whereIn('status_plan_id', [2,4,5,6,7])
                 ->with('statusPlan','city','city.department')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
