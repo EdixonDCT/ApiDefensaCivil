@@ -29,7 +29,7 @@ class StoreCityRequest extends FormRequest
     {
         return [
             'name'         => 'required|string|max:50|unique:cities,name',
-            'apartment_id' => 'required|exists:apartments,id',
+            'department_id' => 'required|exists:departments,id',
         ];
     }
 
@@ -45,8 +45,8 @@ class StoreCityRequest extends FormRequest
             'name.string'           => 'El :attribute debe contener solo caracteres de texto',
             'name.max'              => 'El :attribute no puede superar los 50 caracteres',
             'name.unique'           => 'El :attribute ya se encuentra registrado',
-            'apartment_id.required' => 'El :attribute es obligatorio',
-            'apartment_id.exists'   => 'El :attribute seleccionado no es válido'
+            'department_id.required' => 'El :attribute es obligatorio',
+            'department_id.exists'   => 'El :attribute seleccionado no es válido'
         ];
     }
 
@@ -58,7 +58,7 @@ class StoreCityRequest extends FormRequest
     {
         return [
             'name'         => 'nombre de la ciudad',
-            'apartment_id' => 'vínculo con el apartamento'
+            'department_id' => 'departamento'
         ];
     }
 }

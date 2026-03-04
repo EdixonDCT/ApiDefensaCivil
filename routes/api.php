@@ -16,7 +16,7 @@ use App\Http\Controllers\API\Zone\ZoneController;
 use App\Http\Controllers\API\HousingQuality\HousingQualityController;
 use App\Http\Controllers\API\Sector\SectorController;
 use App\Http\Controllers\API\StatusPlan\StatusPlanController;
-use App\Http\Controllers\API\Apartment\ApartmentController;
+use App\Http\Controllers\API\Department\DepartmentController;
 use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\FamilyPlan\FamilyPlanController;
 use App\Http\Controllers\API\HousingInfo\HousingInfoController;
@@ -244,18 +244,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
-    route::prefix('apartments')->group(function () {
-        route::get('/', [ApartmentController::class, 'index'])->middleware('permission:apartments.index');
+    route::prefix('departments')->group(function () {
+        route::get('/', [DepartmentController::class, 'index'])->middleware('permission:departments.index');
 
-        route::get('/{apartment_id}', [ApartmentController::class, 'show']);
+        route::get('/{department_id}', [DepartmentController::class, 'show']);
 
-        route::post('/', [ApartmentController::class, 'store']);
+        route::post('/', [DepartmentController::class, 'store']);
 
-        route::put('/{apartment_id}', [ApartmentController::class, 'update']);
+        route::put('/{department_id}', [DepartmentController::class, 'update']);
 
-        route::delete('/{apartment_id}', [ApartmentController::class, 'destroy']);
+        route::delete('/{department_id}', [DepartmentController::class, 'destroy']);
 
-        route::patch('/{apartment_id}', [ApartmentController::class, 'partialUpdate']);
+        route::patch('/{department_id}', [DepartmentController::class, 'partialUpdate']);
 
     });
 
@@ -264,7 +264,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         route::get('/{city_id}', [CityController::class, 'show']);
 
-        route::get('/apartment/{city_id}', [CityController::class, 'getApartment'])->middleware('permission:cities.apartments');
+        route::get('/department/{department_id}', [CityController::class, 'getByDepartment'])->middleware('permission:cities.departments');
 
         route::post('/', [CityController::class, 'store']);
 

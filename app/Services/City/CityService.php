@@ -3,11 +3,11 @@
 namespace App\Services\City;
 
 use App\Models\City\City;
-use App\Models\Apartment\Apartment;
+use App\Models\Department\Department;
 use Illuminate\support\Arr;
 
 /**
- * Servicio para la gestión de ciudades y sus relaciones con apartamentos y planes familiares.
+ * Servicio para la gestión de ciudades y sus relaciones con departamentos y planes familiares.
  */
 class CityService
 {
@@ -62,7 +62,7 @@ class CityService
 
     /**
      * Registra una nueva ciudad en el sistema.
-     * @param array $data Datos de la ciudad (nombre, apartment_id, etc).
+     * @param array $data Datos de la ciudad (nombre, department_id, etc).
      */
     public function create(array $data)
     {
@@ -187,30 +187,30 @@ class CityService
 
     /**
      * Obtiene todas las ciudades que pertenecen a un apartamento específico.
-     * @param int|string $id ID del apartamento.
+     * @param int|string $id ID del departamento.
      */
-    public static function getAllForApartments($id)
+    public static function getAllByDepartment($departmentId)
     {
         // Buscamos primero el apartamento para acceder a su relación
-        $apartment = Apartment::find($id);
+        $department = Department::find($departmentId);
 
-        if (!$apartment){
+        if (!$department){
             return [
                 "error" => false,
                 "code" => 200,
-                "message" => "No existe este apartamento",
-                "data" => $apartment,
+                "message" => "No existe este departamento",
+                "data" => $department,
             ];
         }
         
-        // Accedemos a la relación 'city' definida en el modelo Apartment
-        $city = $apartment->city;
+        // Accedemos a la relación 'city' definida en el modelo department
+        $city = $department->city;
 
         if (!$city){
             return [
                 "error" => false,
                 "code" => 200,
-                "message" => "No existen ciudades relacionadas al apartamento",
+                "message" => "No existen ciudades relacionadas al departamento",
                 "data" => $city,
             ];
         }

@@ -12,35 +12,35 @@ class CitySeeder extends Seeder
     {
         City::create([
             'name' => 'Floridablanca',
-            'apartment_id' => 1
+            'department_id' => 1
         ]);
         City::create([
             'name' => 'Bucaramanga',
-            'apartment_id' => 1
+            'department_id' => 1
         ]);
         City::create([
             'name' => 'Giron',
-            'apartment_id' => 1
+            'department_id' => 1
         ]);
         City::create([
             'name' => 'Piedecuesta',
-            'apartment_id' => 1
+            'department_id' => 1
         ]);
                 City::create([
             'name' => 'Chia',
-            'apartment_id' => 2
+            'department_id' => 2
         ]);
         City::create([
             'name' => 'Soacha',
-            'apartment_id' => 2
+            'department_id' => 2
         ]);
         City::create([
             'name' => 'Barquisimieto',
-            'apartment_id' => 3
+            'department_id' => 3
         ]);
         City::create([
             'name' => 'Lara',
-            'apartment_id' => 3
+            'department_id' => 3
         ]);
     }
 }

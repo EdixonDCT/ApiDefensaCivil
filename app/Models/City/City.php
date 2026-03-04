@@ -4,7 +4,7 @@ namespace App\Models\City;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Apartment\Apartment;
+use App\Models\Department\Department;
 use App\Models\FamilyPlan\FamilyPlan;
 
 /**
@@ -17,12 +17,12 @@ class City extends Model
 
     /**
      * Atributos asignables de forma masiva.
-     * Incluye 'apartment_id' debido a la estructura de base de datos definida.
+     * Incluye 'department_id' debido a la estructura de base de datos definida.
      */
     protected $fillable = [
         'id', 
         'name', 
-        'apartment_id'
+        'department_id'
     ];
 
     /**
@@ -38,12 +38,12 @@ class City extends Model
 
     /**
      * Relación Inversa (BelongsTo).
-     * Cada ciudad pertenece a un registro de la tabla Apartments.
+     * Cada ciudad pertenece a un registro de la tabla Departments.
      * * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function apartment()
+    public function department()
     {
-        // Retorna el objeto Apartment relacionado con esta ciudad
-        return $this->belongsTo(Apartment::class, 'apartment_id');
+        // Retorna el objeto Department relacionado con esta ciudad
+        return $this->belongsTo(Department::class, 'department_id');
     }
 }

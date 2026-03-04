@@ -8,12 +8,12 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * Crea la tabla 'apartments' para gestionar los nombres o números de unidades habitacionales.
+     * Crea la tabla 'departments' para gestionar los nombres o números de unidades habitacionales.
      */
     public function up(): void
     {
         // Se define la estructura de la tabla de apartamentos
-        Schema::create('apartments', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             // ID único autoincremental (Llave Primaria)
             $table->id();
 
@@ -28,11 +28,11 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     * Elimina la tabla 'apartments' de la base de datos.
+     * Elimina la tabla 'departments' de la base de datos.
      */
     public function down(): void
     {
         // Borra la tabla solo si existe para evitar errores durante un rollback
-        Schema::dropIfExists('apartments');
+        Schema::dropIfExists('departments');
     }
 };

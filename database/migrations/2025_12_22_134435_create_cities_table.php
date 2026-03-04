@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * Crea la tabla 'cities' vinculada (según el código) a un apartamento.
+     * Crea la tabla 'cities' vinculada (según el código) a un departamento.
      */
     public function up(): void
     {
@@ -21,10 +21,10 @@ return new class extends Migration
             $table->string('name', 50)->unique();   
 
             /** * RELACIÓN ACTUAL:
-             * Aquí estás diciendo que una CIUDAD pertenece a un APARTAMENTO.
-             * Generalmente es al revés (un apartamento está en una ciudad).
+             * Aquí estás diciendo que una CIUDAD pertenece a un DEPARTAMENTO.
+             * Generalmente es al revés (un departamento está en una ciudad).
              */
-            $table->foreignId('apartment_id')->constrained();
+            $table->foreignId('department_id')->constrained();
 
             // Auditoría básica
             $table->timestamps();

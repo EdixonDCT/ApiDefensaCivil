@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Apartment;
+namespace App\Http\Requests\Department;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Clase StoreApartmentRequest
- * * Se encarga de validar los datos para el registro de nuevos apartamentos.
+ * * Se encarga de validar los datos para el registro de nuevos departamentos.
  * Utiliza la regla personalizada 'alpha_spaces' para garantizar la limpieza de los nombres.
  */
-class StoreApartmentRequest extends FormRequest
+class StoreDepartmentRequest extends FormRequest
 {
     /**
      * Determina si el usuario está autorizado para realizar esta solicitud.
@@ -21,7 +21,7 @@ class StoreApartmentRequest extends FormRequest
     }
 
     /**
-     * Define las reglas de validación para la creación de un apartamento.
+     * Define las reglas de validación para la creación de un departamento.
      * @return array
      */
     public function rules(): array
@@ -29,9 +29,9 @@ class StoreApartmentRequest extends FormRequest
         return [
             /**
              * El nombre es obligatorio, debe cumplir con el formato de letras y espacios,
-             * ser texto, no exceder 50 caracteres y ser único en la tabla 'apartments'.
+             * ser texto, no exceder 50 caracteres y ser único en la tabla 'departments'.
              */
-            'name' => 'required|alpha_spaces|string|max:50|unique:apartments,name',
+            'name' => 'required|alpha_spaces|string|max:50|unique:departments,name',
         ];
     }
 
@@ -58,7 +58,7 @@ class StoreApartmentRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nombre del apartamento',
+            'name' => 'nombre del departamento',
         ];
     }
 }

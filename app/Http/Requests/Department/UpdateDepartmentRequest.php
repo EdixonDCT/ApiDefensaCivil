@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Requests\Apartment;
+namespace App\Http\Requests\Department;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Clase UpdateApartmentRequest
- * * Se encarga de validar la edición de apartamentos existentes.
+ * * Se encarga de validar la edición de departamentos existentes.
  * Gestiona la excepción de unicidad para permitir que el registro mantenga su nombre 
  * original sin generar conflictos durante la actualización.
  */
-class UpdateApartmentRequest extends FormRequest
+class UpdateDepartmentRequest extends FormRequest
 {
     /**
      * Determina si el usuario está autorizado para realizar esta solicitud.
@@ -22,7 +22,7 @@ class UpdateApartmentRequest extends FormRequest
     }
 
     /**
-     * Define las reglas de validación para la actualización de un apartamento.
+     * Define las reglas de validación para la actualización de un departamento.
      * @return array
      */
     public function rules(): array
@@ -31,10 +31,10 @@ class UpdateApartmentRequest extends FormRequest
          * Obtenemos el ID de la ruta para la excepción en la regla 'unique'.
          * Esto evita que falle la validación si no se cambia el nombre.
          */
-        $apartmentId = $this->route('apartment_id');
+        $departmentId = $this->route('department_id');
 
         return [
-            'name' => "required|alpha_spaces|string|max:50|unique:apartments,name,{$apartmentId}",
+            'name' => "required|alpha_spaces|string|max:50|unique:departments,name,{$departmentId}",
         ];
     }
 
@@ -61,7 +61,7 @@ class UpdateApartmentRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nombre del apartamento',
+            'name' => 'nombre del departamento',
         ];
     }
 }

@@ -35,12 +35,8 @@ class PartialUpdateCityRequest extends FormRequest
              * pero si lo envías, debe ser único (ignorando el registro actual).
              */
             'name' => "sometimes|string|max:50|unique:cities,name,{$cityId}",
-            
-            /**
-             * CORRECCIÓN: Se cambió la tabla 'apartments' por 'sectionals' 
-             * para mantener la coherencia jerárquica.
-             */
-            'sectional_id' => 'sometimes|exists:sectionals,id',
+
+            'department_id' => 'sometimes|exists:departments,id',
         ];
     }
 
@@ -54,7 +50,7 @@ class PartialUpdateCityRequest extends FormRequest
             'name.string'         => 'El :attribute debe contener solo caracteres de texto',
             'name.max'            => 'El :attribute no puede superar los 50 caracteres',
             'name.unique'         => 'El :attribute ya se encuentra registrado',
-            'sectional_id.exists' => 'La :attribute seleccionada no existe en el sistema'
+            'department_id.exists' => 'Rl :attribute seleccionado no existe en el sistema'
         ];
     }
 
@@ -66,7 +62,7 @@ class PartialUpdateCityRequest extends FormRequest
     {
         return [
             'name'         => 'nombre de la ciudad',
-            'sectional_id' => 'seccional asociada',
+            'department_id' => 'departamento',
         ];
     }
 }
