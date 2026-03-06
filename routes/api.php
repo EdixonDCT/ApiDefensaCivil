@@ -146,6 +146,8 @@ Route::middleware('auth:sanctum')->group(function () {
     route::prefix('sectionals')->group(function () {
         route::get('/', [SectionalController::class, 'index']);
 
+        route::get('/active-with-organizations', [SectionalController::class, 'getActiveWithOrganization']);
+
         route::get('/{sectional_id}', [SectionalController::class, 'show']);
 
         route::get('/history/{sectional_id}', [SectionalController::class, 'history']);
