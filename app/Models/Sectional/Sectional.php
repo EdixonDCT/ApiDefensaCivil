@@ -36,12 +36,12 @@ class Sectional extends Model
      * --- RELACIONES HAS MANY ---
      */
 
-    public function organization()
+    public function organizations()
     {
         return $this->hasMany(Organization::class, 'sectional_id');
     }
 
-    public function familyPlan()
+    public function familyPlans()
     {
         return $this->hasMany(FamilyPlan::class, 'sectional_id');
     }
@@ -54,5 +54,27 @@ class Sectional extends Model
     public function audits()
     {
         return $this->morphMany(Audit::class, 'historiable');
+    }
+
+
+    /* --- SCOPES PERSONALIZADOS --- */
+
+    /**
+     * Filtra las seccionales activas.
+     * @param mixed $query
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Filtra las seccionales que tienen organizaciones asociadas.
+     * @param mixed $query
+     */
+
+    public function scopeWithOrganizations($query)
+    {
+        return $query->has('organizations');
     }
 }
