@@ -81,7 +81,7 @@
                                 <tr>
                                     <td>
                                         <h2 class="subtitle" style="margin: 0 0 10px; color: #0770cc; font-size: 22px; font-weight: 600;">
-                                            ¡Hola, {{ $user->profile->names ?? $user->email }}!
+                                            ¡Hola, {{ $user->profile->first_name ?? $user->email }}!
                                         </h2>
                                         <p style="margin: 0 0 24px; color: #4a5568; font-size: 16px; line-height: 1.6;">
                                             Bienvenido a la plataforma de la <strong style="color: #ff6600;">Defensa Civil Colombiana</strong>. 
@@ -109,6 +109,70 @@
                                                        style="display: inline-block; background-color: #ff6600; color: #ffffff; text-decoration: none; padding: 18px 50px; font-size: 17px; font-weight: 600; border-radius: 8px;">
                                                         Verificar mi correo electrónico
                                                     </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- Proceso de registro -->
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 30px 0; background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%); border-radius: 8px; border: 2px solid #0770cc;">
+                                            <tr>
+                                                <td style="padding: 24px;">
+                                                    <p style="margin: 0 0 12px; color: #0770cc; font-size: 16px; font-weight: 600; text-align: center;">
+                                                        📋 Proceso de Registro
+                                                    </p>
+                                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                        <tr>
+                                                            <td style="padding: 8px 0;">
+                                                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                                    <tr>
+                                                                        <td width="30" style="vertical-align: top; padding-right: 10px;">
+                                                                            <div style="width: 24px; height: 24px; background-color: #ff6600; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">1</div>
+                                                                        </td>
+                                                                        <td style="vertical-align: top;">
+                                                                            <p style="margin: 0; color: #2d3748; font-size: 14px; line-height: 1.6;">
+                                                                                <strong style="color: #ff6600;">Verificar tu correo</strong> (paso actual)
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 8px 0;">
+                                                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                                    <tr>
+                                                                        <td width="30" style="vertical-align: top; padding-right: 10px;">
+                                                                            <div style="width: 24px; height: 24px; background-color: #cbd5e0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">2</div>
+                                                                        </td>
+                                                                        <td style="vertical-align: top;">
+                                                                            <p style="margin: 0; color: #2d3748; font-size: 14px; line-height: 1.6;">
+                                                                                <strong style="color: #0770cc;">Revisión por un administrador</strong>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 8px 0;">
+                                                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                                    <tr>
+                                                                        <td width="30" style="vertical-align: top; padding-right: 10px;">
+                                                                            <div style="width: 24px; height: 24px; background-color: #cbd5e0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">3</div>
+                                                                        </td>
+                                                                        <td style="vertical-align: top;">
+                                                                            <p style="margin: 0; color: #2d3748; font-size: 14px; line-height: 1.6;">
+                                                                                <strong style="color: #0770cc;">Aprobación y acceso completo</strong>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <p style="margin: 16px 0 0; color: #4a5568; font-size: 13px; line-height: 1.5; text-align: center; font-style: italic;">
+                                                        Recibirás una notificación cuando tu cuenta sea aprobada
+                                                    </p>
                                                 </td>
                                             </tr>
                                         </table>
