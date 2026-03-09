@@ -32,6 +32,58 @@ class NotificationService
         ];
     }
 
+    public function countUnreadByUser($user_id)
+    {
+        $count = Notification::where('user_id', $user_id)
+            ->where('read', false)
+            ->count();
+
+        if ($count === 0) {
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No hay notificaciones no leídas",
+                "data" => [
+                    "unread_notifications" => 0
+                ]
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Cantidad de notificaciones no leídas obtenida exitosamente",
+            "data" => [
+                "unread_notifications" => $count
+            ]
+        ];
+    }
+
+    public function getUnreadByUser($user_id)
+    {
+        $notifications = Notification::where('user_id', $user_id)
+            ->where('read', false)
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        if ($notifications->isEmpty()) {
+            return [
+                "error" => false,
+                "code" => 200,
+                "message" => "No hay notificaciones no leídas",
+                "data" => []
+            ];
+        }
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Notificaciones no leídas obtenidas exitosamente",
+            "data" => $notifications
+        ];
+    }
+
     public function getById($id)
     {
         $notification = Notification::find($id);
