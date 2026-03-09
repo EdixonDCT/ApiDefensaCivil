@@ -60,6 +60,8 @@ class AuthService
 
             DB::commit();
 
+            $user->fresh()->sendEmailVerificationNotification();
+
             $user->audits()->create([
             'user_name'      => $data['names']." ".$data['last_names'],
             'rol_name'       => 'Solicitante',
