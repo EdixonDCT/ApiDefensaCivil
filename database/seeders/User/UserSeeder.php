@@ -11,20 +11,26 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'email' => 'edixon@gmail.com',
-                'password' => 'Edixon10?',
+                'email' => 'edixondelta2022@gmail.com',
+                'password' => 'Password.123',
                 'state_user_id' => 1,
                 'role' => 'Voluntario',
             ],
             [
-                'email' => 'sol@gmail.com',
-                'password' => 'Edixon10?',
+                'email' => 'valentinaserrano120@gmail.com',
+                'password' => 'Password.123',
                 'state_user_id' => 1,
                 'role' => 'Supervisor',
             ],
             [
-                'email' => 'dylan@gmail.com',
-                'password' => 'Edixon10?',
+                'email' => 'dilansanv022@gmail.com',
+                'password' => 'Password.123',
+                'state_user_id' => 1,
+                'role' => 'Administrador',
+            ],
+            [
+                'email' => 'breyneracosta7@gmail.com',
+                'password' => 'Password.123',
                 'state_user_id' => 1,
                 'role' => 'Administrador',
             ],
