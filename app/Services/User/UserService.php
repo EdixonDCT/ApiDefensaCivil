@@ -41,13 +41,12 @@ class UserService
     public function getById($id)
     {
         $user = User::with([
-                        'profile.gender',
-                        'profile.documentType',
-                        'profile.organization.sectional',
-                        'roles',
-                        'stateUser'
-                    ])
-                    ->find($id);
+            'profile.gender',
+            'profile.documentType',
+            'profile.organization.sectional',
+            'roles',
+            'stateUser'
+        ])->find($id);
 
         if (!$user) {
             return [
@@ -57,6 +56,9 @@ class UserService
             ];
         }
 
+        $profile = $user->profile;
+        $role = $user->roles->first();
+
         return [
             "error" => false,
             "code" => 200,
@@ -64,15 +66,22 @@ class UserService
             "data" => [
                 "id" => $user->id,
                 "email" => $user->email,
-                "status" => [
-                    "id" => $user->stateUser->id,
-                    "name" => $user->stateUser->name
-                ],
-                "profile" => $user->profile,
-                "rol" => [
-                    "id" => $user->roles->first()?->id,
-                    "name" => $user->roles->first()?->name,
-                ]
+
+                "names" => $profile?->names,
+                "last_names" => $profile?->last_names,
+                "document_type" => $profile?->documentType?->name,
+                "document_number" => $profile?->document_number,
+                "birth_date" => $profile?->birth_date,
+                "gender" => $profile?->gender?->name,
+                "phone" => $profile?->phone,
+                "organization" => $profile?->organization?->name,
+                "sectional" => $profile?->organization?->sectional?->name,
+
+                "rol_id" => $role?->id,
+                "rol" => $role?->name,
+
+                "status_id" => $user->stateUser?->id,
+                "status" => $user->stateUser?->name
             ],
         ];
     }
