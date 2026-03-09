@@ -47,6 +47,7 @@ use App\Http\Controllers\API\ActionPlan\ActionPlanController;
 use App\Http\Controllers\API\ActionPlanAction\ActionPlanActionController;
 use App\Http\Controllers\API\ActionType\ActionTypeController;
 use App\Http\Controllers\API\AvailableResource\AvailableResourceController;
+use App\Http\Controllers\API\EmailVerification\EmailVerificationController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -56,6 +57,29 @@ Route::get('/gendersPublic', [GenderController::class, 'index']);
 Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
 Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
+
+/**
+ * GRUPO: Verificación de email.
+ *
+ * Rutas relacionadas con el flujo de verificación de email.
+ * No requieren autenticación completa.
+ */
+
+// Redirige al usuario si no ha verificado (muestra aviso)
+Route::get('/email/verify', [EmailVerificationController::class, 'notice'])
+    ->name('verification.notice');
+
+// Procesa el enlace de verificación del email (URL firmada)
+// middleware 'signed': verifica que la URL no fue manipulada
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware('signed')
+    ->name('verification.verify');
+
+// Reenvía el email de verificación
+// throttle:verification = 6 req/min para prevenir spam
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+    // ->middleware('throttle:verification')
+    ->name('verification.send');
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -91,7 +115,7 @@ Route::middleware('auth:sanctum')->group(function () {
         route::get('/', [UserController::class, 'index']);
 
         route::get('/requestsAdmins', [UserController::class, 'getRequestsAdmins']);
-        
+
         route::get('/userForAdmin', [UserController::class, 'getUserForAdmins']);
 
         route::get('/requestsSupervisors', [UserController::class, 'getRequestsSupervisors']);
@@ -119,7 +143,7 @@ Route::middleware('auth:sanctum')->group(function () {
         route::get('/', [GenderController::class, 'index']);
 
         route::get('/{gender_id}', [GenderController::class, 'show']);
-        
+
         route::get('/history/{gender_id}', [GenderController::class, 'history']);
 
         route::post('/', [GenderController::class, 'store']);
@@ -171,7 +195,7 @@ Route::middleware('auth:sanctum')->group(function () {
         route::get('/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
         route::get('/history/{sectional_id}', [OrganizationController::class, 'history']);
-        
+
         route::post('/', [OrganizationController::class, 'store']);
 
         route::put('/{organization_id}', [OrganizationController::class, 'update']);
@@ -243,7 +267,6 @@ Route::middleware('auth:sanctum')->group(function () {
         route::patch('/status/{sector_id}', [SectorController::class, 'changeStatus']);
 
         route::delete('/{sector_id}', [SectorController::class, 'destroy']);
-
     });
 
     route::prefix('departments')->group(function () {
@@ -258,7 +281,6 @@ Route::middleware('auth:sanctum')->group(function () {
         route::delete('/{department_id}', [DepartmentController::class, 'destroy']);
 
         route::patch('/{department_id}', [DepartmentController::class, 'partialUpdate']);
-
     });
 
     route::prefix('cities')->group(function () {
@@ -651,7 +673,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('resources')->group(function () {
 
         Route::get('/', [ResourceController::class, 'index']);
-    
+
         Route::get('/{resource_id}', [ResourceController::class, 'show']);
 
         Route::get('/history/{resource_id}', [ResourceController::class, 'history']);
@@ -699,19 +721,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('actionPlans')->group(function () {
 
-    Route::get('/', [ActionPlanController::class, 'index']);
+        Route::get('/', [ActionPlanController::class, 'index']);
 
-    Route::get('/{id}', [ActionPlanController::class, 'show']);
+        Route::get('/{id}', [ActionPlanController::class, 'show']);
 
-    Route::get('/familyPlan/{id}',[ActionPlanController::class, 'getByPlan']);
+        Route::get('/familyPlan/{id}', [ActionPlanController::class, 'getByPlan']);
 
-    Route::get('/familyPlan/boolean/{id}',[ActionPlanController::class, 'getByPlanBoolean']);
+        Route::get('/familyPlan/boolean/{id}', [ActionPlanController::class, 'getByPlanBoolean']);
 
-    Route::post('/', [ActionPlanController::class, 'store']);
+        Route::post('/', [ActionPlanController::class, 'store']);
 
-    Route::put('/{id}', [ActionPlanController::class, 'update']);
+        Route::put('/{id}', [ActionPlanController::class, 'update']);
 
-    Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
+        Route::delete('/{id}', [ActionPlanController::class, 'destroy']);
     });
 
     Route::prefix('actionPlanActions')->group(function () {
@@ -720,7 +742,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/{id}', [ActionPlanActionController::class, 'show']);
 
-        Route::get('actionPlan/{id}',[ActionPlanActionController::class, 'getActionForActionPlan']);
+        Route::get('actionPlan/{id}', [ActionPlanActionController::class, 'getActionForActionPlan']);
 
         Route::post('/', [ActionPlanActionController::class, 'store']);
 
@@ -737,7 +759,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/{id}', [HousingGraphicController::class, 'show']);
 
-        Route::get('familyPlan/{id}',[HousingGraphicController::class, 'getByFamilyPlan']);
+        Route::get('familyPlan/{id}', [HousingGraphicController::class, 'getByFamilyPlan']);
 
         Route::post('/', [HousingGraphicController::class, 'store']);
 
