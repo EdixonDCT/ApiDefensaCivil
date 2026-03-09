@@ -11,8 +11,8 @@ class ProfileSeeder extends Seeder
     {
         Profile::create([
             'user_id' => 1,
-            'names' => 'Edixon',
-            'last_names' => 'Castillo',
+            'names' => 'Edixon David',
+            'last_names' => 'Castillo Torres',
             'birth_date' => '1995-01-01',
             'document_type_id' => 1,
             'document_number' => '12345678',
@@ -23,8 +23,8 @@ class ProfileSeeder extends Seeder
 
         Profile::create([
             'user_id' => 2,
-            'names' => 'Sol',
-            'last_names' => 'Angy',
+            'names' => 'Sol Any Valentina',
+            'last_names' => 'Serrano Quintero',
             'birth_date' => '1990-05-10',
             'document_type_id' => 1,
             'document_number' => '87654321',
@@ -35,12 +35,24 @@ class ProfileSeeder extends Seeder
 
         Profile::create([
             'user_id' => 3,
-            'names' => 'Dylan',
-            'last_names' => 'Vesga',
+            'names' => 'Dylan Santiago',
+            'last_names' => 'Vesga Cañas',
             'birth_date' => '1998-11-20',
             'document_type_id' => 1,
             'document_number' => '11223344',
             'phone' => '1234567893',
+            'gender_id' => 1,
+            'organization_id' => 1,
+        ]);
+
+        Profile::create([
+            'user_id' => 4,
+            'names' => 'Breyner Alexis',
+            'last_names' => 'Acosta Sandoval',
+            'birth_date' => '1998-11-20',
+            'document_type_id' => 1,
+            'document_number' => '11223345',
+            'phone' => '1234567894',
             'gender_id' => 1,
             'organization_id' => 1,
         ]);
