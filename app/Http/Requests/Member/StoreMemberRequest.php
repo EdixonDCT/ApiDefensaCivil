@@ -58,7 +58,7 @@ class StoreMemberRequest extends FormRequest
             'eps' => 'required|string|max:50',
 
             // Teléfono de contacto (se valida longitud, no formato)
-            'phone' => 'required|string|max:10',
+            'phone' => 'sometimes|string|max:10',
         ];
     }
 
