@@ -47,6 +47,7 @@ use App\Http\Controllers\API\ActionPlan\ActionPlanController;
 use App\Http\Controllers\API\ActionPlanAction\ActionPlanActionController;
 use App\Http\Controllers\API\ActionType\ActionTypeController;
 use App\Http\Controllers\API\AvailableResource\AvailableResourceController;
+use App\Http\Controllers\API\Notification\NotificationController;
 use App\Http\Controllers\API\EmailVerification\EmailVerificationController;
 use App\Http\Controllers\API\PasswordReset\PasswordResetController;
 
@@ -780,4 +781,24 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/dashBoardSupervisor', [AuditController::class, 'dashBoardSupervisor']);
     });
+});
+Route::prefix('notifications')->group(function () {
+
+    Route::get('/', [NotificationController::class, 'index']);
+
+    Route::get( '/user/count/{id}',[NotificationController::class, 'countUnreadByUser']);
+    
+    Route::get('/{id}', [NotificationController::class, 'show']);
+
+    Route::get('/user/unread/{id}',[NotificationController::class, 'getUnreadByUser']);
+
+    Route::get('/user/{id}', [NotificationController::class, 'getByUser']);
+
+    Route::post('/', [NotificationController::class, 'store']);
+
+    Route::put('/{id}', [NotificationController::class, 'update']);
+
+    Route::patch('/{id}', [NotificationController::class, 'partialUpdate']);
+
+    Route::delete('/{id}', [NotificationController::class, 'destroy']);
 });

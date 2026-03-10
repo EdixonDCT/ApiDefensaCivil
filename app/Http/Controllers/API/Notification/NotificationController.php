@@ -72,6 +72,25 @@ class NotificationController extends Controller
         );
     }
 
+    public function getByUser(string $user_id)
+    {
+        $response = $this->service->getById($user_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error(
+                $response['message'],
+                $response['code']
+            );
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? [],
+            $response['paginate'] ?? null
+        );
+    }
+
     public function store(StoreNotificationRequest $request)
     {
         $data = $request->validated();
@@ -129,8 +148,44 @@ class NotificationController extends Controller
         );
     }
 
-    public function partialUpdate(PartialUpdateNotificationRequest $request,string $id)
-     {
+    public function countUnreadByUser(string $user_id)
+    {
+        $response = $this->service->countUnreadByUser($user_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error(
+                $response['message'],
+                $response['code']
+            );
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
+    }
+
+    public function getUnreadByUser(string $user_id)
+    {
+        $response = $this->service->getUnreadByUser($user_id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error(
+                $response['message'],
+                $response['code']
+            );
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
+    }
+
+    public function partialUpdate(PartialUpdateNotificationRequest $request, string $id)
+    {
         $notification = Notification::find($id);
 
         if (!$notification) {
