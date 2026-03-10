@@ -22,6 +22,21 @@ class SectionalService
     }
 
     /**
+     * Obtener las seccionales activas y que tiene al menos una organizacion asociada
+     */
+    public function getActiveWithOrganization()
+    {
+        $sectionals = Sectional::active()->withOrganizations()->get();
+
+        return [
+            "error" => false,
+            "code" => 200,
+            "message" => "Seccionales activas obtenidas exitosamente",
+            "data" => $sectionals,
+        ];
+    }
+
+    /**
      * Obtener por ID
      */
     public function getById($id)
@@ -207,11 +222,19 @@ class SectionalService
             ];
         }
 
-        if ($sectional->organization()->count()) {
+        if ($sectional->has('organizations')) {
             return [
                 "error" => true,
                 "code" => 409,
                 "message" => "No se puede eliminar porque tiene organizaciones relacionadas",
+            ];
+        }
+
+        if ($sectional->has('familyPlans')) {
+            return [
+                "error" => true,
+                "code" => 409,
+                "message" => "No se puede eliminar porque tiene planes familiares relacionados",
             ];
         }
 

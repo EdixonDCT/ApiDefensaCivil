@@ -43,6 +43,21 @@ class SectionalController extends Controller
     }
 
     /**
+     * Lista todas las seccionales que estén activas y que tengan al menos una organizacion asociada.
+     */
+    public function getActiveWithOrganization()
+    {
+        $response = $this->service->getActiveWithOrganization();
+
+        if ($response['error'])
+        {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
+    }
+
+    /**
      * Obtiene los detalles de una seccional específica por ID.
      */
     public function show(string $id)

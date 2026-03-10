@@ -48,6 +48,8 @@ use App\Http\Controllers\API\ActionPlanAction\ActionPlanActionController;
 use App\Http\Controllers\API\ActionType\ActionTypeController;
 use App\Http\Controllers\API\AvailableResource\AvailableResourceController;
 use App\Http\Controllers\API\Notification\NotificationController;
+use App\Http\Controllers\API\EmailVerification\EmailVerificationController;
+use App\Http\Controllers\API\PasswordReset\PasswordResetController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -56,6 +58,35 @@ Route::get('/documentTypesPublic', [DocumentTypeController::class, 'index']);
 Route::get('/gendersPublic', [GenderController::class, 'index']);
 Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
 Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
+
+
+/**
+ * GRUPO: Verificación de email.
+ *
+ * Rutas relacionadas con el flujo de verificación de email.
+ * No requieren autenticación completa.
+ */
+
+// Redirige al usuario si no ha verificado (muestra aviso)
+Route::get('/email/verify', [EmailVerificationController::class, 'notice'])
+    ->name('verification.notice');
+
+// Procesa el enlace de verificación del email (URL firmada)
+// middleware 'signed': verifica que la URL no fue manipulada
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware('signed')
+    ->name('verification.verify');
+
+// Reenvía el email de verificación
+// throttle:verification = 6 req/min para prevenir spam
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+    // ->middleware('throttle:verification')
+    ->name('verification.send');
+
+
+Route::post('/password/forgot',  [PasswordResetController::class, 'forgot']);   // envía código
+Route::post('/password/verify',  [PasswordResetController::class, 'verify']);   // valida código
+Route::post('/password/reset',   [PasswordResetController::class, 'reset']);    // nueva contraseña
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -146,6 +177,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     route::prefix('sectionals')->group(function () {
         route::get('/', [SectionalController::class, 'index']);
+
+        route::get('/active-with-organizations', [SectionalController::class, 'getActiveWithOrganization']);
 
         route::get('/{sectional_id}', [SectionalController::class, 'show']);
 

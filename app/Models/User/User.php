@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,6 +13,7 @@ use App\Models\Audit\Audit;
  */
 use App\Models\StateUser\StateUser;
 use App\Models\Profile\Profile;
+use App\Notifications\CustomVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -20,7 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
  * * Esta es la clase auténtica para el manejo de sesiones y seguridad.
  * Hereda de Authenticatable para integrarse con el sistema de Guards de Laravel.
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** * HasApiTokens: Permite emitir tokens para APIs (Sanctum).
      * HasRoles: Habilita el manejo de Roles y Permisos (Spatie).
@@ -78,5 +80,13 @@ class User extends Authenticatable
     public function audits()
     {
         return $this->morphMany(Audit::class, 'historiable');
+    }
+
+    /**
+     * **SOBREESCRIBE** notificación verificación email personalizada.
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
     }
 }
