@@ -48,6 +48,7 @@ use App\Http\Controllers\API\ActionPlanAction\ActionPlanActionController;
 use App\Http\Controllers\API\ActionType\ActionTypeController;
 use App\Http\Controllers\API\AvailableResource\AvailableResourceController;
 use App\Http\Controllers\API\EmailVerification\EmailVerificationController;
+use App\Http\Controllers\API\PasswordReset\PasswordResetController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -80,6 +81,12 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
 Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
     // ->middleware('throttle:verification')
     ->name('verification.send');
+
+
+Route::post('/password/forgot',  [PasswordResetController::class, 'forgot']);   // envía código
+Route::post('/password/verify',  [PasswordResetController::class, 'verify']);   // valida código
+Route::post('/password/reset',   [PasswordResetController::class, 'reset']);    // nueva contraseña
+
 
 Route::middleware('auth:sanctum')->group(function () {
 
