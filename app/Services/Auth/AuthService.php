@@ -14,7 +14,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
-    
+
     public function register(array $data)
     {
         try {
@@ -40,13 +40,13 @@ class AuthService
             $profile = Profile::create([
                 'user_id'  => $user->id,
                 'names' => $data['names'],
-                'last_names'=> $data['last_names'],
-                'birth_date'=> $data['birth_date'],
+                'last_names' => $data['last_names'],
+                'birth_date' => $data['birth_date'],
                 'document_type_id' => $data['document_type_id'],
                 'document_number' => $data['document_number'],
-                'gender_id'=> $data['gender_id'],
-                'organization_id'=> $data['organization_id'],
-                'phone'=> $data['phone']
+                'gender_id' => $data['gender_id'],
+                'organization_id' => $data['organization_id'],
+                'phone' => $data['phone']
             ]);
 
             if (!$profile) {
@@ -63,20 +63,19 @@ class AuthService
             $user->fresh()->sendEmailVerificationNotification();
 
             $user->audits()->create([
-            'user_name'      => $data['names']." ".$data['last_names'],
-            'rol_name'       => 'Solicitante',
-            'date_time'      => now(),
-            'action_execute' => 'Enviar Peticion',
-            'status_old'     => null,
-            'status_new'     => 'Peticion',
+                'user_name'      => $data['names'] . " " . $data['last_names'],
+                'rol_name'       => 'Solicitante',
+                'date_time'      => now(),
+                'action_execute' => 'Enviar Peticion',
+                'status_old'     => null,
+                'status_new'     => 'Peticion',
             ]);
-            
+
             return [
                 "error" => false,
                 "code" => 201,
                 "message" => "Usuario registrado correctamente",
             ];
-
         } catch (\Exception $e) {
             DB::rollBack();
             return [
@@ -95,23 +94,30 @@ class AuthService
             return [
                 "error" => true,
                 "code" => 404,
-                "message" => "Usuario no encontrado",
+                "message" => "Usuario no encontrado.",
             ];
         }
 
-        if ($user->state_user_id != 1) {
-            return [
-                "error" => true,
-                "code" => 403,
-                "message" => "El usuario está inactivo",
-            ];
+        switch ($user->state_user_id) {
+            case 2:
+                return [
+                    "error" => true,
+                    "code" => 403,
+                    "message" => "El usuario se encuentra inactivo, por favor contacte al supervisor de su seccional o administrador.",
+                ];
+
+            case 3:
+                return [
+                    "error" => true,
+                    "code" => 403,
+                    "message" => "Su solicitud de registro no se ha aprobado, por favor contacte al supervisor de su seccional o al administrador.",];
         }
-        
+
         if (!Auth::attempt($credentials)) {
             return [
                 "error" => true,
                 "code" => 403,
-                'message' => 'Credenciales incorrectas'
+                'message' => 'Correo o contraseña incorrectos.'
             ];
         }
 
@@ -150,49 +156,51 @@ class AuthService
         );
 
         return [
-        "error" => false,
-        "code" => 200,
-        "message" => "Logueo exitoso",
-        "data" => [
-            'id' => $user->id,
-            'full_name' => "$profile->names $profile->last_names",
-            'gender' => "$profile->gender_id",
-            'role_id' => $roleUser->id,
-            'permissions' => $permissions->pluck('name'),
-            'cookieToken' => $cookieToken,
-            'cookieRefreshToken' => $cookieRefreshToken,
-            'token' => $accessToken,
-            'sectional_id' => $profile->organization?->sectional_id],
+            "error" => false,
+            "code" => 200,
+            "message" => "Logueo exitoso",
+            "data" => [
+                'id' => $user->id,
+                'full_name' => "$profile->names $profile->last_names",
+                'gender' => "$profile->gender_id",
+                'role_id' => $roleUser->id,
+                'permissions' => $permissions->pluck('name'),
+                'cookieToken' => $cookieToken,
+                'cookieRefreshToken' => $cookieRefreshToken,
+                'token' => $accessToken,
+                'sectional_id' => $profile->organization?->sectional_id
+            ],
         ];
     }
 
-    private function generateAccessToken($user) {
+    private function generateAccessToken($user)
+    {
 
         return $user->createToken(
             'accessToken',
             [TokenAbility::ACCESS_API->value],
             Carbon::now()->addMinutes(config('sanctum.access_token_expiration'))
         )->plainTextToken;
-
     }
 
-    private function generateRefreshToken($user) {
+    private function generateRefreshToken($user)
+    {
 
         return $user->createToken(
             'refreshToken',
             [TokenAbility::ISSUE_ACCESS_TOKEN->value],
             Carbon::now()->addMinutes(config('sanctum.refresh_token_expiration'))
         )->plainTextToken;
-
     }
 
-    public function refreshToken(string $currentRefreshToken, User $user) {
+    public function refreshToken(string $currentRefreshToken, User $user)
+    {
 
         $refreshToken = PersonalAccessToken::findToken($currentRefreshToken);
 
         $accessToken = $this->generateAccessToken($user);
 
-        $refreshToken = $this->renewRefreshToken($refreshToken, $user)?:$currentRefreshToken;
+        $refreshToken = $this->renewRefreshToken($refreshToken, $user) ?: $currentRefreshToken;
 
         $cookieToken = cookie(
             'access_token',
@@ -224,26 +232,25 @@ class AuthService
         ];
     }
 
-    private function renewRefreshToken(PersonalAccessToken $refreshToken, User $user) {
+    private function renewRefreshToken(PersonalAccessToken $refreshToken, User $user)
+    {
 
         $expiresToken = Carbon::parse($refreshToken->expires_at);
 
         $remainingTime = $expiresToken->diffInSeconds(Carbon::now(), false);
 
-        if($remainingTime < 60 * 60 * 24) {
+        if ($remainingTime < 60 * 60 * 24) {
 
             $refreshToken->delete();
 
             return $user->createToken(
-                'refreshToken', 
-                [TokenAbility::ISSUE_ACCESS_TOKEN->value], 
+                'refreshToken',
+                [TokenAbility::ISSUE_ACCESS_TOKEN->value],
                 Carbon::now()->addMinutes(config('sanctum.refresh_token_expiration'))
             )->plainTextToken;
-
         }
 
         return null;
-
     }
 
     public function createExpiredCookies()
@@ -281,5 +288,5 @@ class AuthService
     public function logOut(User $user)
     {
         $user->tokens()->delete();
-}
+    }
 }
