@@ -35,7 +35,7 @@ class RegisterRequest extends FormRequest
             // Identificación y contacto
             'document_type_id' => 'required|exists:document_types,id',
             'document_number'  => 'required|numeric|max_digits:20|unique_document_by_type',
-            'phone'            => 'required|numeric|max_digits:15|unique:profiles,phone',
+            'phone'            => 'required|numeric|max_digits:10|unique:profiles,phone',
             
             // Lógica de negocio: Mayoría de edad (18 años)
             'birth_date'       => 'required|date_format:Y-m-d|before:18 years ago',

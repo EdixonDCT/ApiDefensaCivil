@@ -15,8 +15,7 @@ class StoreNotificationRequest extends FormRequest
     {
         return [
             'user_id'    => 'required|exists:users,id',
-            'history_id' => 'required|exists:histories,id',
-            'is_read'    => 'sometimes|boolean',
+            'audit_id' => 'required|exists:audits,id',
         ];
     }
 
@@ -25,9 +24,8 @@ class StoreNotificationRequest extends FormRequest
         return [
             'user_id.required'    => 'El usuario es obligatorio',
             'user_id.exists'      => 'El usuario no existe',
-            'history_id.required' => 'El historial es obligatorio',
-            'history_id.exists'   => 'El historial no existe',
-            'is_read.boolean'     => 'El campo leído debe ser verdadero o falso',
+            'audit_id.required' => 'La auditoria es obligatoria',
+            'audit_id.exists'   => 'La auditoria no existe'
         ];
     }
 }

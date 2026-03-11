@@ -56,9 +56,8 @@ Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::get('/documentTypesPublic', [DocumentTypeController::class, 'index']);
 Route::get('/gendersPublic', [GenderController::class, 'index']);
-Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
-Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
-
+Route::get('/sectionalsPublic', [SectionalController::class, 'getActiveWithOrganization']);
+Route::get('/organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
 /**
  * GRUPO: Verificación de email.
@@ -783,24 +782,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/dashBoardSupervisor', [AuditController::class, 'dashBoardSupervisor']);
     });
-});
-Route::prefix('notifications')->group(function () {
 
-    Route::get('/', [NotificationController::class, 'index']);
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
 
-    Route::get( '/user/count/{id}',[NotificationController::class, 'countUnreadByUser']);
-    
-    Route::get('/{id}', [NotificationController::class, 'show']);
+        Route::get( '/user/count/{id}',[NotificationController::class, 'countUnreadByUser']);
 
-    Route::get('/user/unread/{id}',[NotificationController::class, 'getUnreadByUser']);
+        Route::get('/user/unread/{id}',[NotificationController::class, 'getUnreadByUser']);
 
-    Route::get('/user/{id}', [NotificationController::class, 'getByUser']);
+        Route::get('/user/{id}', [NotificationController::class, 'getByUser']);
 
-    Route::post('/', [NotificationController::class, 'store']);
+        Route::get('/{id}', [NotificationController::class, 'show']);
 
-    Route::put('/{id}', [NotificationController::class, 'update']);
+        Route::post('/', [NotificationController::class, 'store']);
 
-    Route::patch('/{id}', [NotificationController::class, 'partialUpdate']);
+        Route::put('/{id}', [NotificationController::class, 'update']);
 
-    Route::delete('/{id}', [NotificationController::class, 'destroy']);
+        Route::patch('/{id}', [NotificationController::class, 'partialUpdate']);
+
+        Route::patch('changeStatus/{id}', [NotificationController::class, 'changeStatus']);
+
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
 });

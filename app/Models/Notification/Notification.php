@@ -16,11 +16,11 @@ class Notification extends Model
     protected $fillable = [
         'user_id',
         'audit_id',
-        'read'
+        'is_read'
     ];
 
     protected $casts = [
-        'read' => 'boolean',
+        'is_read' => 'boolean',
     ];
 
     /*

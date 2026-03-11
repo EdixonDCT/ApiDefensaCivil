@@ -14,16 +14,9 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
         $table->id();
 
-            $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->cascadeOnDelete();
-
-            $table->foreignId('audit_id')
-                  ->constrained('audits')
-                  ->cascadeOnDelete();
-
-            $table->boolean('read')->default(false);
-
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('audit_id')->constrained('audits');
+            $table->boolean('is_read')->default(0);
             $table->timestamps();
         });
     }

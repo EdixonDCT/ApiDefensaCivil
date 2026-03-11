@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Notification\StoreNotificationRequest;
 use App\Http\Requests\Notification\UpdateNotificationRequest;
 use App\Http\Requests\Notification\PartialUpdateNotificationRequest;
+use App\Http\Requests\Notification\ChangeStatusNotificationRequest;
 use App\Models\Notification\Notification;
 use App\Services\Notification\NotificationService;
 use App\Policies\AccessNotificationPolicy;
@@ -49,13 +50,6 @@ class NotificationController extends Controller
             );
         }
 
-        // if (!(new AccessNotificationPolicy())->access($notification)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para ver esta notificación',
-        //         403
-        //     );
-        // }
-
         $response = $this->service->getById($id);
 
         if ($response['error']) {
@@ -74,7 +68,7 @@ class NotificationController extends Controller
 
     public function getByUser(string $user_id)
     {
-        $response = $this->service->getById($user_id);
+        $response = $this->service->getByUserId($user_id);
 
         if ($response['error']) {
             return ResponseFormatter::error(
@@ -122,17 +116,37 @@ class NotificationController extends Controller
             );
         }
 
-        // if (!(new AccessNotificationPolicy())->access($notification)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para modificar esta notificación',
-        //         403
-        //     );
-        // }
-
         $response = $this->service->update(
             $request->validated(),
             $id
         );
+
+        if ($response['error']) {
+            return ResponseFormatter::error(
+                $response['message'],
+                $response['code']
+            );
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data'] ?? []
+        );
+    }
+
+        public function changeStatus(ChangeStatusNotificationRequest $request, string $id)
+    {
+        $notification = Notification::find($id);
+
+        if (!$notification) {
+            return ResponseFormatter::error(
+                'Registro no encontrado',
+                404
+            );
+        }
+
+        $response = $this->service->partialUpdate($request->validated(),$id);
 
         if ($response['error']) {
             return ResponseFormatter::error(
@@ -195,13 +209,6 @@ class NotificationController extends Controller
             );
         }
 
-        // if (!(new AccessNotificationPolicy())->access($notification)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para modificar esta notificación',
-        //         403
-        //     );
-        // }
-
         $response = $this->service->partialUpdate(
             $request->validated(),
             $id
@@ -231,13 +238,6 @@ class NotificationController extends Controller
                 404
             );
         }
-
-        // if (!(new AccessNotificationPolicy())->access($notification)) {
-        //     return ResponseFormatter::error(
-        //         'Usted no tiene autorización para modificar esta notificación',
-        //         403
-        //     );
-        // }
 
         $response = $this->service->delete($id);
 
