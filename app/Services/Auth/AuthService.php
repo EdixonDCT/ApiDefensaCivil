@@ -74,7 +74,7 @@ class AuthService
             return [
                 "error" => false,
                 "code" => 201,
-                "message" => "Usuario registrado correctamente",
+                "message" => "Usuario registrado con exito,verifique su correo electronico para continuar",
             ];
 
         } catch (\Exception $e) {

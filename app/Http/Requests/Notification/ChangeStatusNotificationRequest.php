@@ -4,7 +4,7 @@ namespace App\Http\Requests\Notification;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateNotificationRequest extends FormRequest
+class ChangeStatusNotificationRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,19 +14,13 @@ class UpdateNotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'    => 'required|exists:users,id',
-            'audit_id' => 'required|exists:audits,id',
-            'is_read'    => 'required|boolean',
+            'is_read' => 'required|boolean',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'user_id.required'    => 'El usuario es obligatorio',
-            'user_id.exists'      => 'El usuario no existe',
-            'audit_id.required' => 'El auditorio es obligatorio',
-            'audit_id.exists'   => 'El auditorio no existe',
             'is_read.required'    => 'El estado de leido es obligatorio',
             'is_read.boolean'     => 'El estado de leido debe ser verdadero o falso',
         ];
