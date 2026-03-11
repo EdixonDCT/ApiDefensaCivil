@@ -85,6 +85,7 @@ Route::post('/email/verification-notification', [EmailVerificationController::cl
 
 
 Route::post('/password/forgot',  [PasswordResetController::class, 'forgot']);   // envía código
+Route::post('/password/resend', [PasswordResetController::class, 'resend']);    // reenvia código
 Route::post('/password/verify',  [PasswordResetController::class, 'verify']);   // valida código
 Route::post('/password/reset',   [PasswordResetController::class, 'reset']);    // nueva contraseña
 
@@ -93,6 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
         ->middleware('ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value);
+
 
     Route::post('/logout', [AuthenticationController::class, 'logOut']);
 
