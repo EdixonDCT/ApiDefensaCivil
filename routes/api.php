@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\API\Account\AccountController;
+use App\Http\Controllers\API\Account\AccountVerificationController;
 use Illuminate\Http\Request;
 use App\Http\Middleware\DecodeBearerToken;
 use Illuminate\Support\Facades\Route;
@@ -96,6 +98,25 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthenticationController::class, 'logOut']);
 
+
+    Route::prefix('account')->group(function () {
+
+        // -------------------------------------------------------------------------
+        // Verificación de identidad
+        // Genera un token temporal tras validar la contraseña actual
+        // -------------------------------------------------------------------------
+        Route::post('/verify-password', [AccountVerificationController::class, 'verify']);
+
+
+        // -------------------------------------------------------------------------
+        // Datos sensibles de la cuenta
+        // Requieren token de verificación de contraseña (un solo uso, TTL 10 min)
+        // -------------------------------------------------------------------------
+        Route::middleware('password.verify:change_email')
+            ->patch('/email', [AccountController::class, 'updateEmail']);
+    });
+
+    
     Route::prefix('statusPlans')->group(function () {
         Route::get('/', [StatusPlanController::class, 'index']);
 
@@ -786,11 +807,11 @@ Route::prefix('notifications')->group(function () {
 
     Route::get('/', [NotificationController::class, 'index']);
 
-    Route::get( '/user/count/{id}',[NotificationController::class, 'countUnreadByUser']);
-    
+    Route::get('/user/count/{id}', [NotificationController::class, 'countUnreadByUser']);
+
     Route::get('/{id}', [NotificationController::class, 'show']);
 
-    Route::get('/user/unread/{id}',[NotificationController::class, 'getUnreadByUser']);
+    Route::get('/user/unread/{id}', [NotificationController::class, 'getUnreadByUser']);
 
     Route::get('/user/{id}', [NotificationController::class, 'getByUser']);
 
