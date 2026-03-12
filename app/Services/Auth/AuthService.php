@@ -98,6 +98,16 @@ class AuthService
             ];
         }
 
+        if(!$user->hasVerifiedEmail()) {
+            return [
+                "error" => true,
+                "code" => 403,
+                "message" => "El usuario no ha verificado su correo electrónico.",
+                'errors'   => [],
+                'errorKey' => 'email_not_verified',
+            ];
+        }
+
         switch ($user->state_user_id) {
             case 2:
                 return [

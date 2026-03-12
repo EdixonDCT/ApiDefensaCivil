@@ -42,6 +42,7 @@ class UserSeeder extends Seeder
                 'email' => $data['email'],
                 'password' => $data['password'], // el modelo la hashea
                 'state_user_id' => $data['state_user_id'],
+                'email_verified_at' => now(),
             ]);
             
             // Asignar rol
