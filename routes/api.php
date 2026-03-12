@@ -351,6 +351,8 @@ Route::middleware('auth:sanctum')->group(function () {
         route::get('/checkAccess/{familyPlan_id}', [FamilyPlanController::class, 'checkAccess']);
 
         Route::get('/pdf/{id}', [FamilyPlanController::class, 'downloadPdf']);
+
+        Route::get('/{familyPlan_id}/has-members', [FamilyPlanController::class, 'hasMembers']);
     });
 
     route::prefix('housingInfo')->group(function () {
