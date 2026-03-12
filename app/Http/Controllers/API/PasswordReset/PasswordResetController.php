@@ -29,6 +29,22 @@ class PasswordResetController extends Controller
     }
 
     /**
+     * POST /api/password/resend
+     * Reenvía el código de restablecimiento.
+     */
+    public function resend(ForgotPasswordRequest $request)
+    {
+        $response = $this->service->sendCode($request->validated('email'));
+
+        if ($response['error']) {
+            return ResponseFormatter::error($response['message'], $response['code']);
+        }
+
+        return ResponseFormatter::success($response['message'], $response['code']);
+    }
+
+
+    /**
      * POST /api/password/verify
      * Valida que el código sea correcto y no haya expirado.
      */

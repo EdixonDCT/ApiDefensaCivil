@@ -58,9 +58,8 @@ Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::get('/documentTypesPublic', [DocumentTypeController::class, 'index']);
 Route::get('/gendersPublic', [GenderController::class, 'index']);
-Route::get('/sectionalsPublic', [SectionalController::class, 'index']);
-Route::get('organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
-
+Route::get('/sectionalsPublic', [SectionalController::class, 'getActiveWithOrganization']);
+Route::get('/organizationsPublic/sectional/{sectional_id}', [OrganizationController::class, 'getSectional']);
 
 /**
  * GRUPO: Verificación de email.
@@ -87,6 +86,7 @@ Route::post('/email/verification-notification', [EmailVerificationController::cl
 
 
 Route::post('/password/forgot',  [PasswordResetController::class, 'forgot']);   // envía código
+Route::post('/password/resend', [PasswordResetController::class, 'resend']);    // reenvia código
 Route::post('/password/verify',  [PasswordResetController::class, 'verify']);   // valida código
 Route::post('/password/reset',   [PasswordResetController::class, 'reset']);    // nueva contraseña
 
@@ -95,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/refresh-token', [AuthenticationController::class, 'refreshToken'])
         ->middleware('ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value);
+
 
     Route::post('/logout', [AuthenticationController::class, 'logOut']);
 
@@ -802,24 +803,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/dashBoardSupervisor', [AuditController::class, 'dashBoardSupervisor']);
     });
-});
-Route::prefix('notifications')->group(function () {
 
-    Route::get('/', [NotificationController::class, 'index']);
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
 
-    Route::get('/user/count/{id}', [NotificationController::class, 'countUnreadByUser']);
+        Route::get( '/user/count/{id}',[NotificationController::class, 'countUnreadByUser']);
 
-    Route::get('/{id}', [NotificationController::class, 'show']);
+        Route::get('/user/unread/{id}',[NotificationController::class, 'getUnreadByUser']);
 
-    Route::get('/user/unread/{id}', [NotificationController::class, 'getUnreadByUser']);
+        Route::get('/user/{id}', [NotificationController::class, 'getByUser']);
 
-    Route::get('/user/{id}', [NotificationController::class, 'getByUser']);
+        Route::get('/{id}', [NotificationController::class, 'show']);
 
-    Route::post('/', [NotificationController::class, 'store']);
+        Route::post('/', [NotificationController::class, 'store']);
 
-    Route::put('/{id}', [NotificationController::class, 'update']);
+        Route::put('/{id}', [NotificationController::class, 'update']);
 
-    Route::patch('/{id}', [NotificationController::class, 'partialUpdate']);
+        Route::patch('/{id}', [NotificationController::class, 'partialUpdate']);
 
-    Route::delete('/{id}', [NotificationController::class, 'destroy']);
+        Route::patch('changeStatus/{id}', [NotificationController::class, 'changeStatus']);
+
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
 });

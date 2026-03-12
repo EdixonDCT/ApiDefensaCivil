@@ -56,12 +56,11 @@ class OrganizationService
                 "error" => false,
                 "code" => 200,
                 "message" => "No existe esta seccional",
-                "data" => null,
             ];
         }
         
         // Asumiendo relación hasMany en el modelo Sectional
-        $organization = $sectional->organization;
+        $organization = $sectional->organizations;
 
         if (!$organization || $organization->isEmpty()){
             return [

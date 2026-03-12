@@ -15,7 +15,7 @@ class PartialUpdateNotificationRequest extends FormRequest
     {
         return [
             'user_id'    => 'sometimes|exists:users,id',
-            'history_id' => 'sometimes|exists:histories,id',
+            'audit_id' => 'sometimes|exists:audits,id',
             'is_read'    => 'sometimes|boolean',
         ];
     }
@@ -24,8 +24,8 @@ class PartialUpdateNotificationRequest extends FormRequest
     {
         return [
             'user_id.exists'      => 'El usuario no existe',
-            'history_id.exists'   => 'El historial no existe',
-            'is_read.boolean'     => 'El campo leído debe ser verdadero o falso',
+            'audit_id.exists'   => 'El auditorio no existe',
+            'is_read.boolean'     => 'El estado leído debe ser verdadero o falso',
         ];
     }
 }

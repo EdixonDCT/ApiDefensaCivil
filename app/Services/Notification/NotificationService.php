@@ -84,6 +84,40 @@ class NotificationService
         ];
     }
 
+    public function getByUserId($user_id)
+    {
+        $paginator = Notification::where('user_id', $user_id)
+            ->latest()
+            ->paginate(10);
+
+        $items = $paginator->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'user_id' => $item->user_id,
+                'audit_id' => $item->audit_id,
+                'is_read' => $item->is_read,
+                'created_at' => $item->created_at,
+            ];
+        });
+
+        return [
+            "error"   => false,
+            "code"    => 200,
+            "message" => $items->isEmpty()
+                ? "No hay notificaciones para este usuario"
+                : "Notificaciones obtenidas exitosamente",
+            "data"    => $items,
+            "paginate" => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+        ];
+    }
+
     public function getById($id)
     {
         $notification = Notification::find($id);
