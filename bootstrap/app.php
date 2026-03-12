@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Middlewares\ForceJsonRequestHeader;
 use App\Exceptions\ApiExceptionHandler;
+use App\Http\Middlewares\RequirePasswordVerification;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role' => RoleMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'password.verify' => RequirePasswordVerification::class,
         ]);
 
         $middleware->api(prepend: [
