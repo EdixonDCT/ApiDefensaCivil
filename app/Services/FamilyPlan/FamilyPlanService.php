@@ -21,7 +21,7 @@ class FamilyPlanService
     {
         $familyPlan = FamilyPlan::all();
 
-        if ($familyPlan->isEmpty()){
+        if ($familyPlan->isEmpty()) {
             return [
                 "error" => false,
                 "code" => 200,
@@ -45,7 +45,7 @@ class FamilyPlanService
     {
         $familyPlan = FamilyPlan::with('city.department')->find($id);
 
-        if (!$familyPlan){
+        if (!$familyPlan) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -91,7 +91,7 @@ class FamilyPlanService
     {
         $familyPlan = FamilyPlan::find($id);
 
-        if (!$familyPlan){
+        if (!$familyPlan) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -112,11 +112,11 @@ class FamilyPlanService
     /**
      * Actualización parcial de campos del plan.
      */
-    public function partialUpdate(array $data,$id)
+    public function partialUpdate(array $data, $id)
     {
         $familyPlan = FamilyPlan::find($id);
 
-        if (!$familyPlan){
+        if (!$familyPlan) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -137,11 +137,11 @@ class FamilyPlanService
     /**
      * Actualiza el estado actual del plan familiar.
      */
-    public function changeStatus(array $data,$id)
+    public function changeStatus(array $data, $id)
     {
         $familyPlan = FamilyPlan::find($id);
 
-        if (!$familyPlan){
+        if (!$familyPlan) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -150,7 +150,7 @@ class FamilyPlanService
         }
         $oldStatus = $familyPlan->statusPlan->name;
         $familyPlan->update($data);
-    // 🔹 Estado nuevo
+        // 🔹 Estado nuevo
         $familyPlan->refresh()->load('statusPlan');
         $newStatus = $familyPlan->statusPlan->name;
 
@@ -175,11 +175,11 @@ class FamilyPlanService
     /**
      * Actualiza los datos de identificación específicos del plan.
      */
-    public function identify(array $data,$id)
+    public function identify(array $data, $id)
     {
         $familyPlan = FamilyPlan::find($id);
 
-        if (!$familyPlan){
+        if (!$familyPlan) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -204,7 +204,7 @@ class FamilyPlanService
     {
         $familyPlan = FamilyPlan::find($id);
 
-        if (!$familyPlan){
+        if (!$familyPlan) {
             return [
                 "error" => true,
                 "code" => 404,
@@ -212,7 +212,7 @@ class FamilyPlanService
             ];
         }
         History::where('family_plan_id', $id)->delete();
-        
+
         $familyPlan->delete();
 
         return [
@@ -246,8 +246,8 @@ class FamilyPlanService
                 "code" => 404,
                 "message" => "Plan familiar no encontrado",
                 "data" => [
-                "access_check" => $access
-            ]
+                    "access_check" => $access
+                ]
             ];
         }
 
@@ -260,8 +260,8 @@ class FamilyPlanService
                 "code" => 200,
                 "message" => "Verificación de acceso realizada",
                 "data" => [
-                "access_check" => $access
-            ]
+                    "access_check" => $access
+                ]
             ];
         }
 
@@ -269,7 +269,7 @@ class FamilyPlanService
         if ($roleId == 3) {
 
             // No puede acceder si el estado es 4 o 6
-            if (!in_array($plan->status_plan_id, [1,2,4,6,7])) {
+            if (!in_array($plan->status_plan_id, [1, 2, 4, 6, 7])) {
                 $access = $plan->user_id == $user->id;
             }
         }
@@ -280,7 +280,7 @@ class FamilyPlanService
                 $user->profile &&
                 $user->profile->organization &&
                 $user->profile->organization->sectional_id === $plan->sectional_id &&
-                in_array($plan->status_plan_id, [4,7])
+                in_array($plan->status_plan_id, [4, 7])
             ) {
                 $access = true;
             }
@@ -323,7 +323,7 @@ class FamilyPlanService
 
             $plans = FamilyPlan::where('user_id', $user->id)
                 ->whereNotIn('status_plan_id', [4])
-                ->with('statusPlan','city','city.department')
+                ->with('statusPlan', 'city', 'city.department')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
@@ -369,8 +369,8 @@ class FamilyPlanService
             $sectionalId = $user->profile->organization->sectional_id;
 
             $plans = FamilyPlan::where('sectional_id', $sectionalId)
-                ->whereIn('status_plan_id', [2,4,5,6,7])
-                ->with('statusPlan','city','city.department')
+                ->whereIn('status_plan_id', [2, 4, 5, 6, 7])
+                ->with('statusPlan', 'city', 'city.department')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
@@ -421,6 +421,37 @@ class FamilyPlanService
 
         return response($pdf->output(), 200)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="plan_'.$plan->id.'.pdf"');
+            ->header('Content-Disposition', 'attachment; filename="plan_' . $plan->id . '.pdf"');
+    }
+
+    /**
+     * Verifica si un plan familiar tiene al menos un integrante registrado.
+     *
+     * Se usa para validar antes de realizar operaciones que requieren
+     * que el plan tenga integrantes (ej: activar, enviar, procesar).
+     *
+     * @param int $id ID del plan familiar a verificar
+     * @return array{error: bool, code: int, message: string, data: array}
+     */
+    public function hasMembers(int $id): array
+    {
+        $familyPlan = FamilyPlan::find($id);
+
+        if (!$familyPlan) {
+            return [
+                'error'   => true,
+                'code'    => 404,
+                'message' => 'Plan familiar no encontrado',
+            ];
+        }
+
+        return [
+            'error'   => false,
+            'code'    => 200,
+            'message' => 'Verificación de integrantes realizada',
+            'data'    => [
+                'has_members' => $familyPlan->familyMembers()->exists(),
+            ],
+        ];
     }
 }

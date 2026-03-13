@@ -11,6 +11,7 @@ use App\Http\Requests\FamilyPlan\GeoreFamilyPlanRequest;
 use App\Http\Requests\FamilyPlan\IdentifyFamilyPlanRequest;
 use App\Http\Controllers\Controller;
 use App\Services\FamilyPlan\FamilyPlanService;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Controlador de Planes Familiares.
@@ -36,8 +37,7 @@ class FamilyPlanController extends Controller
     {
         $response = $this->service->getAll();
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
@@ -66,8 +66,7 @@ class FamilyPlanController extends Controller
         $data = $request->validated();
         $response = $this->service->create($data);
 
-        if ($response['error'])
-        {    
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
@@ -82,8 +81,7 @@ class FamilyPlanController extends Controller
         $data = $request->validated();
         $response = $this->service->update($data, $id);
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
@@ -98,12 +96,11 @@ class FamilyPlanController extends Controller
         $data = $request->validated();
         $response = $this->service->partialUpdate($data, $id);
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
     /**
@@ -114,12 +111,11 @@ class FamilyPlanController extends Controller
         $data = $request->validated();
         $response = $this->service->changeStatus($data, $id);
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
     /**
      * Registra los datos de identificación oficial del núcleo familiar dentro del plan.
@@ -129,12 +125,11 @@ class FamilyPlanController extends Controller
         $data = $request->validated();
         $response = $this->service->identify($data, $id);
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []); 
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? []);
     }
 
     /**
@@ -144,8 +139,7 @@ class FamilyPlanController extends Controller
     {
         $response = $this->service->delete($id);
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
@@ -156,8 +150,7 @@ class FamilyPlanController extends Controller
     {
         $response = $this->service->checkAccess($id);
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
@@ -168,16 +161,51 @@ class FamilyPlanController extends Controller
     {
         $response = $this->service->getFamilyPlanByUser();
 
-        if ($response['error'])
-        {
+        if ($response['error']) {
             return ResponseFormatter::error($response['message'], $response['code']);
         }
 
-        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [],$response['paginate']);
+        return ResponseFormatter::success($response['message'], $response['code'], $response['data'] ?? [], $response['paginate']);
     }
 
     public function downloadPdf($id)
     {
         return $this->service->generatePdf($id);
+    }
+
+    /**
+     * Verifica si un plan familiar tiene al menos un integrante registrado.
+     *
+     * Utilizado por el frontend para habilitar o deshabilitar acciones
+     * que requieren que el plan tenga integrantes antes de continuar.
+     *
+     * GET /family-plans/{id}/has-members
+     *
+     * Response 200:
+     * {
+     *   "data": {
+     *     "has_members": true
+     *   }
+     * }
+     *
+     * @param int $id ID del plan familiar a verificar
+     * @return JsonResponse
+     */
+    public function hasMembers(int $id)
+    {
+        $response = $this->service->hasMembers($id);
+
+        if ($response['error']) {
+            return ResponseFormatter::error(
+                $response['message'],
+                $response['code'],
+            );
+        }
+
+        return ResponseFormatter::success(
+            $response['message'],
+            $response['code'],
+            $response['data']
+        );
     }
 }
